@@ -24,7 +24,7 @@ namespace EvergreenAPI.Models
         public bool IsAdmin { get; set; } = false;
         public bool IsProfessor { get; set; } = false;
         public bool IsBlocked { get; set; } = false;
-        public List<string> Professions { get; set; }
+        public string Professions { get; set; }
         public List<Message> Messages { get; set; }
     }
 }

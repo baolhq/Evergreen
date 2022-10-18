@@ -23,7 +23,8 @@ namespace EvergreenAPI.Models
         public string Email { get; set; }
         public bool IsAdmin { get; set; } = false;
         public bool IsProfessor { get; set; } = false;
-        public List<string> Professions { get; set; } = new List<string>();
         public bool IsBlocked { get; set; } = false;
+        public List<string> Professions { get; set; }
+        public List<Message> Messages { get; set; }
     }
 }

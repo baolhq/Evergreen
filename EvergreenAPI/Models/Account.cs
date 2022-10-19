@@ -21,8 +21,7 @@ namespace EvergreenAPI.Models
         [Required]
         [MaxLength(255)]
         public string Email { get; set; }
-        public bool IsAdmin { get; set; } = false;
-        public bool IsProfessor { get; set; } = false;
+        public string Role { get; set; } = "User";
         public bool IsBlocked { get; set; } = false;
         public string Professions { get; set; }
         public List<Message> Messages { get; set; }

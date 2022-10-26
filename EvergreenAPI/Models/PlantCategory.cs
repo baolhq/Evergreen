@@ -8,7 +8,7 @@ namespace EvergreenAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string PlantCategoryId { get; set; }
+        public int PlantCategoryId { get; set; }
         [Required]
         public string Name { get; set; }
         public List<Plant> Plants { get; set; }

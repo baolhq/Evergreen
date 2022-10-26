@@ -34,6 +34,15 @@ namespace EvergreenAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //Auto mapper DTO
+            services.AddScoped<IDiseaseCategoryRepository, DiseaseCategoryRepository>();
+            services.AddScoped<IDiseaseRepository, DiseaseRepository>();
+            services.AddScoped<IMedicineCategoryRepository, MedicineCategoryRepository>();
+            services.AddScoped<IMedicineRepository, MedicineRepository>();
+            services.AddScoped<IPlantCategoryRepository, PlantCategoryRepository>();
+            services.AddScoped<IPlantRepository, PlantRepository>();
+            services.AddScoped<ITreatmentRepository, TreatmentRepository>();
+
             services.AddDbContext<AppDbContext>(opitons =>
                 opitons.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
@@ -64,14 +73,20 @@ namespace EvergreenAPI
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EvergreenAPI", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
+            {   
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EvergreenAPI v1"));
             }
 
             // JWT Auth
@@ -94,6 +109,8 @@ namespace EvergreenAPI
             {
                 endpoints.MapControllers();
             });
+
+
         }
     }
 }

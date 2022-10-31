@@ -8,14 +8,16 @@ namespace EvergreenAPI.Repositories
 {
     public interface IMessageRepository
     {
-        void SaveMessage(Message m);
+        bool SaveMessage(Message b);
 
         Message GetMessageById(int id);
 
-        void DeleteMessage(Message m);
+        bool DeleteMessage(Message b);
 
-        void UpdateMessage(Message m);
+        bool UpdateMessage(Message b);
 
-        List<Message> GetMessages();
+        ICollection<Message> GetMessages();
+        bool MessageExist(int id);
+        bool Save();
     }
 }

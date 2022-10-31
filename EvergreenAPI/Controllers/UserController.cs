@@ -15,75 +15,124 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository _UserRepository;
         private readonly IMapper _mapper;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserRepository UserRepository, IMapper mapper)
         {
-            _userRepository = userRepository;
+            _UserRepository = UserRepository;
             _mapper = mapper;
         }
 
-
-
         [HttpGet]
-        public ActionResult GetUsers()
+        public IActionResult GetUsers()
         {
-            var u = _userRepository.GetUsers();
-            var m = _mapper.Map<IEnumerable<UserDTO>>(u);
-            return Ok(m);
+            var Users = _mapper.Map<List<UserDTO>>(_UserRepository.GetUsers());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Users);
+        }
+
+        [HttpGet("{UserId}")]
+        public IActionResult GetUser(int UserId)
+        {
+            if (!_UserRepository.UserExist(UserId))
+                return NotFound($"User Category '{UserId}' is not exists!!");
+
+            var Users = _mapper.Map<UserDTO>(_UserRepository.GetUserById(UserId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Users);
         }
 
 
 
-        [HttpGet("{id}")]
-        public ActionResult GetUserById(int id)
-        {
-            var u = _userRepository.GetUserById(id);
-            var m = _mapper.Map<UserDTO>(u);
-            return Ok(m);
-        }
-
+        
 
 
         [HttpPost]
-        public ActionResult<UserDTO> SaveUser(UserDTO u)
+        public IActionResult CreateUser([FromBody] UserDTO UserCreate)
         {
-            var user = _mapper.Map<Account>(u);
+            if (UserCreate == null)
+                return BadRequest(ModelState);
 
-            _userRepository.SaveUser(user);
-            return Ok(user);
+            var User = _UserRepository.GetUsers()
+                .Where(c => c.Username.Trim().ToUpper() == UserCreate.Username.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if (User != null)
+            {
+                ModelState.AddModelError("", "It is already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var UserMap = _mapper.Map<Account>(UserCreate);
+
+            if (!_UserRepository.SaveUser(UserMap))
+            {
+                ModelState.AddModelError("", "Something was wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Create Success");
         }
 
 
 
-        [HttpPut("{id}")]
-        public ActionResult UpdateUser(UserDTO u)
-        {
-            var user = _mapper.Map<Account>(u);
-            _userRepository.UpdateUser(user);
-            return Ok(user);
-        }
 
 
-        [HttpDelete("{id}")]
-        public ActionResult DeleteUser(int id)
+        [HttpPut("{UserId}")]
+        public IActionResult UpdateUser(int UserId, [FromBody] UserDTO updatedUser)
         {
-            var user = _userRepository.GetUserById(id);
-            if (user == null)
+            if (updatedUser == null)
+                return BadRequest(ModelState);
+
+            if (UserId != updatedUser.AccountId)
+                return BadRequest(ModelState);
+
+            if (!_UserRepository.UserExist(UserId))
                 return NotFound();
-            _userRepository.DeleteUser(user);
-            return NoContent();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var UserMap = _mapper.Map<Account>(updatedUser);
+
+            if (!_UserRepository.UpdateUser(UserMap))
+            {
+                ModelState.AddModelError("", "Something was wrong when saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Updated Success");
         }
 
 
 
-        [HttpPost("GetUserByEmail")]
-        public ActionResult<Account> GetUserByEmail(string email)
+        [HttpDelete("{UserId}")]
+        public IActionResult DeleteUser(int UserId)
         {
-            var u = _userRepository.GetUserByEmail(email);
-            var m = _mapper.Map<UserDTO>(u);
-            return Ok(m);
+            if (!_UserRepository.UserExist(UserId))
+                return NotFound();
+
+            var UserToDelete = _UserRepository.GetUserById(UserId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_UserRepository.DeleteUser(UserToDelete))
+            {
+                ModelState.AddModelError("", "Something was wrong when delete");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Delete Success");
         }
     }
 }

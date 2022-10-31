@@ -11,154 +11,55 @@ namespace EvergreenAPI.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public void DeleteUser(Account user)
+        private readonly AppDbContext _context;
+
+        public UserRepository(AppDbContext context)
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    var u = context.Accounts.SingleOrDefault(
-                      c => c.AccountId == user.AccountId);
-                    context.Accounts.Remove(u);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            _context = context;
         }
 
-
+        public bool DeleteUser(Account b)
+        {
+            _context.Remove(b);
+            return Save();
+        }
 
         public Account GetUserByEmail(string email)
         {
-            var u = new Account();
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    u = context.Accounts.SingleOrDefault(x => x.Email == email);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message); 
-            }
-            return u;
+            return _context.Accounts.Where(a => a.Email == email).FirstOrDefault();
         }
-
-
-
 
         public Account GetUserById(int id)
         {
-            Account u = new Account();
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    u = context.Accounts.SingleOrDefault(x => x.AccountId == id);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            return u;
+            return _context.Accounts.Where(s => s.AccountId == id).FirstOrDefault();
         }
 
-
-
-
-
-        public List<Account> GetUsers()
+        public ICollection<Account> GetUsers()
         {
-            var listUsers = new List<Account>();
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    listUsers = context.Accounts.ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            return listUsers;
+            return _context.Accounts.ToList();
         }
 
-        
-
-
-        public void SaveUser(Account user)
+        public bool Save()
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    user.Password = GetMD5HashData(user.Password);
-                    context.Accounts.Add(user);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(user);
-                throw new Exception(e.Message);
-            }
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
-
-
-
-
-
-
-        public void UpdateUser(Account user)
+        public bool SaveUser(Account b)
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    context.Entry<Account>(user).State =
-                        Microsoft.EntityFrameworkCore.EntityState.Modified;
-                    context.SaveChanges();
-
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            _context.Add(b);
+            return Save();
         }
 
-
-
-
-        private static string GetMD5HashData(string password)
+        public bool UpdateUser(Account b)
         {
-            //create new instance of md5
-            MD5 md5 = MD5.Create();
-
-            //convert the input text to array of bytes
-            byte[] hashData = md5.ComputeHash(Encoding.Default.GetBytes(password));
-
-            //create new instance of StringBuilder to save hashed data
-            StringBuilder returnValue = new StringBuilder();
-
-            //loop for each byte and add it to StringBuilder
-            for (int i = 0; i < hashData.Length; i++)
-            {
-                returnValue.Append(hashData[i].ToString());
-            }
-
-            // return hexadecimal string
-            return returnValue.ToString();
+            _context.Update(b);
+            return Save();
         }
 
-
-
+        public bool UserExist(int id)
+        {
+            return _context.Accounts.Any(f => f.AccountId == id);
+        }
     }
 }

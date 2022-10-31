@@ -9,15 +9,17 @@ namespace EvergreenAPI.Repositories
 {
     public interface IBlogRepository
     {
-        void SaveBlog(Blog b);
+        bool SaveBlog(Blog b);
 
         Blog GetBlogById(int id);
 
-        void DeleteBlog(Blog b);
+        bool DeleteBlog(Blog b);
 
-        void UpdateBlog(Blog b);
+        bool UpdateBlog(Blog b);
 
-        List<Blog> GetBlogs();
+        ICollection<Blog> GetBlogs();
+        bool BlogExist(int id);
+        bool Save();
 
     }
 }

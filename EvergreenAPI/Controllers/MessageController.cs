@@ -15,72 +15,113 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        private readonly IMessageRepository _messageRepository;
+        private readonly IMessageRepository _MessageRepository;
         private readonly IMapper _mapper;
 
-        public MessageController(IMessageRepository messageRepository, IMapper mapper)
+        public MessageController(IMessageRepository MessageRepository, IMapper mapper)
         {
-            _messageRepository = messageRepository;
+            _MessageRepository = MessageRepository;
             _mapper = mapper;
         }
 
-
-
-
         [HttpGet]
-        public ActionResult GetMessages()
+        public IActionResult GetMessages()
         {
-            var p = _messageRepository.GetMessages();
-            var m = _mapper.Map<IEnumerable<MessageDTO>>(p);
-            return Ok(m);
+            var Messages = _mapper.Map<List<MessageDTO>>(_MessageRepository.GetMessages());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Messages);
         }
 
-
-
-
-        [HttpGet("{id}")]
-        public ActionResult GetMessageById(int id)
+        [HttpGet("{MessageId}")]
+        public IActionResult GetMessage(int MessageId)
         {
-            var p = _messageRepository.GetMessageById(id);
-            var m = _mapper.Map<MessageDTO>(p);
-            return Ok(m);
+            if (!_MessageRepository.MessageExist(MessageId))
+                return NotFound($"Message Category '{MessageId}' is not exists!!");
+
+            var Messages = _mapper.Map<MessageDTO>(_MessageRepository.GetMessageById(MessageId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Messages);
         }
-
-
-
 
         [HttpPost]
-        public ActionResult<BlogDTO> SaveMessage(MessageDTO p)
+        public IActionResult CreateMessage([FromBody] MessageDTO MessageCreate)
         {
-            var message = _mapper.Map<Message>(p);
-            _messageRepository.SaveMessage(message);
-            return Ok();
+            if (MessageCreate == null)
+                return BadRequest(ModelState);
+
+            var Message = _MessageRepository.GetMessages()
+                .Where(c => c.Content.Trim().ToUpper() == MessageCreate.Content.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if (Message != null)
+            {
+                ModelState.AddModelError("", "It is already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var MessageMap = _mapper.Map<Message>(MessageCreate);
+
+            if (!_MessageRepository.SaveMessage(MessageMap))
+            {
+                ModelState.AddModelError("", "Something was wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Create Success");
         }
 
-
-
-
-        [HttpPut("{id}")]
-        public ActionResult UpdateMessage(MessageDTO p)
+        [HttpPut("{MessageId}")]
+        public IActionResult UpdateMessage(int MessageId, [FromBody] MessageDTO updatedMessage)
         {
-            var message = _mapper.Map<Message>(p);
-            _messageRepository.UpdateMessage(message);
-            return Ok();
-        }
+            if (updatedMessage == null)
+                return BadRequest(ModelState);
 
+            if (MessageId != updatedMessage.MessageId)
+                return BadRequest(ModelState);
 
-
-
-
-
-        [HttpDelete("{id}")]
-        public ActionResult DeleteMessage(int id)
-        {
-            var message = _messageRepository.GetMessageById(id);
-            if (message == null)
+            if (!_MessageRepository.MessageExist(MessageId))
                 return NotFound();
-            _messageRepository.DeleteMessage(message);
-            return NoContent();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var MessageMap = _mapper.Map<Message>(updatedMessage);
+
+            if (!_MessageRepository.UpdateMessage(MessageMap))
+            {
+                ModelState.AddModelError("", "Something was wrong when saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Updated Success");
+        }
+
+        [HttpDelete("{MessageId}")]
+        public IActionResult DeleteMessage(int MessageId)
+        {
+            if (!_MessageRepository.MessageExist(MessageId))
+                return NotFound();
+
+            var MessageToDelete = _MessageRepository.GetMessageById(MessageId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_MessageRepository.DeleteMessage(MessageToDelete))
+            {
+                ModelState.AddModelError("", "Something was wrong when delete");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Delete Success");
         }
     }
 }

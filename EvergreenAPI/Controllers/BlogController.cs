@@ -16,59 +16,113 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class BlogController : ControllerBase
     {
-        private readonly IBlogRepository _blogRepository;
+        private readonly IBlogRepository _BlogRepository;
         private readonly IMapper _mapper;
 
-        public BlogController(IBlogRepository blogRepository, IMapper mapper)
+        public BlogController(IBlogRepository BlogRepository, IMapper mapper)
         {
-            _blogRepository = blogRepository;
+            _BlogRepository = BlogRepository;
             _mapper = mapper;
         }
 
-
         [HttpGet]
-        public ActionResult GetBlogs()
+        public IActionResult GetBlogs()
         {
-            var b = _blogRepository.GetBlogs();
-            var m = _mapper.Map<IEnumerable<BlogDTO>>(b);
-            return Ok(m);
+            var Blogs = _mapper.Map<List<BlogDTO>>(_BlogRepository.GetBlogs());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Blogs);
         }
 
-
-        [HttpGet("{id}")]
-        public ActionResult GetBlogById(int id)
+        [HttpGet("{BlogId}")]
+        public IActionResult GetBlog(int BlogId)
         {
-            var b = _blogRepository.GetBlogById(id);
-            var m = _mapper.Map<BlogDTO>(b);
-            return Ok(m);
-        }
+            if (!_BlogRepository.BlogExist(BlogId))
+                return NotFound($"Blog Category '{BlogId}' is not exists!!");
 
+            var Blogs = _mapper.Map<BlogDTO>(_BlogRepository.GetBlogById(BlogId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Blogs);
+        }
 
         [HttpPost]
-        public ActionResult<BlogDTO> SaveBlog(BlogDTO b)
+        public IActionResult CreateBlog([FromBody] BlogDTO BlogCreate)
         {
-            var blog = _mapper.Map<Blog>(b);
-            _blogRepository.SaveBlog(blog);
-            return Ok();
+            if (BlogCreate == null)
+                return BadRequest(ModelState);
+
+            var Blog = _BlogRepository.GetBlogs()
+                .Where(c => c.Title.Trim().ToUpper() == BlogCreate.Title.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if (Blog != null)
+            {
+                ModelState.AddModelError("", "It is already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var BlogMap = _mapper.Map<Blog>(BlogCreate);
+
+            if (!_BlogRepository.SaveBlog(BlogMap))
+            {
+                ModelState.AddModelError("", "Something was wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Create Success");
         }
 
-
-        [HttpPut("{id}")]
-        public ActionResult UpdateBlog(BlogDTO b)
+        [HttpPut("{BlogId}")]
+        public IActionResult UpdateBlog(int BlogId, [FromBody] BlogDTO updatedBlog)
         {
-            var blog = _mapper.Map<Blog>(b);
-            _blogRepository.UpdateBlog(blog);
-            return Ok();
-        }
+            if (updatedBlog == null)
+                return BadRequest(ModelState);
 
-        [HttpDelete("{id}")]
-        public ActionResult DeleteBlog(int id)
-        {
-            var blog = _blogRepository.GetBlogById(id);
-            if (blog == null)
+            if (BlogId != updatedBlog.BlogId)
+                return BadRequest(ModelState);
+
+            if (!_BlogRepository.BlogExist(BlogId))
                 return NotFound();
-            _blogRepository.DeleteBlog(blog);
-            return NoContent();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var BlogMap = _mapper.Map<Blog>(updatedBlog);
+
+            if (!_BlogRepository.UpdateBlog(BlogMap))
+            {
+                ModelState.AddModelError("", "Something was wrong when saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Updated Success");
+        }
+
+        [HttpDelete("{BlogId}")]
+        public IActionResult DeleteBlog(int BlogId)
+        {
+            if (!_BlogRepository.BlogExist(BlogId))
+                return NotFound();
+
+            var BlogToDelete = _BlogRepository.GetBlogById(BlogId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_BlogRepository.DeleteBlog(BlogToDelete))
+            {
+                ModelState.AddModelError("", "Something was wrong when delete");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Delete Success");
         }
 
     }

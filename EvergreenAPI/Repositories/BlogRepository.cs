@@ -1,4 +1,5 @@
 ﻿using EvergreenAPI.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,104 +9,52 @@ namespace EvergreenAPI.Repositories
 {
     public class BlogRepository : IBlogRepository
     {
-        
+        private readonly AppDbContext _context;
 
-        public void DeleteBlog(Blog b)
+        public BlogRepository(AppDbContext context)
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    var b1 = context.Blogs.SingleOrDefault(
-                        c => c.BlogId == b.BlogId);
-                    context.Blogs.Remove(b1);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            _context = context;
         }
 
+        public bool SaveBlog(Blog Blog)
+        {
+            _context.Add(Blog);
+            return Save();
+        }
 
+        public bool DeleteBlog(Blog Blog)
+        {
+            _context.Remove(Blog);
+            return Save();
+        }
 
-
+        public bool BlogExist(int id)
+        {
+            return _context.Blogs.Any(f => f.BlogId == id);
+        }
 
         public Blog GetBlogById(int id)
         {
-            Blog b = new Blog();
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    b = context.Blogs.SingleOrDefault(x => x.BlogId == id);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            return b;
+            return _context.Blogs.Where(s => s.BlogId == id).FirstOrDefault();
         }
 
-
-
-
-
-        public List<Blog> GetBlogs()
+        public ICollection<Blog> GetBlogs()
         {
-            var listBlogs = new List<Blog>();
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    listBlogs = context.Blogs.ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            return listBlogs;
+            return _context.Blogs.ToList();
         }
 
-
-
-
-        public void SaveBlog(Blog b)
+        public bool Save()
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    context.Blogs.Add(b);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(b);
-                throw new Exception(e.Message);
-            }
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
-        public void UpdateBlog(Blog b)
+        public bool UpdateBlog(Blog Blog)
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    context.Entry<Blog>(b).State =
-                        Microsoft.EntityFrameworkCore.EntityState.Modified;
-                    context.SaveChanges();
-
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            _context.Update(Blog);
+            return Save();
         }
+
+        
     }
 }

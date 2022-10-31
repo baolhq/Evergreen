@@ -8,104 +8,49 @@ namespace EvergreenAPI.Repositories
 {
     public class MessageRepository : IMessageRepository
     {
-        public void DeleteMessage(Message m)
+        private readonly AppDbContext _context;
+
+        public MessageRepository(AppDbContext context)
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    var m1 = context.Messages.SingleOrDefault(
-                        c => c.MessageId == m.MessageId);
-                    context.Messages.Remove(m1);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            _context = context;
         }
-
-
-
-
+        public bool DeleteMessage(Message b)
+        {
+            _context.Remove(b);
+            return Save();
+        }
 
         public Message GetMessageById(int id)
         {
-            Message m = new Message();
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    m = context.Messages.SingleOrDefault(x => x.MessageId == id);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            return m;
+            return _context.Messages.Where(s => s.MessageId == id).FirstOrDefault();
         }
 
-
-
-
-
-        public List<Message> GetMessages()
+        public ICollection<Message> GetMessages()
         {
-            var listMessages = new List<Message>();
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    listMessages = context.Messages.ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            return listMessages;
+            return _context.Messages.ToList();
         }
 
-
-
-
-        public void SaveMessage(Message m)
+        public bool MessageExist(int id)
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    context.Messages.Add(m);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(m);
-                throw new Exception(e.Message);
-            }
+            return _context.Messages.Any(f => f.MessageId == id);
         }
 
-
-
-        public void UpdateMessage(Message m)
+        public bool Save()
         {
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    context.Entry<Message>(m).State =
-                        Microsoft.EntityFrameworkCore.EntityState.Modified;
-                    context.SaveChanges();
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
 
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+        public bool SaveMessage(Message b)
+        {
+            _context.Add(b);
+            return Save();
+        }
+
+        public bool UpdateMessage(Message b)
+        {
+            _context.Update(b);
+            return Save();
         }
     }
 }

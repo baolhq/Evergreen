@@ -80,6 +80,8 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
+
+
         [HttpPut("{BlogId}")]
         public IActionResult UpdateBlog(int BlogId, [FromBody] BlogDTO updatedBlog)
         {

@@ -11,6 +11,5 @@ namespace EvergreenAPI.Models
         public int PlantCategoryId { get; set; }
         [Required]
         public string Name { get; set; }
-        public List<Plant> Plants { get; set; }
     }
 }

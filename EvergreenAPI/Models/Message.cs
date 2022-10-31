@@ -14,8 +14,8 @@ namespace EvergreenAPI.Models
         public string Content { get; set; }
         [Required]
         public DateTime CreatedOn { get; set; }
-        [ForeignKey("Account")]
+        [ForeignKey("Accounts")]
         public int AccountId { get; set; }
-        public Account Author { get; set; }
+        public virtual Account Author { get; set; }
     }
 }

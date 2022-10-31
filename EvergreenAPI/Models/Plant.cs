@@ -13,5 +13,8 @@ namespace EvergreenAPI.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public List<Image> Images { get; set; }
+        [ForeignKey("PlantCategories")]
+        public int PlantCategoryId { get; set; }
+        public virtual PlantCategory PlantCategory { get; set; }
     }
 }

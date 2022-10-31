@@ -10,5 +10,8 @@ namespace EvergreenAPI.Models
         public int TreatmentId { get; set; }
         [Required]
         public string Method { get; set; }
+
+        [ForeignKey("Disease")]
+        public int DiseaseId { get; set; }
     }
 }

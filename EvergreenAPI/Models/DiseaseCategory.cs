@@ -11,6 +11,5 @@ namespace EvergreenAPI.Models
         public int DiseaseCategoryId { get; set; }
         [Required]
         public string Name { get; set; }
-        public List<Disease> Diseases { get; set; }
     }
 }

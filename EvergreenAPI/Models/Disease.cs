@@ -15,5 +15,12 @@ namespace EvergreenAPI.Models
         public string Affect { get; set; }
         public List<Medicine> Medicines { get; set; }
         public List<Treatment> Treatments { get; set; }
+        [ForeignKey("DiseaseCategories")]
+        public int DiseaseCategoryId { get; set; }
+        public virtual DiseaseCategory DiseaseCategory { get; set; }
+
+        [ForeignKey("Images")]
+        public int ImageId { get; set; }
+        public virtual Image Image { get; set; }
     }
 }

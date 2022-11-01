@@ -45,6 +45,7 @@ namespace EvergreenAPI
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
 
             services.AddDbContext<AppDbContext>(opitons =>
                 opitons.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

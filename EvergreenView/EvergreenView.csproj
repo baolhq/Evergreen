@@ -4,4 +4,12 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\css\css\.DS_Store" />
+    <None Include="wwwroot\css\css\bootstrap\.DS_Store" />
+    <None Include="wwwroot\css\css\css\.DS_Store" />
+    <None Include="wwwroot\css\css\css\mixins\.DS_Store" />
+    <None Include="wwwroot\js\site.js" />
+  </ItemGroup>
+
 </Project>

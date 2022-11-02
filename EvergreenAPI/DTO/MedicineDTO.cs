@@ -9,7 +9,6 @@ namespace EvergreenAPI.DTO
         [MaxLength(50)]
         public string Name { get; set; }
         [Required]
-        [MinLength(5)]
         [MaxLength(100)]
         public string Uses { get; set; }
         [Required]

@@ -1,0 +1,27 @@
+﻿@model EvergreenAPI.Models.Treatment
+@{
+}
+
+<h1>Details</h1>
+<h4>Treatment</h4>
+<hr />
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Method)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Method)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Disease.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Disease.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.TreatmentId" class="btn btn-warning">Edit</a> |
+    <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+</div>

@@ -25,7 +25,7 @@ namespace EvergreenAPI.Controllers
         [HttpGet]
         public IActionResult GetMedicines()
         {
-            var medicines = _mapper.Map<List<MedicineDTO>>(_medicineRepository.GetMedicines());
+            var medicines = _mapper.Map<List<Medicine>>(_medicineRepository.GetMedicines());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -39,7 +39,7 @@ namespace EvergreenAPI.Controllers
             if (!_medicineRepository.MedicineExist(MedicineId))
                 return NotFound($"Medicine Category '{MedicineId}' is not exists!!");
 
-            var medicines = _mapper.Map<MedicineDTO>(_medicineRepository.GetMedicine(MedicineId));
+            var medicines = _mapper.Map<Medicine>(_medicineRepository.GetMedicine(MedicineId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

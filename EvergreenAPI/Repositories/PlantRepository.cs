@@ -1,4 +1,5 @@
 ﻿using EvergreenAPI.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,12 +33,12 @@ namespace EvergreenAPI.Repositories
 
         public Plant GetPlant(int id)
         {
-            return _context.Plants.Where(s => s.PlantId == id).FirstOrDefault();
+            return _context.Plants.Include(d => d.PlantCategory).Where(s => s.PlantId == id).FirstOrDefault();
         }
 
         public ICollection<Plant> GetPlants()
         {
-            return _context.Plants.ToList();
+            return _context.Plants.Include(d => d.PlantCategory).ToList();
         }
 
         public bool Save()

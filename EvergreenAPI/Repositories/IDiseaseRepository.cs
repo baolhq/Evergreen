@@ -6,6 +6,8 @@ namespace EvergreenAPI.Repositories
     public interface IDiseaseRepository
     {
         ICollection<Disease> GetDiseases();
+        ICollection<DiseaseCategory> GetDiseaseCategories();
+        ICollection<Image> GetImages();
         Disease GetDisease(int id);
         bool DiseaseExist(int id);
         bool CreateDisease(Disease disease);

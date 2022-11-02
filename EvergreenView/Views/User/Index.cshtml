@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+@model IEnumerable<EvergreenAPI.DTO.UserDTO>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+@if (session.GetString("Role") == ("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
+    </p>
+}
+<table class="table" border="1">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (@session.GetString("User") == item.Username.ToString())
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AccountId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Username)
+                    </td>
+  
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.AccountId" class="btn btn-outline-info">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.AccountId" class="btn btn-outline-warning">Details</a>
+                    </td>
+                </tr>
+            }
+            else if (@session.GetString("Role") == "Admin")
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AccountId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.AccountId" class="btn btn-outline-info">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.AccountId" class="btn btn-outline-warning">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.AccountId" class="btn btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>

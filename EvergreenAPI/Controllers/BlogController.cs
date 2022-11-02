@@ -36,6 +36,8 @@ namespace EvergreenAPI.Controllers
             return Ok(Blogs);
         }
 
+
+
         [HttpGet("{BlogId}")]
         public IActionResult GetBlog(int BlogId)
         {
@@ -49,6 +51,9 @@ namespace EvergreenAPI.Controllers
 
             return Ok(Blogs);
         }
+
+
+
 
         [HttpPost]
         public IActionResult CreateBlog([FromBody] BlogDTO BlogCreate)
@@ -107,6 +112,8 @@ namespace EvergreenAPI.Controllers
 
             return Ok("Updated Success");
         }
+
+
 
         [HttpDelete("{BlogId}")]
         public IActionResult DeleteBlog(int BlogId)

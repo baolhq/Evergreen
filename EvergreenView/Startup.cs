@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,13 @@ namespace EvergreenView
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+           
             services.AddControllersWithViews();
+            services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));
+            services.AddMvc().AddSessionStateTempDataProvider();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,9 +48,10 @@ namespace EvergreenView
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            
             app.UseRouting();
-
+            app.UseSession();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

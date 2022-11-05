@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using System;
 using EvergreenAPI.DTO;
+using EvergreenAPI.Models;
 
 namespace EvergreenAPI.Services
 {
@@ -11,7 +12,7 @@ namespace EvergreenAPI.Services
     {
         private const double EXPIRY_DURATION_MINUTES = 30;
 
-        public string BuildToken(string key, string issuer, AccountDTO account)
+        public string BuildToken(string key, string issuer, Account account)
         {
             var claims = new[] {
             new Claim(ClaimTypes.Name, account.Username),

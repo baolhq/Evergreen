@@ -1,51 +1,68 @@
 ﻿using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
+using EvergreenAPI.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 
 namespace EvergreenAPI.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly List<AccountDTO> accounts = new List<AccountDTO>();
+        private readonly AppDbContext _context;
+        private readonly ITokenService _tokenService;
+        private readonly IConfiguration _config;
 
-        public AccountRepository()
+        public AccountRepository(ITokenService tokenService, IConfiguration config, AppDbContext context)
         {
-            accounts.Add(new AccountDTO
-            {
-                Username = "joydipkanjilal",
-                Password = "joydip123",
-                Role = "user"
-            });
-            accounts.Add(new AccountDTO
-            {
-                Username = "michaelsanders",
-                Password = "michael321",
-                Role = "user"
-            });
-            accounts.Add(new AccountDTO
-            {
-                Username = "stephensmith",
-                Password = "stephen123",
-                Role = "admin"
-            });
-            accounts.Add(new AccountDTO
-            {
-                Username = "rodpaddock",
-                Password = "rod123",
-                Role = "professor"
-            });
-            accounts.Add(new AccountDTO
-            {
-                Username = "rexwills",
-                Password = "rex321",
-                Role = "professor"
-            });
+            _context = context;
+            _tokenService = tokenService;
+            _config = config;
         }
-        public AccountDTO GetAccount(AccountDTO account)
+        public Account GetAccount(AccountDTO account)
         {
-            return accounts.Where(x => x.Username.ToLower() == account.Username.ToLower()
+            return _context.Accounts.Where(x => x.Username.ToLower() == account.Username.ToLower()
                 && x.Password == account.Password).FirstOrDefault();
+        }
+
+        public string Login(AccountDTO account)
+        {
+            if (string.IsNullOrEmpty(account.Username) || string.IsNullOrEmpty(account.Password))
+            {
+                return null;
+            }
+            var validUser = GetAccount(account);
+
+            if (validUser != null)
+            {
+                var generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), validUser);
+                return generatedToken;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public bool Register(AccountDTO accountDto)
+        {
+            var account = new Account()
+            {
+                Username = accountDto.Username,
+                Password = accountDto.Password,
+                FullName = "",
+                Email = ""
+            };
+
+            var found = _context.Accounts.Any(a => a.Username == account.Username);
+            if (found) return false;
+
+            _context.Accounts.Add(account);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

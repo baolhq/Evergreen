@@ -46,16 +46,17 @@ namespace EvergreenAPI
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
 
             services.AddDbContext<AppDbContext>(opitons =>
                 opitons.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
 
             // JWT Auth
-            services.AddTransient<IAccountRepository, AccountRepository>();
-            services.AddTransient<ITokenService, TokenService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters

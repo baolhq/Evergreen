@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace EvergreenAPI.Controllers
 {
@@ -13,46 +14,23 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _config;
-        private readonly ITokenService _tokenService;
         private readonly IAccountRepository _accountRepository;
-        private string generatedToken = null;
 
-        public AuthController(AppDbContext context, IConfiguration config, ITokenService tokenService, IAccountRepository accountRepository)
+        public AuthController(IAccountRepository accountRepository)
         {
-            _context = context;
-            _config = config;
-            _tokenService = tokenService;
             _accountRepository = accountRepository;
         }
 
-        [AllowAnonymous]
         [Route("login")]
         [HttpPost]
-        public IActionResult Login(AccountDTO account)
+        public IActionResult Login([FromBody] AccountDTO account)
         {
-            if (string.IsNullOrEmpty(account.Username) || string.IsNullOrEmpty(account.Password))
-            {
-                return BadRequest();
-            }
-            IActionResult response = Unauthorized();
-            var validUser = GetAccount(account);
+            var token = _accountRepository.Login(account);
 
-            if (validUser != null)
+            if (token != null)
             {
-                generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), validUser);
-                if (generatedToken != null)
-                {
-                    HttpContext.Session.SetString("Token", generatedToken);
-                    HttpContext.Session.SetString("AccountId", account.AccountId.ToString());
-                    return new JsonResult(generatedToken);
-
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                HttpContext.Session.SetString("Token", token);
+                return new JsonResult(token);
             }
             else
             {
@@ -60,10 +38,22 @@ namespace EvergreenAPI.Controllers
             }
         }
 
-        private AccountDTO GetAccount(AccountDTO account)
+        [Route("register")]
+        [HttpPost]
+        public IActionResult Register([FromBody] AccountDTO account)
         {
-            // Write your code here to authenticate the user     
-            return _accountRepository.GetAccount(account);
+            if (account == null) return BadRequest();
+
+            if (_accountRepository.Register(account)) return Ok();
+            else return BadRequest("An error occured, please contact admin.");
+        }
+
+        [Route("logout")]
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok();
         }
     }
 }

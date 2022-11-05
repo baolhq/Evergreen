@@ -5,6 +5,8 @@ namespace EvergreenAPI.Repositories
 {
     public interface IAccountRepository
     {
-        AccountDTO GetAccount(AccountDTO account);
+        Account GetAccount(AccountDTO account);
+        string Login(AccountDTO account);
+        bool Register(AccountDTO account);
     }
 }

@@ -70,6 +70,8 @@ namespace EvergreenAPI
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
                 };
             });
+
+            services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EvergreenAPI", Version = "v1" });

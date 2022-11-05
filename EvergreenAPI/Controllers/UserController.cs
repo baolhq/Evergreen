@@ -109,7 +109,7 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
-        [HttpPut("{UserId}")]
+        [HttpPut("user-update/{UserId}")]
         [Authorize(Roles = "User")]
         public IActionResult UserUpdateUser(int UserId, string username, [FromBody] UserDTO updatedUser)
         {

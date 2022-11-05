@@ -57,7 +57,7 @@ namespace EvergreenAPI.Repositories
             {
                 Username = accountDto.Username,
                 Password = accountDto.Password,
-                Role = "User",
+                Role = "Professor",
                 Token = GenerateToken(accountDto.Username)
             };
 
@@ -84,7 +84,7 @@ namespace EvergreenAPI.Repositories
                 Subject = new ClaimsIdentity(new[]
                 {
             new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, "User")
+            new Claim(ClaimTypes.Role, "Professor")
         }),
 
                 Expires = now.AddMinutes(Convert.ToInt32(expireMinutes)),

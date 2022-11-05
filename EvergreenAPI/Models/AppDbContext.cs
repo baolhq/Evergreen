@@ -57,45 +57,36 @@ namespace EvergreenAPI.Models
 
             #endregion
 
-            //#region Account seed
+            #region Account seed
 
-            //modelBuilder.Entity<Account>().HasData(
-            //    new Account
-            //    {
-            //        AccountId = 1,
-            //        Username = "admin",
-            //        Password = "Admin@",
-            //        FullName = "Admin",
-            //        Email = "admin@gmail.com",
-            //        Role = "admin",
-            //        IsBlocked = false,
-            //        Professions = null
-            //    },
-            //    new Account
-            //    {
-            //        AccountId = 2,
-            //        Username = "anv",
-            //        Password = "123123",
-            //        FullName = "Nguyen Van A",
-            //        Email = "anv@gmail.com",
-            //        Role = "user",
-            //        IsBlocked = false,
-            //        Professions = null
-            //    },
-            //    new Account
-            //    {
-            //        AccountId = 3,
-            //        Username = "pbc",
-            //        Password = "ll123",
-            //        FullName = "Phan Bao Chau",
-            //        Email = "pbc@gmail.com",
-            //        Role = "professor",
-            //        IsBlocked = false,
-            //        Professions = "Toan"
-            //    }
-            //);
+            modelBuilder.Entity<Account>().HasData(
+                new Account
+                {
+                    AccountId = 1,
+                    Username = "admin",
+                    Password = "Admin@",
+                    Role = "Admin",
+                    Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwibmJmIjoxNjY3NjUwNjM2LCJleHAiOjE2Njc2NTI0MzYsImlhdCI6MTY2NzY1MDYzNiwiaXNzIjoiYmFvbGhxLmdpdGh1Yi5jb20iLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxIn0.r2GcLny8UrBAOwCA8FcPj1hY3Zdq69IdfHjebWlFqDs"
+                },
+                new Account
+                {
+                    AccountId = 2,
+                    Username = "test01",
+                    Password = "123123",
+                    Role = "User",
+                    Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QwMSIsInJvbGUiOiJVc2VyIiwibmJmIjoxNjY3NjUxMDI4LCJleHAiOjE2Njc2NTI4MjgsImlhdCI6MTY2NzY1MTAyOCwiaXNzIjoiYmFvbGhxLmdpdGh1Yi5jb20iLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxIn0.AWCcGJhaKRot6ZKxyFPUM-uIry3nR91_-0_834EtZ_o"
+                },
+                new Account
+                {
+                    AccountId = 3,
+                    Username = "pbc",
+                    Password = "121212",
+                    Role = "Professor",
+                    Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBiYyIsInJvbGUiOiJQcm9mZXNzb3IiLCJuYmYiOjE2Njc2OTE2OTcsImV4cCI6MTY2NzY5MzQ5NywiaWF0IjoxNjY3NjkxNjk3LCJpc3MiOiJiYW9saHEuZ2l0aHViLmNvbSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEifQ.gBY9L51QgnFnrHjyS_wKxq6dLVZsU2dzFQqKiwGcYEs"
+                }
+            );
 
-            //#endregion
+            #endregion
 
             #region Images seed
             modelBuilder.Entity<Image>().HasData(
@@ -237,34 +228,34 @@ namespace EvergreenAPI.Models
             );
             #endregion
 
-            //#region Message seed
-            //modelBuilder.Entity<Message>().HasData(
-            //    new Message
-            //    {
-            //        MessageId = 1,
-            //        ReplyToId = 0,
-            //        Content = "Hello",
-            //        CreatedOn = DateTime.Today - TimeSpan.FromMinutes(20),
-            //        AccountId = 1
-            //    },
-            //    new Message
-            //    {
-            //        MessageId = 2,
-            //        ReplyToId = 0,
-            //        Content = "Hi",
-            //        CreatedOn = DateTime.Today - TimeSpan.FromMinutes(13),
-            //        AccountId = 2
-            //    },
-            //    new Message
-            //    {
-            //        MessageId = 3,
-            //        ReplyToId = 1,
-            //        Content = "How can I help?",
-            //        CreatedOn = DateTime.Today - TimeSpan.FromMinutes(8),
-            //        AccountId = 3
-            //    }
-            //);
-            //#endregion
+            #region Message seed
+            modelBuilder.Entity<Message>().HasData(
+                new Message
+                {
+                    MessageId = 1,
+                    ReplyToId = 0,
+                    Content = "Hello",
+                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(20),
+                    AccountId = 1
+                },
+                new Message
+                {
+                    MessageId = 2,
+                    ReplyToId = 0,
+                    Content = "Hi",
+                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(13),
+                    AccountId = 2
+                },
+                new Message
+                {
+                    MessageId = 3,
+                    ReplyToId = 1,
+                    Content = "How can I help?",
+                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(8),
+                    AccountId = 3
+                }
+            );
+            #endregion
 
         }
     }

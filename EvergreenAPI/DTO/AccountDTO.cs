@@ -4,6 +4,7 @@ namespace EvergreenAPI.DTO
 {
     public class AccountDTO
     {
+        public int AccountId { get; set; }
         [Required]
         public string Username { get; set; }
         [Required]

@@ -25,7 +25,7 @@ namespace EvergreenAPI.Controllers
         [HttpGet]
         public IActionResult GetPlants()
         {
-            var plant = _mapper.Map<List<PlantDTO>>(_plantRepository.GetPlants());
+            var plant = _mapper.Map<List<Plant>>(_plantRepository.GetPlants());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -39,7 +39,7 @@ namespace EvergreenAPI.Controllers
             if (!_plantRepository.PlantExist(PlantId))
                 return NotFound($"Plant '{PlantId}' is not exists!!");
 
-            var plant = _mapper.Map<PlantDTO>(_plantRepository.GetPlant(PlantId));
+            var plant = _mapper.Map<Plant>(_plantRepository.GetPlant(PlantId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

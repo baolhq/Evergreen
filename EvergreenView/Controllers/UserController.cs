@@ -9,9 +9,11 @@ using System.Text.Json;
 using System.Text;
 using System.Threading.Tasks;
 using EvergreenAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EvergreenView.Controllers
 {
+    [Authorize (Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly HttpClient client = null;
@@ -24,7 +26,7 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            UserApiUrl = "https://localhost:44395/api/User";
+            UserApiUrl = "https://localhost:44334/api/User";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -37,13 +39,10 @@ namespace EvergreenView.Controllers
             }
         }
 
-
+        
         public async Task<IActionResult> Index()
         {
-            if (session.GetString("User") == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
             HttpResponseMessage response = await client.GetAsync(UserApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -61,10 +60,7 @@ namespace EvergreenView.Controllers
         
         public async Task<ActionResult> Details(int id)
         {
-            if (session.GetString("User") == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
             var user = await GetUserByIdAsync(id);
             if (user == null)
                 return NotFound();
@@ -77,10 +73,7 @@ namespace EvergreenView.Controllers
        
         public async Task<ActionResult> Create()
         {
-            if (session.GetString("User") == null || session.GetString("Role") != "Admin")
-            {
-                return RedirectToAction("Index", "Home");
-            }
+           
             HttpResponseMessage respone = await client.GetAsync(UserApiUrl);
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -120,10 +113,7 @@ namespace EvergreenView.Controllers
         
         public async Task<ActionResult> Edit(int id)
         {
-            if (session.GetString("User") == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
             HttpResponseMessage response = await client.GetAsync(UserApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -166,10 +156,7 @@ namespace EvergreenView.Controllers
         
         public async Task<ActionResult> Delete(int id)
         {
-            if (session.GetString("User") == null || session.GetString("Role") != "Admin")
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
             var product = await GetUserByIdAsync(id);
             if (product == null)
                 return NotFound();

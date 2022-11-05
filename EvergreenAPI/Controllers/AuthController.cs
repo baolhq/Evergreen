@@ -45,7 +45,9 @@ namespace EvergreenAPI.Controllers
                 if (generatedToken != null)
                 {
                     HttpContext.Session.SetString("Token", generatedToken);
+                    HttpContext.Session.SetString("AccountId", account.AccountId.ToString());
                     return new JsonResult(generatedToken);
+
                 }
                 else
                 {

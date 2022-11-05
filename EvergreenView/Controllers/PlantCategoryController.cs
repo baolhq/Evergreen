@@ -49,7 +49,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PlantCategory plantCategory)
+        public IActionResult Create(PlantCategory plantCategory)
         {
             string data = JsonSerializer.Serialize(plantCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
@@ -76,7 +76,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, PlantCategory plantCategory)
+        public ActionResult Edit(int id, PlantCategory plantCategory)
         {
             string data = JsonSerializer.Serialize(plantCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");

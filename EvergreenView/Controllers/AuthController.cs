@@ -6,6 +6,9 @@ using EvergreenAPI.Models;
 using System.Text;
 using System.Text.Json;
 using System.Net.Http.Json;
+using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace EvergreenView.Controllers
 {
@@ -46,6 +49,25 @@ namespace EvergreenView.Controllers
 
         public IActionResult Register()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(AccountDTO account)
+        {
+            if (account == null) return View();
+
+            string data = JsonSerializer.Serialize(account);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            var response = client.PostAsync($"{AuthApiUrl}/register", content).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var err = JsonConvert.DeserializeObject<dynamic>(response.Content.ReadAsStringAsync().Result);
+            ViewData["error"] = err;
             return View();
         }
 

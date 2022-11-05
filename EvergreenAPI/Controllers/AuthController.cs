@@ -40,12 +40,12 @@ namespace EvergreenAPI.Controllers
 
         [Route("register")]
         [HttpPost]
-        public IActionResult Register(Account account)
+        public IActionResult Register([FromBody] AccountDTO account)
         {
             if (account == null) return BadRequest();
 
             if (_accountRepository.Register(account)) return Ok();
-            else return BadRequest("An error occured, please contact admin");
+            else return BadRequest("An error occured, please contact admin.");
         }
 
         [Route("logout")]

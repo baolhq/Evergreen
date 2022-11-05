@@ -7,6 +7,6 @@ namespace EvergreenAPI.Repositories
     {
         Account GetAccount(AccountDTO account);
         string Login(AccountDTO account);
-        bool Register(Account account);
+        bool Register(AccountDTO account);
     }
 }

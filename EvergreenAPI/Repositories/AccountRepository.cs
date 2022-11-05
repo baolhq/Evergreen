@@ -16,7 +16,7 @@ namespace EvergreenAPI.Repositories
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _config;
 
-        public AccountRepository( ITokenService tokenService, IConfiguration config, AppDbContext context)
+        public AccountRepository(ITokenService tokenService, IConfiguration config, AppDbContext context)
         {
             _context = context;
             _tokenService = tokenService;
@@ -47,9 +47,17 @@ namespace EvergreenAPI.Repositories
             }
         }
 
-        public bool Register(Account account)
+        public bool Register(AccountDTO accountDto)
         {
-            var found = _context.Accounts.Any(a => a.Email == account.Email);
+            var account = new Account()
+            {
+                Username = accountDto.Username,
+                Password = accountDto.Password,
+                FullName = "",
+                Email = ""
+            };
+
+            var found = _context.Accounts.Any(a => a.Username == account.Username);
             if (found) return false;
 
             _context.Accounts.Add(account);

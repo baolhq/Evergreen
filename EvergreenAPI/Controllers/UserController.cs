@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,6 +14,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize (Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _UserRepository;
@@ -36,6 +38,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{UserId}")]
+        [Authorize (Roles = "User")]
         public IActionResult GetUser(int UserId)
         {
             if (!_UserRepository.UserExist(UserId))
@@ -48,11 +51,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(Users);
         }
-
-
-
-        
-
 
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserDTO UserCreate)
@@ -85,10 +83,7 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-
-
-        [HttpPut("{UserId}")]
+            [HttpPut("{UserId}")]
         public IActionResult UpdateUser(int UserId, [FromBody] UserDTO updatedUser)
         {
             if (updatedUser == null)
@@ -104,6 +99,35 @@ namespace EvergreenAPI.Controllers
                 return BadRequest(ModelState);
 
             var UserMap = _mapper.Map<Account>(updatedUser);
+
+            if (!_UserRepository.UpdateUser(UserMap))
+            {
+                ModelState.AddModelError("", "Something was wrong when saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Updated Success");
+        }
+
+        [HttpPut("{UserId}")]
+        [Authorize(Roles = "User")]
+        public IActionResult UserUpdateUser(int UserId, string username, [FromBody] UserDTO updatedUser)
+        {
+            if (updatedUser == null)
+                return BadRequest(ModelState);
+
+            if (UserId != updatedUser.AccountId)
+                return BadRequest(ModelState);
+
+            if (!_UserRepository.UserExist(UserId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var UserMap = _mapper.Map<Account>(updatedUser);
+
+            if (UserMap.Username != username) return BadRequest("Username does not match");
 
             if (!_UserRepository.UpdateUser(UserMap))
             {

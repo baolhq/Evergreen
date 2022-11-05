@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize (Roles = "Admin")]
     public class TreatmentController : ControllerBase
     {
         private readonly ITreatmentRepository _treatmentRepository;
@@ -23,6 +25,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetTreatments()
         {
             var treatments = _mapper.Map<List<Treatment>>(_treatmentRepository.GetTreatments());
@@ -34,6 +37,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{TreatmentId}")]
+        [AllowAnonymous]
         public IActionResult GetTreatment(int TreatmentId)
         {
             if (!_treatmentRepository.TreatmentExist(TreatmentId))

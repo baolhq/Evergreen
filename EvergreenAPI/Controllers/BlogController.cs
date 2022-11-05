@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,6 +15,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class BlogController : ControllerBase
     {
         private readonly IBlogRepository _BlogRepository;
@@ -26,6 +28,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetBlogs()
         {
             var Blogs = _mapper.Map<List<BlogDTO>>(_BlogRepository.GetBlogs());
@@ -39,6 +42,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpGet("{BlogId}")]
+        [AllowAnonymous]
         public IActionResult GetBlog(int BlogId)
         {
             if (!_BlogRepository.BlogExist(BlogId))

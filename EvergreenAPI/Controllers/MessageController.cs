@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,6 +14,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class MessageController : ControllerBase
     {
         private readonly IMessageRepository _MessageRepository;
@@ -25,6 +27,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetMessages()
         {
             var Messages = _mapper.Map<List<MessageDTO>>(_MessageRepository.GetMessages());
@@ -36,6 +39,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{MessageId}")]
+        [AllowAnonymous]
         public IActionResult GetMessage(int MessageId)
         {
             if (!_MessageRepository.MessageExist(MessageId))
@@ -105,6 +109,38 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
+        [HttpPut("{MessageId}/{username}")]
+        [Authorize (Roles = "User")]
+        public IActionResult UserUpdateMessage(int MessageId, string username, [FromBody] MessageDTO updatedMessage)
+        {
+            if (updatedMessage == null)
+                return BadRequest(ModelState);
+
+            if (MessageId != updatedMessage.MessageId)
+                return BadRequest(ModelState);
+
+            if (!_MessageRepository.MessageExist(MessageId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var MessageMap = _mapper.Map<Message>(updatedMessage);
+
+            if (updatedMessage.Author.Username != username)
+            {
+                return BadRequest("Username does not match with message author");
+            }
+
+            if (!_MessageRepository.UpdateMessage(MessageMap))
+            {
+                ModelState.AddModelError("", "Something was wrong when saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Updated Success");
+        }
+
         [HttpDelete("{MessageId}")]
         public IActionResult DeleteMessage(int MessageId)
         {
@@ -115,6 +151,31 @@ namespace EvergreenAPI.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (!_MessageRepository.DeleteMessage(MessageToDelete))
+            {
+                ModelState.AddModelError("", "Something was wrong when delete");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Delete Success");
+        }
+
+        [HttpDelete("{MessageId}/{username}")]
+        [Authorize(Roles = "User")]
+        public IActionResult UserDeleteMessage(int MessageId, string username)
+        {
+            if (!_MessageRepository.MessageExist(MessageId))
+                return NotFound();
+
+            var MessageToDelete = _MessageRepository.GetMessageById(MessageId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (MessageToDelete.Author.Username != username)
+            {
+                return BadRequest("Username does not match with message author");
+            }
 
             if (!_MessageRepository.DeleteMessage(MessageToDelete))
             {

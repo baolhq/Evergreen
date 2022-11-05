@@ -4,9 +4,14 @@ using EvergreenAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
+using System.Text;
 
 namespace EvergreenAPI.Repositories
 {
@@ -28,7 +33,7 @@ namespace EvergreenAPI.Repositories
                 && x.Password == account.Password).FirstOrDefault();
         }
 
-        public string Login(AccountDTO account)
+        public Account Login(AccountDTO account)
         {
             if (string.IsNullOrEmpty(account.Username) || string.IsNullOrEmpty(account.Password))
             {
@@ -38,8 +43,7 @@ namespace EvergreenAPI.Repositories
 
             if (validUser != null)
             {
-                var generatedToken = _tokenService.BuildToken(_config["Jwt:Key"].ToString(), _config["Jwt:Issuer"].ToString(), validUser);
-                return generatedToken;
+                return validUser;
             }
             else
             {
@@ -53,8 +57,8 @@ namespace EvergreenAPI.Repositories
             {
                 Username = accountDto.Username,
                 Password = accountDto.Password,
-                FullName = "",
-                Email = ""
+                Role = "User",
+                Token = GenerateToken(accountDto.Username)
             };
 
             var found = _context.Accounts.Any(a => a.Username == account.Username);
@@ -63,6 +67,38 @@ namespace EvergreenAPI.Repositories
             _context.Accounts.Add(account);
             _context.SaveChanges();
             return true;
+        }
+
+        /// <summary>
+        /// Use the below code to generate symmetric Secret Key
+        ///     var hmac = new HMACSHA256();
+        ///     var key = Convert.ToBase64String(hmac.Key);
+        /// </summary>
+        public string GenerateToken(string username, int expireMinutes = 30)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var now = DateTime.UtcNow;
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role, "User")
+        }),
+
+                Expires = now.AddMinutes(Convert.ToInt32(expireMinutes)),
+                Issuer = _config["Jwt:Issuer"],
+                Audience = _config["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"])),
+                    SecurityAlgorithms.HmacSha256)
+            };
+
+            var stoken = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.WriteToken(stoken);
+
+            return token;
         }
     }
 }

@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class DiseaseCategoryController : ControllerBase
     {
         private readonly IDiseaseCategoryRepository _diseaseCategoryRepository;
@@ -23,6 +25,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetDiseaseCategories()
         {
             var diseaseCategories = _mapper.Map<List<DiseaseCategoryDTO>>(_diseaseCategoryRepository.GetDiseaseCategories());
@@ -34,6 +37,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{DiseaseCategoryID}")]
+        [AllowAnonymous]
         public IActionResult GetDiseaseCategory(int DiseaseCategoryID)
         {
             if (!_diseaseCategoryRepository.DiseaseCategoryExist(DiseaseCategoryID)) 

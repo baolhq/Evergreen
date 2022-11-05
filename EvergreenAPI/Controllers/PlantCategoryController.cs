@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize (Roles = "Admin")]
     public class PlantCategoryController : ControllerBase
     {
         private readonly IPlantCategoryRepository _plantCategoryRepository;
@@ -23,6 +25,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetPlantCategories()
         {
             var plantCategories = _mapper.Map<List<PlantCategoryDTO>>(_plantCategoryRepository.GetPlantCategories());
@@ -34,6 +37,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{PlantCategoryId}")]
+        [AllowAnonymous]
         public IActionResult GetPlantCategory(int PlantCategoryId)
         {
             if (!_plantCategoryRepository.PlantCategoryExist(PlantCategoryId))

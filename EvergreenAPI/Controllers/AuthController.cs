@@ -25,12 +25,11 @@ namespace EvergreenAPI.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] AccountDTO account)
         {
-            var token = _accountRepository.Login(account);
+            var acc = _accountRepository.Login(account);
 
-            if (token != null)
+            if (acc != null)
             {
-                HttpContext.Session.SetString("Token", token);
-                return new JsonResult(token);
+                return new JsonResult(acc);
             }
             else
             {
@@ -46,14 +45,6 @@ namespace EvergreenAPI.Controllers
 
             if (_accountRepository.Register(account)) return Ok();
             else return BadRequest("An error occured, please contact admin.");
-        }
-
-        [Route("logout")]
-        [HttpGet]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return Ok();
         }
     }
 }

@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,6 +14,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize (Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _UserRepository;
@@ -25,6 +27,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetUsers()
         {
             var Users = _mapper.Map<List<UserDTO>>(_UserRepository.GetUsers());
@@ -36,6 +39,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{UserId}")]
+        [AllowAnonymous]
         public IActionResult GetUser(int UserId)
         {
             if (!_UserRepository.UserExist(UserId))
@@ -48,11 +52,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(Users);
         }
-
-
-
-        
-
 
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserDTO UserCreate)

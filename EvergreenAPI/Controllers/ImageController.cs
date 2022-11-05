@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize (Roles = "Admin")]
     public class ImageController : ControllerBase
     {
         private readonly IImageRepository _imageRepository;
@@ -22,6 +24,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetImages()
         {
             var images = _mapper.Map<List<ImageDTO>>(_imageRepository.GetImages());
@@ -33,6 +36,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{ImageId}")]
+        [AllowAnonymous]
         public IActionResult GetImage(int ImageId)
         {
             if (!_imageRepository.ImageExist(ImageId))

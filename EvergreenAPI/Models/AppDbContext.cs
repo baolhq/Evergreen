@@ -57,45 +57,45 @@ namespace EvergreenAPI.Models
 
             #endregion
 
-            #region Account seed
+            //#region Account seed
 
-            modelBuilder.Entity<Account>().HasData(
-                new Account
-                {
-                    AccountId = 1,
-                    Username = "admin",
-                    Password = "Admin@",
-                    FullName = "Admin",
-                    Email = "admin@gmail.com",
-                    Role = "admin",
-                    IsBlocked = false,
-                    Professions = null
-                },
-                new Account
-                {
-                    AccountId = 2,
-                    Username = "anv",
-                    Password = "123123",
-                    FullName = "Nguyen Van A",
-                    Email = "anv@gmail.com",
-                    Role = "user",
-                    IsBlocked = false,
-                    Professions = null
-                },
-                new Account
-                {
-                    AccountId = 3,
-                    Username = "pbc",
-                    Password = "ll123",
-                    FullName = "Phan Bao Chau",
-                    Email = "pbc@gmail.com",
-                    Role = "professor",
-                    IsBlocked = false,
-                    Professions = "Toan"
-                }
-            );
+            //modelBuilder.Entity<Account>().HasData(
+            //    new Account
+            //    {
+            //        AccountId = 1,
+            //        Username = "admin",
+            //        Password = "Admin@",
+            //        FullName = "Admin",
+            //        Email = "admin@gmail.com",
+            //        Role = "admin",
+            //        IsBlocked = false,
+            //        Professions = null
+            //    },
+            //    new Account
+            //    {
+            //        AccountId = 2,
+            //        Username = "anv",
+            //        Password = "123123",
+            //        FullName = "Nguyen Van A",
+            //        Email = "anv@gmail.com",
+            //        Role = "user",
+            //        IsBlocked = false,
+            //        Professions = null
+            //    },
+            //    new Account
+            //    {
+            //        AccountId = 3,
+            //        Username = "pbc",
+            //        Password = "ll123",
+            //        FullName = "Phan Bao Chau",
+            //        Email = "pbc@gmail.com",
+            //        Role = "professor",
+            //        IsBlocked = false,
+            //        Professions = "Toan"
+            //    }
+            //);
 
-            #endregion
+            //#endregion
 
             #region Images seed
             modelBuilder.Entity<Image>().HasData(
@@ -237,34 +237,34 @@ namespace EvergreenAPI.Models
             );
             #endregion
 
-            #region Message seed
-            modelBuilder.Entity<Message>().HasData(
-                new Message
-                {
-                    MessageId = 1,
-                    ReplyToId = 0,
-                    Content = "Hello",
-                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(20),
-                    AccountId = 1
-                },
-                new Message
-                {
-                    MessageId = 2,
-                    ReplyToId = 0,
-                    Content = "Hi",
-                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(13),
-                    AccountId = 2
-                },
-                new Message
-                {
-                    MessageId = 3,
-                    ReplyToId = 1,
-                    Content = "How can I help?",
-                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(8),
-                    AccountId = 3
-                }
-            );
-            #endregion
+            //#region Message seed
+            //modelBuilder.Entity<Message>().HasData(
+            //    new Message
+            //    {
+            //        MessageId = 1,
+            //        ReplyToId = 0,
+            //        Content = "Hello",
+            //        CreatedOn = DateTime.Today - TimeSpan.FromMinutes(20),
+            //        AccountId = 1
+            //    },
+            //    new Message
+            //    {
+            //        MessageId = 2,
+            //        ReplyToId = 0,
+            //        Content = "Hi",
+            //        CreatedOn = DateTime.Today - TimeSpan.FromMinutes(13),
+            //        AccountId = 2
+            //    },
+            //    new Message
+            //    {
+            //        MessageId = 3,
+            //        ReplyToId = 1,
+            //        Content = "How can I help?",
+            //        CreatedOn = DateTime.Today - TimeSpan.FromMinutes(8),
+            //        AccountId = 3
+            //    }
+            //);
+            //#endregion
 
         }
     }

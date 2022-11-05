@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,6 +14,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class MessageController : ControllerBase
     {
         private readonly IMessageRepository _MessageRepository;
@@ -25,6 +27,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetMessages()
         {
             var Messages = _mapper.Map<List<MessageDTO>>(_MessageRepository.GetMessages());
@@ -36,6 +39,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{MessageId}")]
+        [AllowAnonymous]
         public IActionResult GetMessage(int MessageId)
         {
             if (!_MessageRepository.MessageExist(MessageId))

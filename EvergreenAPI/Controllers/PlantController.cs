@@ -2,6 +2,7 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize (Roles = "Admin")]
     public class PlantController : ControllerBase
     {
         private readonly IPlantRepository _plantRepository;
@@ -23,6 +25,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetPlants()
         {
             var plant = _mapper.Map<List<Plant>>(_plantRepository.GetPlants());
@@ -34,6 +37,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{PlantId}")]
+        [AllowAnonymous]
         public IActionResult GetPlant(int PlantId)
         {
             if (!_plantRepository.PlantExist(PlantId))

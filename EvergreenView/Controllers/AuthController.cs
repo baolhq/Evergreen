@@ -9,6 +9,8 @@ using System.Net.Http.Json;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace EvergreenView.Controllers
 {
@@ -31,7 +33,7 @@ namespace EvergreenView.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(AccountDTO account)
+        public async Task<IActionResult> Login(AccountDTO account)
         {
             if (account == null) return View();
 
@@ -41,6 +43,11 @@ namespace EvergreenView.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                var body = await response.Content.ReadFromJsonAsync<Account>();
+
+                HttpContext.Session.SetString("n", body.Username);
+                HttpContext.Session.SetString("r", body.Role);
+
                 return RedirectToAction("Index", "Home");
             }
 

@@ -27,7 +27,6 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult GetUsers()
         {
             var Users = _mapper.Map<List<UserDTO>>(_UserRepository.GetUsers());
@@ -39,7 +38,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{UserId}")]
-        [AllowAnonymous]
+        [Authorize (Roles = "User")]
         public IActionResult GetUser(int UserId)
         {
             if (!_UserRepository.UserExist(UserId))
@@ -84,10 +83,7 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-
-
-        [HttpPut("{UserId}")]
+            [HttpPut("{UserId}")]
         public IActionResult UpdateUser(int UserId, [FromBody] UserDTO updatedUser)
         {
             if (updatedUser == null)
@@ -103,6 +99,35 @@ namespace EvergreenAPI.Controllers
                 return BadRequest(ModelState);
 
             var UserMap = _mapper.Map<Account>(updatedUser);
+
+            if (!_UserRepository.UpdateUser(UserMap))
+            {
+                ModelState.AddModelError("", "Something was wrong when saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Updated Success");
+        }
+
+        [HttpPut("{UserId}")]
+        [Authorize(Roles = "User")]
+        public IActionResult UserUpdateUser(int UserId, string username, [FromBody] UserDTO updatedUser)
+        {
+            if (updatedUser == null)
+                return BadRequest(ModelState);
+
+            if (UserId != updatedUser.AccountId)
+                return BadRequest(ModelState);
+
+            if (!_UserRepository.UserExist(UserId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var UserMap = _mapper.Map<Account>(updatedUser);
+
+            if (UserMap.Username != username) return BadRequest("Username does not match");
 
             if (!_UserRepository.UpdateUser(UserMap))
             {

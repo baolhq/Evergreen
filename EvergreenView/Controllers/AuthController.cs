@@ -34,11 +34,11 @@ namespace EvergreenView.Controllers
 
             string data = JsonSerializer.Serialize(account);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            var response = client.PostAsJsonAsync($"{AuthApiUrl}/login", content).Result;
+            var response = client.PostAsync($"{AuthApiUrl}/login", content).Result;
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             return View();

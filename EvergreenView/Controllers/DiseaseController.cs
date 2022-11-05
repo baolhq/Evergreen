@@ -48,6 +48,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var disease = await GetDiseaseById(id);
             if (disease == null)
                 return NotFound();

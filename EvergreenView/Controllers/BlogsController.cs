@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EvergreenView.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     public class BlogsController : Controller
     {
         private readonly HttpClient client = null;
@@ -44,10 +44,11 @@ namespace EvergreenView.Controllers
             }
         }
 
-        [AllowAnonymous]
+        
         public async Task <IActionResult> Index()
         {
-           
+            
+
             string query = null;
             HttpResponseMessage response = await client.GetAsync(BlogApiUrl + query);
             string strData = await response.Content.ReadAsStringAsync();
@@ -60,10 +61,14 @@ namespace EvergreenView.Controllers
         }
 
 
-        [AllowAnonymous]
+        
         public async Task<ActionResult> Details(int id)
         {
-           
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
+
             var blog = await GetBlogByIdAsync(id);
             if (blog == null)
                 return NotFound();
@@ -74,7 +79,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Create()
         {
-            
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             HttpResponseMessage respone = await client.GetAsync(BlogApiUrl);
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -90,7 +98,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Blog p)
         {
-            
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             string data = JsonSerializer.Serialize(p);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(BlogApiUrl, content);
@@ -112,7 +123,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var blog = await GetBlogByIdAsync(id);
             if (blog == null)
                 return NotFound();
@@ -125,7 +139,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var product = await GetBlogByIdAsync(id);
 
             HttpResponseMessage response = await client.DeleteAsync(BlogApiUrl + "/" + id);
@@ -160,7 +177,11 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
+
             HttpResponseMessage response = await client.GetAsync(BlogApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -178,7 +199,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, Blog blog)
         {
-           
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             string data = JsonSerializer.Serialize(blog);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(BlogApiUrl + "/" + id, content);

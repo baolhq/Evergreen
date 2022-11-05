@@ -60,7 +60,11 @@ namespace EvergreenView.Controllers
         
         public async Task<ActionResult> Details(int id)
         {
-            
+            if (HttpContext.Session.GetString("r") == null)
+            {
+                return RedirectToAction("Index");
+            }
+
             var user = await GetUserByIdAsync(id);
             if (user == null)
                 return NotFound();
@@ -73,7 +77,11 @@ namespace EvergreenView.Controllers
        
         public async Task<ActionResult> Create()
         {
-           
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
+
             HttpResponseMessage respone = await client.GetAsync(UserApiUrl);
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -90,6 +98,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Account user)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             string data = JsonSerializer.Serialize(user);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(UserApiUrl, content);
@@ -113,7 +125,11 @@ namespace EvergreenView.Controllers
         
         public async Task<ActionResult> Edit(int id)
         {
-            
+            if (HttpContext.Session.GetString("r") == null)
+            {
+                return RedirectToAction("Index");
+            }
+
             HttpResponseMessage response = await client.GetAsync(UserApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -133,6 +149,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, Account user)
         {
+            if (HttpContext.Session.GetString("r") == null )
+            {
+                return RedirectToAction("Index");
+            }
             string data = JsonSerializer.Serialize(user);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(UserApiUrl + "/" + id, content);
@@ -156,7 +176,11 @@ namespace EvergreenView.Controllers
         
         public async Task<ActionResult> Delete(int id)
         {
-            
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
+
             var product = await GetUserByIdAsync(id);
             if (product == null)
                 return NotFound();
@@ -198,6 +222,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var user = await GetUserByIdAsync(id);
 
             HttpResponseMessage response = await client.DeleteAsync(UserApiUrl + "/" + id);

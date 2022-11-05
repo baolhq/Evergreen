@@ -9,10 +9,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace EvergreenView.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     public class TreatmentController : Controller
     {
         private string TreatmentApiUrl = "";
@@ -42,6 +43,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var treatment = await GetTreatmentById(id);
             if (treatment == null)
                 return NotFound();
@@ -50,6 +55,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Create()
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
             string strData = await responeDisease.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -67,6 +76,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Treatment treatment)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             string data = JsonSerializer.Serialize(treatment);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PostAsync(TreatmentApiUrl, content).Result;
@@ -89,6 +102,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -114,6 +131,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, Treatment treatment)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             string data = JsonSerializer.Serialize(treatment);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(TreatmentApiUrl + "/" + id, content).Result;
@@ -137,6 +158,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var treatment = await GetTreatmentById(id);
             if (treatment == null)
                 return NotFound();
@@ -148,6 +173,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var plant = await GetTreatmentById(id);
             HttpResponseMessage response = await client.DeleteAsync(TreatmentApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)

@@ -9,21 +9,35 @@ using AutoMapper.Execution;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     public class DiseaseCategoryController : Controller
     {
         private string DiseaseCategoryApiUrl = "";
         private readonly HttpClient client = null;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _config;
 
-        public DiseaseCategoryController()
+        public DiseaseCategoryController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             DiseaseCategoryApiUrl = "https://localhost:44334/api/DiseaseCategory";
+            _config = configuration;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public ISession session
+        {
+            get
+            {
+                return _httpContextAccessor.HttpContext.Session;
+            }
         }
 
         public async Task<IActionResult> Index()
@@ -40,6 +54,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
+            if (session.GetString("Role") != "Admin")
+            {
+                return RedirectToAction("Index", "Blogs");
+            }
             var member = await GetDiseaseCategoryById(id);
             if (member == null)
                 return NotFound();
@@ -48,6 +66,10 @@ namespace EvergreenView.Controllers
 
         public ActionResult Create()
         {
+            if (session.GetString("Role") != "Admin")
+            {
+                return RedirectToAction("Index", "DiseaseCategory");
+            }
             return View();
         }
 
@@ -55,6 +77,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DiseaseCategory diseaseCategory)
         {
+            if (session.GetString("Role") != "Admin")
+            {
+                return RedirectToAction("Index", "DiseaseCategory");
+            }
             string data = JsonSerializer.Serialize(diseaseCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PostAsync(DiseaseCategoryApiUrl, content).Result;
@@ -67,6 +93,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
+            if (session.GetString("Role") != "Admin")
+            {
+                return RedirectToAction("Index", "DiseaseCategory");
+            }
             HttpResponseMessage response = await client.GetAsync(DiseaseCategoryApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -82,6 +112,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, DiseaseCategory diseaseCategory)
         {
+            if (session.GetString("Role") != "Admin")
+            {
+                return RedirectToAction("Index", "DiseaseCategory");
+            }
             string data = JsonSerializer.Serialize(diseaseCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(DiseaseCategoryApiUrl + "/" + id, content).Result;
@@ -108,6 +142,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
+            if (session.GetString("Role") != "Admin")
+            {
+                return RedirectToAction("Index", "DiseaseCategory");
+            }
             var member = await GetDiseaseCategoryById(id);
             if (member == null)
                 return NotFound();
@@ -118,6 +156,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (session.GetString("Role") != "Admin")
+            {
+                return RedirectToAction("Index", "DiseaseCategory");
+            }
             var member = await GetDiseaseCategoryById(id);
             HttpResponseMessage response = await client.DeleteAsync(DiseaseCategoryApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)

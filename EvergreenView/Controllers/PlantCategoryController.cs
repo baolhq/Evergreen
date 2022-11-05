@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace EvergreenView.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     public class PlantCategoryController : Controller
     {
         private string PlantCategoryApiUrl = "";
@@ -39,6 +40,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var plant = await GetPlantCategoryById(id);
             if (plant == null)
                 return NotFound();
@@ -47,6 +52,10 @@ namespace EvergreenView.Controllers
 
         public ActionResult Create()
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             return View();
         }
 
@@ -54,6 +63,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PlantCategory plantCategory)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             string data = JsonSerializer.Serialize(plantCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PostAsync(PlantCategoryApiUrl, content).Result;
@@ -66,6 +79,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             HttpResponseMessage response = await client.GetAsync(PlantCategoryApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -81,6 +98,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, PlantCategory plantCategory)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             string data = JsonSerializer.Serialize(plantCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(PlantCategoryApiUrl + "/" + id, content).Result;
@@ -107,6 +128,10 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var plant = await GetPlantCategoryById(id);
             if (plant == null)
                 return NotFound();
@@ -117,6 +142,10 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
             var plant = await GetPlantCategoryById(id);
             HttpResponseMessage response = await client.DeleteAsync(PlantCategoryApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)

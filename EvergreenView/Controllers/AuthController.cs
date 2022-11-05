@@ -44,6 +44,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            ViewData["error"] = "Username or password is incorrect";
             return View();
         }
 

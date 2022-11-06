@@ -3,14 +3,14 @@
 @{
     var session = httpContentAccessor.HttpContext.Session;
 }
-@model IEnumerable<EvergreenAPI.DTO.UserDTO>
+@model IEnumerable<EvergreenAPI.Models.Account>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
-@if (session.GetString("Role") == ("Admin"))
+@if (session.GetString("r") == ("Admin"))
 {
     <p>
         <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
@@ -59,7 +59,7 @@
                     </td>
                 </tr>
             }
-            else if (@session.GetString("Role") == "Admin")
+            else if (@session.GetString("r") == "Admin")
             {
                 <tr>
                     <td>

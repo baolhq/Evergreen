@@ -15,25 +15,25 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EvergreenView.Controllers
 {
-    
+
     public class BlogsController : Controller
     {
         private readonly HttpClient client = null;
         private string BlogApiUrl = "";
         private readonly IConfiguration _config;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        
+
 
         public BlogsController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
-            
+
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+
             BlogApiUrl = "https://localhost:44334/api/Blog";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;
-            
         }
 
         public ISession session
@@ -44,11 +44,9 @@ namespace EvergreenView.Controllers
             }
         }
 
-        
-        public async Task <IActionResult> Index()
-        {
-            
 
+        public async Task<IActionResult> Index()
+        {
             string query = null;
             HttpResponseMessage response = await client.GetAsync(BlogApiUrl + query);
             string strData = await response.Content.ReadAsStringAsync();
@@ -61,7 +59,7 @@ namespace EvergreenView.Controllers
         }
 
 
-        
+
         public async Task<ActionResult> Details(int id)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
@@ -102,6 +100,11 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
+
+            var token = session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(p);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(BlogApiUrl, content);
@@ -109,17 +112,9 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
             return View();
 
-
         }
-
-
-
 
         public async Task<ActionResult> Delete(int id)
         {
@@ -143,6 +138,9 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+            var token = session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var product = await GetBlogByIdAsync(id);
 
             HttpResponseMessage response = await client.DeleteAsync(BlogApiUrl + "/" + id);
@@ -203,6 +201,10 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
+            var token = session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(blog);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(BlogApiUrl + "/" + id, content);

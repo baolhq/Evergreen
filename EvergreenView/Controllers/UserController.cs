@@ -78,62 +78,6 @@ namespace EvergreenView.Controllers
                 return NotFound();
             return View(user);
         }
-
-
-
-
-       
-        public async Task<ActionResult> Create()
-        {
-            if (HttpContext.Session.GetString("r") != "Admin")
-            {
-                return RedirectToAction("Index");
-            }
-
-            var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            HttpResponseMessage respone = await client.GetAsync(UserApiUrl);
-            string strData = await respone.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            return View();
-        }
-
-
-
-       
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Account user)
-        {
-            if (HttpContext.Session.GetString("r") != "Admin")
-            {
-                return RedirectToAction("Index");
-            }
-            var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            string data = JsonSerializer.Serialize(user);
-            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(UserApiUrl, content);
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            return View();
-
-
-        }
-
-
-
-
-
         
         public async Task<ActionResult> Edit(int id)
         {

@@ -68,6 +68,10 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(diseaseCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PostAsync(MedicineCategoryApiUrl, content).Result;
@@ -103,6 +107,10 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(medicineCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(MedicineCategoryApiUrl + "/" + id, content).Result;
@@ -147,6 +155,10 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var medicine = await GetMedicineCategoryById(id);
             HttpResponseMessage response = await client.DeleteAsync(MedicineCategoryApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)

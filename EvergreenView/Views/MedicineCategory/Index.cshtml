@@ -33,7 +33,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                @if (session.GetString("Role") == ("Admin"))
+                @if (session.GetString("r") == ("Admin"))
                 {
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.MedicineCategoryId" class="btn btn-warning">Edit</a> |

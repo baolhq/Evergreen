@@ -43,9 +43,9 @@ namespace EvergreenView.Controllers.Admin
 
         public async Task<IActionResult> Index()
         {
-            
+
             string query = null;
-           
+
             HttpResponseMessage response = await client.GetAsync(MessageApiUrl + query);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -57,10 +57,10 @@ namespace EvergreenView.Controllers.Admin
 
         }
 
-        
+
         public async Task<ActionResult> Details(int id)
         {
-           
+
             var mess = await GetMessageByIdAsync(id);
             if (mess == null)
                 return NotFound();
@@ -70,7 +70,7 @@ namespace EvergreenView.Controllers.Admin
 
 
 
-        
+
         public async Task<ActionResult> UserCreate()
         {
             if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
@@ -89,7 +89,7 @@ namespace EvergreenView.Controllers.Admin
 
 
 
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserCreate(Message m)
@@ -98,6 +98,10 @@ namespace EvergreenView.Controllers.Admin
             {
                 return RedirectToAction("Index");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(m);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PostAsync(MessageApiUrl, content).Result;
@@ -112,14 +116,14 @@ namespace EvergreenView.Controllers.Admin
                 PropertyNameCaseInsensitive = true
             };
 
-            
+
             return View();
 
 
         }
 
 
-        
+
         public async Task<ActionResult> AdminCreate()
         {
             if (HttpContext.Session.GetString("r") != "Admin")
@@ -141,7 +145,7 @@ namespace EvergreenView.Controllers.Admin
 
 
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdminCreate(Message m)
@@ -150,6 +154,10 @@ namespace EvergreenView.Controllers.Admin
             {
                 return RedirectToAction("Index");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(m);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PostAsync(MessageApiUrl, content).Result;
@@ -174,7 +182,7 @@ namespace EvergreenView.Controllers.Admin
 
 
 
-        
+
         public async Task<ActionResult> AdminEdit(int id)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
@@ -200,7 +208,7 @@ namespace EvergreenView.Controllers.Admin
 
 
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AdminEdit(int id, Message product)
@@ -209,6 +217,10 @@ namespace EvergreenView.Controllers.Admin
             {
                 return RedirectToAction("Index");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(product);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(MessageApiUrl + "/" + id, content).Result;
@@ -230,20 +242,19 @@ namespace EvergreenView.Controllers.Admin
         }
 
 
-        
+
         public async Task<ActionResult> UserEdit(int id)
         {
             if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
             {
                 return RedirectToAction("Index");
             }
-            var accountId = session.GetString("AccountId");
-           if (accountId == null)
+
+            var username = session.GetString("n");
+            if (username == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-           
-           
 
             HttpResponseMessage response = await client.GetAsync(MessageApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
@@ -253,7 +264,7 @@ namespace EvergreenView.Controllers.Admin
             };
             Message message = JsonSerializer.Deserialize<Message>(strData, options);
 
-            if(accountId != message.AccountId.ToString())
+            if (username != message.Author.Username.ToString())
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -261,29 +272,33 @@ namespace EvergreenView.Controllers.Admin
             HttpResponseMessage responeAccount = await client.GetAsync(AccountApiUrl);
             string str = await responeAccount.Content.ReadAsStringAsync();
 
-            
+
             return View(message);
         }
 
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UserEdit(int id, Message message)
         {
-            if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
+            if (HttpContext.Session.GetString("r") != "User")
             {
                 return RedirectToAction("Index");
             }
-            var accountId = session.GetString("AccountId");
-            if (accountId == null)
+            var username = session.GetString("n");
+            if (username == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-            if (accountId != message.AccountId.ToString())
+            if (username != message.Author.Username.ToString())
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(message);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(MessageApiUrl + "/" + id, content).Result;
@@ -298,53 +313,58 @@ namespace EvergreenView.Controllers.Admin
                 PropertyNameCaseInsensitive = true
             };
 
-            
+
             return View();
 
         }
 
 
 
-        
+
         public async Task<ActionResult> UserDelete(int id)
         {
             if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
             {
                 return RedirectToAction("Index");
             }
-            var accountId = session.GetString("AccountId");
-            if (accountId == null)
+            var username = session.GetString("n");
+            if (username == null)
             {
                 return RedirectToAction("Index", "Home");
             }
             var mess = await GetMessageByIdAsync(id);
+            if (username != mess.Author.Username) return RedirectToAction("Index", "Home");
+
             if (mess == null)
                 return NotFound();
             await SetViewData();
             return View(mess);
         }
 
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserDeleteConfirmed(int id)
         {
-            if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("r") == null)
+            if (HttpContext.Session.GetString("r") != "User")
             {
                 return RedirectToAction("Index");
             }
-            var accountId = session.GetString("AccountId");
-            if (accountId == null)
+            var username = session.GetString("n");
+            if (username == null)
             {
                 return RedirectToAction("Index", "Home");
             }
 
             var message = await GetMessageByIdAsync(id);
 
-            if (accountId != message.AccountId.ToString())
+            if (username != message.Author.Username.ToString())
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             HttpResponseMessage response = await client.DeleteAsync(MessageApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
@@ -399,7 +419,7 @@ namespace EvergreenView.Controllers.Admin
 
 
 
-        
+
         public async Task<ActionResult> AdminDelete(int id)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
@@ -414,7 +434,7 @@ namespace EvergreenView.Controllers.Admin
             return View(mess);
         }
 
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdminDeleteConfirmed(int id)
@@ -424,9 +444,9 @@ namespace EvergreenView.Controllers.Admin
                 return RedirectToAction("Index");
             }
 
-            var message = await GetMessageByIdAsync(id);
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-         
             HttpResponseMessage response = await client.DeleteAsync(MessageApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {

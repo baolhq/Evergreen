@@ -12,13 +12,13 @@
 <h4>Message</h4>
 <hr />
 
- @if (session.GetString("Role") == ("Admin"))
+ @if (session.GetString("r") == "Admin")
                {
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
 }
-else if (session.GetString("Role") == ("User"))
+else if (session.GetString("r") == "User")
 {
 
     <p>
@@ -44,7 +44,7 @@ else if (session.GetString("Role") == ("User"))
     <tbody>
         @foreach (var item in Model)
         {
-                @if (session.GetString("Role") == ("Admin"))
+                @if (session.GetString("r") == "Admin")
                 {
                     <tr>
                     <td>
@@ -62,7 +62,7 @@ else if (session.GetString("Role") == ("User"))
                     <a asp-action="Delete" asp-route-id="@item.MessageId" class="btn btn-danger">Delete</a>
                 </td>
                 </tr>
-                } else if(session.GetString("Role") == ("User")) {
+                } else if(session.GetString("r") == "User") {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Content)

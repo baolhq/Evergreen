@@ -83,7 +83,7 @@ namespace EvergreenView.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return View();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

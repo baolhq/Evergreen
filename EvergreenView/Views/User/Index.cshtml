@@ -37,7 +37,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            if (@session.GetString("User") == item.Username.ToString())
+            if (@session.GetString("n") == item.Username.ToString())
             {
                 <tr>
                     <td>

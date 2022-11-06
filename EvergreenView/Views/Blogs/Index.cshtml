@@ -10,7 +10,7 @@
 }
 
 <h1>Index</h1>
-@if (session.GetString("Role") == ("Admin"))
+@if (session.GetString("r") == "Admin")
                 {
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
@@ -56,7 +56,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ViewCount)
                 </td>
-                if (session.GetString("Role") == ("Admin"))
+                @if (session.GetString("r") == "Admin")
                 {
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.BlogId" class="btn btn-outline-info">Edit</a> |

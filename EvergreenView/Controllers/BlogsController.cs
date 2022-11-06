@@ -73,7 +73,13 @@ namespace EvergreenView.Controllers
             return View(blog);
         }
 
-
+        public async Task<ActionResult> Read(int id)
+        {
+            var blog = await GetBlogByIdAsync(id);
+            if (blog == null)
+                return NotFound();
+            return View(blog);
+        }
 
         public async Task<ActionResult> Create()
         {

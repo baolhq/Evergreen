@@ -78,17 +78,17 @@
                         }
                         @if (session.GetString("n") != null)
                         {
-                                <li class="nav-item">
-                                    <a class="btn btn-danger" style="color: black; border: solid" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
-                                </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
+                            </li>
                             
                         } else {
-                            
-                                <li class="nav-item">
-                                    <a class="btn btn-warning" style="color: black; border: solid" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
-                                </li>
+
                             <li class="nav-item">
-                                <a class="btn btn-danger" style="color: black; border: solid" asp-area="" asp-controller="Auth" asp-action="Register">Logout</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Register">Register</a>
                             </li>
                             
                         }

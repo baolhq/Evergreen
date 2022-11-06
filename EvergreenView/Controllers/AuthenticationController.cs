@@ -14,19 +14,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace EvergreenView.Controllers
 {
-    public class AuthController : Controller
+    
+    public class AuthenticationController : Controller
     {
         private string AuthApiUrl = "";
         private readonly HttpClient client = null;
 
-        public AuthController()
+        public AuthenticationController()
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             AuthApiUrl = "https://localhost:44334/api/auth";
         }
-
+        
         public IActionResult Login()
         {
             return View();

@@ -43,7 +43,6 @@ namespace EvergreenAPI
             services.AddScoped<IPlantRepository, PlantRepository>();
             services.AddScoped<ITreatmentRepository, TreatmentRepository>();
             services.AddScoped<IBlogRepository, BlogRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<ITokenService, TokenService>();

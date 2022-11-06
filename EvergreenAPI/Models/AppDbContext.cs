@@ -17,7 +17,6 @@ namespace EvergreenAPI.Models
         public DbSet<Disease> Diseases { get; set; }
         public DbSet<MedicineCategory> MedicineCategories { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
-        public DbSet<Message> Messages { get; set; }
         public DbSet<PlantCategory> PlantCategories { get; set; }
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
@@ -228,34 +227,6 @@ namespace EvergreenAPI.Models
             );
             #endregion
 
-            #region Message seed
-            modelBuilder.Entity<Message>().HasData(
-                new Message
-                {
-                    MessageId = 1,
-                    ReplyToId = 0,
-                    Content = "Hello",
-                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(20),
-                    AccountId = 1
-                },
-                new Message
-                {
-                    MessageId = 2,
-                    ReplyToId = 0,
-                    Content = "Hi",
-                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(13),
-                    AccountId = 2
-                },
-                new Message
-                {
-                    MessageId = 3,
-                    ReplyToId = 1,
-                    Content = "How can I help?",
-                    CreatedOn = DateTime.Today - TimeSpan.FromMinutes(8),
-                    AccountId = 3
-                }
-            );
-            #endregion
 
         }
     }

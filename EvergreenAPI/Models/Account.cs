@@ -24,6 +24,5 @@ namespace EvergreenAPI.Models
         public string Token { get; set; }
         public bool IsBlocked { get; set; } = false;
         public string Professions { get; set; }
-        public List<Message> Messages { get; set; }
     }
 }

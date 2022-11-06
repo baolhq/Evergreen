@@ -29,9 +29,9 @@ namespace EvergreenAPI.Repositories
             return _context.Accounts.Where(a => a.Email == email).FirstOrDefault();
         }
 
-        public Account GetUserById(int id)
+        public Account GetUser(string username)
         {
-            return _context.Accounts.Where(s => s.AccountId == id).FirstOrDefault();
+            return _context.Accounts.Where(s => s.Username == username).FirstOrDefault();
         }
 
         public ICollection<Account> GetUsers()
@@ -57,9 +57,9 @@ namespace EvergreenAPI.Repositories
             return Save();
         }
 
-        public bool UserExist(int id)
+        public bool UserExist(string username)
         {
-            return _context.Accounts.Any(f => f.AccountId == id);
+            return _context.Accounts.Any(f => f.Username == username);
         }
     }
 }

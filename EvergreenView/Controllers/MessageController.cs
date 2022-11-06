@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace EvergreenView.Controllers.Admin
+namespace EvergreenView.Controllers
 {
     public class MessageController : Controller
     {
@@ -26,7 +26,7 @@ namespace EvergreenView.Controllers.Admin
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             MessageApiUrl = "https://localhost:44334/api/Message";
-            AccountApiUrl = "https://localhost:44334/api/Account";
+            AccountApiUrl = "https://localhost:44334/api/User";
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -73,10 +73,12 @@ namespace EvergreenView.Controllers.Admin
 
         public async Task<ActionResult> UserCreate()
         {
-            if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
+            if (HttpContext.Session.GetString("r") != "User")
             {
                 return RedirectToAction("Index");
             }
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             HttpResponseMessage responeAccount = await client.GetAsync(AccountApiUrl);
             string strData = await responeAccount.Content.ReadAsStringAsync();
@@ -94,7 +96,7 @@ namespace EvergreenView.Controllers.Admin
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserCreate(Message m)
         {
-            if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
+            if (HttpContext.Session.GetString("r") != "User")
             {
                 return RedirectToAction("Index");
             }
@@ -131,6 +133,9 @@ namespace EvergreenView.Controllers.Admin
                 return RedirectToAction("Index");
             }
 
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             HttpResponseMessage responeAccount = await client.GetAsync(AccountApiUrl);
             string strData = await responeAccount.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -139,7 +144,7 @@ namespace EvergreenView.Controllers.Admin
             };
 
             List<Account> listAccount = JsonSerializer.Deserialize<List<Account>>(strData, options);
-            ViewData["Accounts"] = new SelectList(listAccount, "AccountId", "Fullname");
+            ViewData["Accounts"] = new SelectList(listAccount, "AccountId", "Username");
             return View();
         }
 
@@ -160,7 +165,7 @@ namespace EvergreenView.Controllers.Admin
 
             string data = JsonSerializer.Serialize(m);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PostAsync(MessageApiUrl, content).Result;
+            HttpResponseMessage response = client.PostAsync(MessageApiUrl + "/CreateMessage", content).Result;
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -189,6 +194,9 @@ namespace EvergreenView.Controllers.Admin
             {
                 return RedirectToAction("Index");
             }
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             HttpResponseMessage response = await client.GetAsync(MessageApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -245,10 +253,12 @@ namespace EvergreenView.Controllers.Admin
 
         public async Task<ActionResult> UserEdit(int id)
         {
-            if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
+            if (HttpContext.Session.GetString("r") != "User")
             {
                 return RedirectToAction("Index");
             }
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var username = session.GetString("n");
             if (username == null)
@@ -323,10 +333,14 @@ namespace EvergreenView.Controllers.Admin
 
         public async Task<ActionResult> UserDelete(int id)
         {
-            if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
+            if (HttpContext.Session.GetString("r") != "User")
             {
                 return RedirectToAction("Index");
             }
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var username = session.GetString("n");
             if (username == null)
             {
@@ -426,6 +440,8 @@ namespace EvergreenView.Controllers.Admin
             {
                 return RedirectToAction("Index");
             }
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var mess = await GetMessageByIdAsync(id);
             if (mess == null)

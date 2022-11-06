@@ -37,14 +37,14 @@ namespace EvergreenAPI.Controllers
             return Ok(Users);
         }
 
-        [HttpGet("{UserId}")]
+        [HttpGet("{username}")]
         [Authorize (Roles = "User,Admin")]
-        public IActionResult GetUser(int UserId)
+        public IActionResult GetUser(string username)
         {
-            if (!_UserRepository.UserExist(UserId))
-                return NotFound($"User Category '{UserId}' is not exists!!");
+            if (!_UserRepository.UserExist(username))
+                return NotFound($"User '{username}' is not exists!!");
 
-            var Users = _mapper.Map<Account>(_UserRepository.GetUserById(UserId));
+            var Users = _mapper.Map<Account>(_UserRepository.GetUser(username));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -84,17 +84,17 @@ namespace EvergreenAPI.Controllers
         }
 
 
-            [HttpPut("{UserId}")]
+            [HttpPut("{username}")]
         [Authorize(Roles = "User,Admin")]
-        public IActionResult UpdateUser(int UserId, [FromBody] Account updatedUser)
+        public IActionResult UpdateUser(string username, [FromBody] Account updatedUser)
         {
             if (updatedUser == null)
                 return BadRequest(ModelState);
 
-            if (UserId != updatedUser.AccountId)
+            if (username != updatedUser.Username)
                 return BadRequest(ModelState);
 
-            if (!_UserRepository.UserExist(UserId))
+            if (!_UserRepository.UserExist(username))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -113,14 +113,14 @@ namespace EvergreenAPI.Controllers
 
 
 
-        [HttpDelete("{UserId}")]
+        [HttpDelete("{username}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteUser(int UserId)
+        public IActionResult DeleteUser(string username)
         {
-            if (!_UserRepository.UserExist(UserId))
+            if (!_UserRepository.UserExist(username))
                 return NotFound();
 
-            var UserToDelete = _UserRepository.GetUserById(UserId);
+            var UserToDelete = _UserRepository.GetUser(username);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

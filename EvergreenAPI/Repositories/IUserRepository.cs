@@ -11,14 +11,14 @@ namespace EvergreenAPI.Repositories
     {
         bool SaveUser(Account b);
 
-        Account GetUserById(int id);
+        Account GetUser(string username);
 
         bool DeleteUser(Account b);
 
         bool UpdateUser(Account b);
 
         ICollection<Account> GetUsers();
-        bool UserExist(int id);
+        bool UserExist(string username);
         bool Save();
 
         

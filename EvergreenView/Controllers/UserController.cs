@@ -64,22 +64,21 @@ namespace EvergreenView.Controllers
 
         }
         
-        public async Task<ActionResult> Details(int id)
+        public async Task<ActionResult> Details()
         {
             if (HttpContext.Session.GetString("r") == null)
             {
                 return RedirectToAction("Index");
             }
 
-            var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var user = await GetUserByIdAsync(id);
+            var username = HttpContext.Session.GetString("n");
+            var user = await GetUser(username);
             if (user == null)
                 return NotFound();
             return View(user);
         }
         
-        public async Task<ActionResult> Edit(int id)
+        public async Task<ActionResult> Edit(string username)
         {
             if (HttpContext.Session.GetString("r") == null)
             {
@@ -88,7 +87,8 @@ namespace EvergreenView.Controllers
 
             var token = HttpContext.Session.GetString("t");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            HttpResponseMessage response = await client.GetAsync(UserApiUrl + "/" + id);
+
+            HttpResponseMessage response = await client.GetAsync(UserApiUrl + "/" + username);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -105,7 +105,7 @@ namespace EvergreenView.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, Account user)
+        public async Task<ActionResult> Edit(string username, Account user)
         {
             if (HttpContext.Session.GetString("r") == null )
             {
@@ -113,9 +113,10 @@ namespace EvergreenView.Controllers
             }
             var token = HttpContext.Session.GetString("t");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             string data = JsonSerializer.Serialize(user);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PutAsync(UserApiUrl + "/" + id, content);
+            HttpResponseMessage response = await client.PutAsync(UserApiUrl + "/" + username, content);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -130,34 +131,25 @@ namespace EvergreenView.Controllers
 
         }
 
-
-
-
-        
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(string username)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
 
-            var product = await GetUserByIdAsync(id);
+            var product = await GetUser(username);
             if (product == null)
                 return NotFound();
             return View(product);
         }
 
-
-
-
-
-
-
-
-
-        private async Task<Account> GetUserByIdAsync(int id)
+        private async Task<Account> GetUser(string username)
         {
-            HttpResponseMessage response = await client.GetAsync(UserApiUrl + "/" + id);
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage response = await client.GetAsync(UserApiUrl + "/" + username);
             if (!response.IsSuccessStatusCode)
                 return null;
             string strData = await response.Content.ReadAsStringAsync();
@@ -169,26 +161,18 @@ namespace EvergreenView.Controllers
             return JsonSerializer.Deserialize<Account>(strData, options);
         }
 
-
-
-
-
-
-
-
-
-        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string username)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
-            var user = await GetUserByIdAsync(id);
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            HttpResponseMessage response = await client.DeleteAsync(UserApiUrl + "/" + id);
+            HttpResponseMessage response = await client.DeleteAsync(UserApiUrl + "/" + username);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

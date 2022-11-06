@@ -11,7 +11,7 @@
 <h1>Index</h1>
 <h4>Plant Category</h4>
 <hr />
-@if (session.GetString("r") == ("Admin"))
+@if (session.GetString("r") == "Admin")
                 {
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
@@ -33,7 +33,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                @if (session.GetString("r") == ("Admin"))
+                @if (session.GetString("r") == "Admin")
                 {
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.PlantCategoryId" class="btn btn-warning">Edit</a> |

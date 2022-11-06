@@ -10,7 +10,7 @@
 }
 
 <h1>Index</h1>
-@if (session.GetString("r") == ("Admin"))
+@if (session.GetString("r") == "Admin")
 {
     <p>
         <a asp-action="Create" class="btn btn-outline-primary">Create New</a>

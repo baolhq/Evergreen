@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvergreenAPI", "EvergreenAPI\EvergreenAPI.csproj", "{336F6662-0017-47CC-95AB-ABE4A6DE9677}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvergreenView", "EvergreenView\EvergreenView.csproj", "{52C4F818-E327-4D47-BD5B-43E4B08CF738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvergreenView", "EvergreenView\EvergreenView.csproj", "{52C4F818-E327-4D47-BD5B-43E4B08CF738}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

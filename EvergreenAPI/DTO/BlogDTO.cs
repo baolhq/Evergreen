@@ -21,9 +21,7 @@ namespace EvergreenAPI.DTO
         [MinLength(5)]
         [MaxLength(500)]
         public string Content { get; set; }
-        [Required]
         public DateTime LastModifiedDate { get; set; } = DateTime.Now;
-        [Required]
         public int ViewCount { get; set; } = 0;
     }
 }

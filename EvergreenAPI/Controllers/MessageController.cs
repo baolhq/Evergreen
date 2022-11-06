@@ -14,7 +14,6 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class MessageController : ControllerBase
     {
         private readonly IMessageRepository _MessageRepository;
@@ -27,7 +26,6 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult GetMessages()
         {
             var Messages = _mapper.Map<List<MessageDTO>>(_MessageRepository.GetMessages());
@@ -39,7 +37,6 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{MessageId}")]
-        [AllowAnonymous]
         public IActionResult GetMessage(int MessageId)
         {
             if (!_MessageRepository.MessageExist(MessageId))
@@ -54,6 +51,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize (Roles = "Admin")]
         public IActionResult CreateMessage([FromBody] MessageDTO MessageCreate)
         {
             if (MessageCreate == null)
@@ -84,6 +82,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPut("{MessageId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateMessage(int MessageId, [FromBody] MessageDTO updatedMessage)
         {
             if (updatedMessage == null)
@@ -145,6 +144,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpDelete("{MessageId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteMessage(int MessageId)
         {
             if (!_MessageRepository.MessageExist(MessageId))

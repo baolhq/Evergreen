@@ -44,10 +44,12 @@ namespace EvergreenView.Controllers
         {
 
             var token = HttpContext.Session.GetString("t");
+
             if (string.IsNullOrEmpty(token))
             {
                 return RedirectToAction("Index", "Home");
             }
+
             token = token.Replace("\"", string.Empty);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

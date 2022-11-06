@@ -329,7 +329,7 @@ namespace EvergreenView.Controllers.Admin
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserDeleteConfirmed(int id)
         {
-            if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("User") == null)
+            if (HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("r") == null)
             {
                 return RedirectToAction("Index");
             }

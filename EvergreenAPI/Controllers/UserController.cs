@@ -14,7 +14,6 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize (Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _UserRepository;
@@ -27,9 +26,10 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult GetUsers()
         {
-            var Users = _mapper.Map<List<UserDTO>>(_UserRepository.GetUsers());
+            var Users = _mapper.Map<List<Account>>(_UserRepository.GetUsers());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -44,7 +44,7 @@ namespace EvergreenAPI.Controllers
             if (!_UserRepository.UserExist(UserId))
                 return NotFound($"User Category '{UserId}' is not exists!!");
 
-            var Users = _mapper.Map<UserDTO>(_UserRepository.GetUserById(UserId));
+            var Users = _mapper.Map<Account>(_UserRepository.GetUserById(UserId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -53,7 +53,8 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserDTO UserCreate)
+        [Authorize(Roles = "Admin")]
+        public IActionResult CreateUser([FromBody] Account UserCreate)
         {
             if (UserCreate == null)
                 return BadRequest(ModelState);
@@ -84,7 +85,8 @@ namespace EvergreenAPI.Controllers
 
 
             [HttpPut("{UserId}")]
-        public IActionResult UpdateUser(int UserId, [FromBody] UserDTO updatedUser)
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult UpdateUser(int UserId, [FromBody] Account updatedUser)
         {
             if (updatedUser == null)
                 return BadRequest(ModelState);
@@ -99,35 +101,6 @@ namespace EvergreenAPI.Controllers
                 return BadRequest(ModelState);
 
             var UserMap = _mapper.Map<Account>(updatedUser);
-
-            if (!_UserRepository.UpdateUser(UserMap))
-            {
-                ModelState.AddModelError("", "Something was wrong when saving");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Updated Success");
-        }
-
-        [HttpPut("user-update/{UserId}")]
-        [Authorize(Roles = "User")]
-        public IActionResult UserUpdateUser(int UserId, string username, [FromBody] UserDTO updatedUser)
-        {
-            if (updatedUser == null)
-                return BadRequest(ModelState);
-
-            if (UserId != updatedUser.AccountId)
-                return BadRequest(ModelState);
-
-            if (!_UserRepository.UserExist(UserId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var UserMap = _mapper.Map<Account>(updatedUser);
-
-            if (UserMap.Username != username) return BadRequest("Username does not match");
 
             if (!_UserRepository.UpdateUser(UserMap))
             {
@@ -141,6 +114,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpDelete("{UserId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteUser(int UserId)
         {
             if (!_UserRepository.UserExist(UserId))

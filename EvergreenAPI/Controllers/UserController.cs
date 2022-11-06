@@ -38,7 +38,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{UserId}")]
-        [Authorize (Roles = "User")]
+        [Authorize (Roles = "User,Admin")]
         public IActionResult GetUser(int UserId)
         {
             if (!_UserRepository.UserExist(UserId))

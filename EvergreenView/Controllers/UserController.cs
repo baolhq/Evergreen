@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EvergreenView.Controllers
 {
-    [Authorize (Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly HttpClient client = null;
@@ -26,6 +25,7 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+
             UserApiUrl = "https://localhost:44334/api/User";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;
@@ -42,7 +42,15 @@ namespace EvergreenView.Controllers
         
         public async Task<IActionResult> Index()
         {
-            
+
+            var token = HttpContext.Session.GetString("t");
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            token = token.Replace("\"", string.Empty);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             HttpResponseMessage response = await client.GetAsync(UserApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -53,10 +61,6 @@ namespace EvergreenView.Controllers
             return View(listUsers);
 
         }
-
-
-
-
         
         public async Task<ActionResult> Details(int id)
         {
@@ -65,6 +69,8 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index");
             }
 
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var user = await GetUserByIdAsync(id);
             if (user == null)
                 return NotFound();
@@ -82,6 +88,8 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index");
             }
 
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             HttpResponseMessage respone = await client.GetAsync(UserApiUrl);
             string strData = await respone.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -102,6 +110,8 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             string data = JsonSerializer.Serialize(user);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(UserApiUrl, content);
@@ -130,6 +140,8 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index");
             }
 
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             HttpResponseMessage response = await client.GetAsync(UserApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -153,6 +165,8 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             string data = JsonSerializer.Serialize(user);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(UserApiUrl + "/" + id, content);

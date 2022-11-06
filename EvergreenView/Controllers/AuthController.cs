@@ -47,6 +47,7 @@ namespace EvergreenView.Controllers
 
                 HttpContext.Session.SetString("n", body.Username);
                 HttpContext.Session.SetString("r", body.Role);
+                HttpContext.Session.SetString("t", body.Token);
 
                 return RedirectToAction("Index", "Home");
             }
@@ -81,6 +82,7 @@ namespace EvergreenView.Controllers
 
         public IActionResult Logout()
         {
+            HttpContext.Session.Clear();
             return View();
         }
     }

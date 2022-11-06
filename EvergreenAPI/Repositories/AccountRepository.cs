@@ -43,6 +43,9 @@ namespace EvergreenAPI.Repositories
 
             if (validUser != null)
             {
+                validUser.Token = GenerateToken(validUser.Username, validUser.Role);
+                _context.Accounts.Update(validUser);
+                _context.SaveChanges();
                 return validUser;
             }
             else
@@ -57,8 +60,8 @@ namespace EvergreenAPI.Repositories
             {
                 Username = accountDto.Username,
                 Password = accountDto.Password,
-                Role = "Professor",
-                Token = GenerateToken(accountDto.Username)
+                Role = "User",
+                Token = GenerateToken(accountDto.Username, "User")
             };
 
             var found = _context.Accounts.Any(a => a.Username == account.Username);
@@ -74,7 +77,7 @@ namespace EvergreenAPI.Repositories
         ///     var hmac = new HMACSHA256();
         ///     var key = Convert.ToBase64String(hmac.Key);
         /// </summary>
-        public string GenerateToken(string username, int expireMinutes = 30)
+        public string GenerateToken(string username, string role, int expireMinutes = 30)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -84,7 +87,7 @@ namespace EvergreenAPI.Repositories
                 Subject = new ClaimsIdentity(new[]
                 {
             new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, "Professor")
+            new Claim(ClaimTypes.Role, role)
         }),
 
                 Expires = now.AddMinutes(Convert.ToInt32(expireMinutes)),

@@ -40,7 +40,7 @@ namespace EvergreenAPI.Repositories
 
         public ICollection<Blog> GetBlogs()
         {
-            return _context.Blogs.ToList();
+            return _context.Blogs.Include(b => b.Image).ToList();
         }
 
         public bool Save()
@@ -55,6 +55,6 @@ namespace EvergreenAPI.Repositories
             return Save();
         }
 
-        
+
     }
 }

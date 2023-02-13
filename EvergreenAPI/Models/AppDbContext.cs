@@ -23,6 +23,22 @@ namespace EvergreenAPI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region Images seed
+            modelBuilder.Entity<Image>().HasData(
+                new Image { ImageId = 1, Url = "https://www.fao.org.vn/wp-content/uploads/2019/08/benh-vang-la-greening.jpg", AltText = "Hình ảnh bệnh vàng lá" },
+                new Image { ImageId = 2, Url = "https://i0.wp.com/trongraulamvuon.com/wp-content/uploads/2013/11/sau-duc-than-hong.jpg", AltText = "Hình ảnh bệnh sâu đục thân" },
+                new Image { ImageId = 3, Url = "https://hoadepviet.com/wp-content/uploads/2016/11/benh-hoa-hong-1.jpg", AltText = "Hình ảnh bệnh lá úa sớm" },
+                new Image { ImageId = 4, Url = "https://www.wondriumdaily.com/wp-content/uploads/2017/07/thumbnail-7.jpg", AltText = "Tomato thumbnail 1" },
+                new Image { ImageId = 5, Url = "https://www.skh.com/wp-content/uploads/2021/04/FF-peppers-tomatoes-onions-thumbnail.jpg", AltText = "Tomato thumbnail 2" },
+                new Image { ImageId = 6, Url = "https://sp.apolloboxassets.com/vendor/product/productImages/2022-09-15/6JBvcArray_13.jpg", AltText = "Tomato thumbnail 3" },
+                new Image { ImageId = 7, Url = "https://api-static.bacsicayxanh.vn/pictures/0001571_chaetomium_500.jpeg", AltText = "Chaetomium" },
+                new Image { ImageId = 8, Url = "https://www.basudin.com/storage/settings/May2021/basudin.png", AltText = "Basudin" },
+                new Image { ImageId = 9, Url = "https://phanthuocvisinh.com/wp-content/uploads/2021/12/AT-Vaccino-CAN-500ml.jpg", AltText = "AT Vaccino" },
+                new Image { ImageId = 10, Url = "https://mygarden.vn/wp-content/uploads/2020/11/tri-sau-an-la-2.jpg", AltText = "Bắt sâu bệnh" },
+                new Image { ImageId = 11, Url = "https://xuannong.vn/images/bo-tri-tren-cay-mai.jpg", AltText = "Lặt bỏ lá bị nhiễm bệnh" }
+            );
+            #endregion
+
             #region Blog seed
 
             modelBuilder.Entity<Blog>().HasData(
@@ -33,7 +49,8 @@ namespace EvergreenAPI.Models
                     Description = "Lorem ipsum",
                     Content = "Lorem ipsum dolor sit amet",
                     LastModifiedDate = DateTime.Today,
-                    ViewCount = 10
+                    ViewCount = 10,
+                    ImageId = 4,
                 },
                 new Blog
                 {
@@ -42,7 +59,8 @@ namespace EvergreenAPI.Models
                     Description = "Lorem ipsum 2",
                     Content = "Lorem ipsum dolor sit amet 2",
                     LastModifiedDate = DateTime.Today - TimeSpan.FromDays(2),
-                    ViewCount = 3
+                    ViewCount = 3,
+                    ImageId = 5
                 },
                 new Blog
                 {
@@ -51,7 +69,8 @@ namespace EvergreenAPI.Models
                     Description = "Lorem ipsum 3",
                     Content = "Lorem ipsum dolor sit amet 3",
                     LastModifiedDate = DateTime.Today - TimeSpan.FromDays(10),
-                    ViewCount = 30
+                    ViewCount = 30,
+                    ImageId = 6
                 });
 
             #endregion
@@ -85,14 +104,6 @@ namespace EvergreenAPI.Models
                 }
             );
 
-            #endregion
-
-            #region Images seed
-            modelBuilder.Entity<Image>().HasData(
-                new Image { ImageId = 1, Url = "https://www.fao.org.vn/wp-content/uploads/2019/08/benh-vang-la-greening.jpg", AltText = "Hình ảnh bệnh vàng lá" },
-                new Image { ImageId = 2, Url = "https://i0.wp.com/trongraulamvuon.com/wp-content/uploads/2013/11/sau-duc-than-hong.jpg", AltText = "Hình ảnh bệnh sâu đục thân" },
-                new Image { ImageId = 3, Url = "https://hoadepviet.com/wp-content/uploads/2016/11/benh-hoa-hong-1.jpg", AltText = "Hình ảnh bệnh lá úa sớm" }
-            );
             #endregion
 
             #region Disease seed
@@ -160,24 +171,27 @@ namespace EvergreenAPI.Models
             modelBuilder.Entity<Medicine>().HasData(
                 new Medicine
                 {
-                    MedicineId = 1,
+                    MedicineId = 7,
                     Name = "Chaetumium",
                     Uses = "Trị bệnh vàng lá",
-                    MedicineCategoryId = 1
+                    MedicineCategoryId = 1,
+                    ImageId = 7
                 },
                 new Medicine
                 {
-                    MedicineId = 2,
+                    MedicineId = 8,
                     Name = "Basudin",
                     Uses = "Trừ sâu trong thân cây",
-                    MedicineCategoryId = 2
+                    MedicineCategoryId = 2,
+                    ImageId = 8
                 },
                 new Medicine
                 {
-                    MedicineId = 3,
-                    Name = "Aviso",
+                    MedicineId = 9,
+                    Name = "AT Vaccino",
                     Uses = "Trị lá úa sớm",
-                    MedicineCategoryId = 1
+                    MedicineCategoryId = 1,
+                    ImageId = 9
                 }
             );
 
@@ -222,12 +236,10 @@ namespace EvergreenAPI.Models
 
             #region Treatment seed
             modelBuilder.Entity<Treatment>().HasData(
-                new Treatment { TreatmentId = 1, Method = "Bắt sâu", DiseaseId = 2 },
-                new Treatment { TreatmentId = 2, Method = "Lặt bỏ lá bị nhiễm bệnh", DiseaseId = 3 }
+                new Treatment { TreatmentId = 1, Method = "Bắt sâu", DiseaseId = 2, ImageId = 10 },
+                new Treatment { TreatmentId = 2, Method = "Lặt bỏ lá bị nhiễm bệnh", DiseaseId = 3, ImageId = 11 }
             );
             #endregion
-
-
         }
     }
 }

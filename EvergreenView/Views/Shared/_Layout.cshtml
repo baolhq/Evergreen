@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContentAccessor
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
 @{
     var session = httpContentAccessor.HttpContext.Session;
 }
@@ -73,38 +74,34 @@
 
                 <div class="collapse navbar-collapse" id="ftco-nav">
                     <ul class="navbar-nav ml-auto">
-
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Blogs" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Disease" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Disease" asp-action="Index">Disease</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Disease" asp-action="Index">Disease</a>
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Medicine" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Medicine" asp-action="Index">Medicine</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Medicine" asp-action="Index">Medicine</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Treatment" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
                         </li>
                         @if (session.GetString("r") == "Admin")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Member</a>
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/User" ? "text-danger" : "text-dark")" asp-area="" asp-controller="User" asp-action="Index">Member</a>
                             </li>
                         }
                         else if (session.GetString("n") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Details">Profile</a>
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/User" ? "text-danger" : "text-dark")" asp-area="" asp-controller="User" asp-action="Details">Profile</a>
                             </li>
                         }
                         @if (session.GetString("n") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a>
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Logout" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a>
                             </li>
 
                         }
@@ -112,10 +109,10 @@
                         {
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Login">Login</a>
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Login" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Register">Register</a>
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Register" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Register">Register</a>
                             </li>
 
                         }

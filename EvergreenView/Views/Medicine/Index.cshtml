@@ -11,7 +11,7 @@
 <h1>Index</h1>
 <h4>Medicine</h4>
 <hr />
-@if (session.GetString("r") == "Admin")
+@if (session.GetString("r") == "Admin" || session.GetString("r") == "Professor")
                 {
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
@@ -45,7 +45,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.MedicineCategory.Name)
                 </td>
-                @if (session.GetString("r") == "Admin")
+                @if (session.GetString("r") == "Admin" || session.GetString("r") == "Professor")
                 {
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.MedicineId" class="btn btn-warning">Edit</a> |

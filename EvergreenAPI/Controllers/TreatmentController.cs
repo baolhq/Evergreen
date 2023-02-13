@@ -12,7 +12,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize (Roles = "Admin")]
+    [Authorize (Roles = "Admin, Professor")]
     public class TreatmentController : ControllerBase
     {
         private readonly ITreatmentRepository _treatmentRepository;

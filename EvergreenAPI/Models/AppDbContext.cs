@@ -17,12 +17,37 @@ namespace EvergreenAPI.Models
         public DbSet<Disease> Diseases { get; set; }
         public DbSet<MedicineCategory> MedicineCategories { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
-        public DbSet<PlantCategory> PlantCategories { get; set; }
-        public DbSet<Plant> Plants { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
-
+        public DbSet<DiseaseMedicine> DiseasesMedicines { get; set; }
+        public DbSet<DiseaseTreatment> DiseaseTreatments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+           /* modelBuilder.Entity<DiseaseTreatment>()
+                .HasAlternateKey(dt => new { dt.DiseaseId, dt.TreatmentId });
+            modelBuilder.Entity<DiseaseTreatment>()
+                .HasOne(dt => dt.Disease)
+                .WithMany(d => d.DiseaseTreatments)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<DiseaseTreatment>()
+                .HasOne(dt => dt.Treatment)
+                .WithMany(t => t.DiseaseTreatments)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DiseaseMedicine>()
+               .HasAlternateKey(dt => new { dt.DiseaseId, dt.MedicineId });
+            modelBuilder.Entity<DiseaseMedicine>()
+                .HasOne(dt => dt.Disease)
+                .WithMany(d => d.DiseaseMedicines)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<DiseaseMedicine>()
+                .HasOne(dt => dt.Medicine)
+                .WithMany(t => t.DiseaseMedicines)
+                .OnDelete(DeleteBehavior.Cascade);*/
+
+
+
+
             #region Blog seed
 
             modelBuilder.Entity<Blog>().HasData(
@@ -95,7 +120,7 @@ namespace EvergreenAPI.Models
             );
             #endregion
 
-            #region Disease seed
+            #region DiseaseCategory seed
 
             modelBuilder.Entity<DiseaseCategory>().HasData(
                 new DiseaseCategory
@@ -183,50 +208,12 @@ namespace EvergreenAPI.Models
 
             #endregion
 
-            #region PlantCategory seed
-
-            modelBuilder.Entity<PlantCategory>().HasData(
-                new PlantCategory { PlantCategoryId = 1, Name = "Cây lương thực" },
-                new PlantCategory { PlantCategoryId = 2, Name = "Cây rau" }
-            );
-
-            #endregion
-
-            #region Plant seed
-
-            modelBuilder.Entity<Plant>().HasData(
-                new Plant
-                {
-                    PlantId = 1,
-                    Name = "Cà chua",
-                    Description = "Cà chua được phát triển trên toàn thế giới do sự tăng trưởng tối ưu của nó trong nhiều điều kiện phát triển khác nhau. Các loại cà chua được trồng trọt phổ biến nhất là loại quả đường kính khoảng 5–6 cm. Hầu hết các giống được trồng đề cho ra trái cây màu đỏ, nhưng một số giống cho quả vàng, cam, hồng, tím, xanh lá cây, đen hoặc màu trắng. Đặc biệt có loại cà chua nhiều màu và có sọc.",
-                    PlantCategoryId = 2
-                },
-                new Plant
-                {
-                    PlantId = 2,
-                    Name = "Lúa",
-                    Description = "Lúa là một trong năm loại cây lương thực chính của thế giới, cùng với bắp, lúa mì, sắn và khoai tây. Theo quan niệm xưa lúa cũng là một trong sáu loại lương thực chủ yếu trong Lục cốc.",
-                    PlantCategoryId = 1
-                },
-                new Plant
-                {
-                    PlantId = 3,
-                    Name = "Dưa chuột",
-                    Description = "Dưa chuột là một cây trồng phổ biến trong họ bầu bí, là loại rau ăn quả thương mại quan trọng, nó được trồng lâu đời trên thế giới và trở thành thực phẩm của nhiều nước. Những nước dẫn đầu về diện tích gieo trồng và năng suất là: Trung Quốc, Nga, Nhật Bản, Mỹ, Hà Lan, Thổ Nhĩ Kỳ, Ba Lan, Ai Cập và Tây Ban Nha.",
-                    PlantCategoryId = 2
-                }
-            );
-
-            #endregion
-
             #region Treatment seed
             modelBuilder.Entity<Treatment>().HasData(
                 new Treatment { TreatmentId = 1, Method = "Bắt sâu", DiseaseId = 2 },
                 new Treatment { TreatmentId = 2, Method = "Lặt bỏ lá bị nhiễm bệnh", DiseaseId = 3 }
             );
             #endregion
-
 
         }
     }

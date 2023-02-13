@@ -15,11 +15,12 @@ namespace EvergreenAPI.Models
         public string Name { get; set; }
         [Required]
         public string Uses { get; set; }
-        public List<Disease> Diseases { get; set; }
+        
 
         [ForeignKey("MedicineCategories")]
         [DisplayName("Medicine Category")]
         public int MedicineCategoryId { get; set; }
         public virtual MedicineCategory MedicineCategory { get; set; }
+        public List<DiseaseMedicine> DiseaseMedicines { get; set; }
     }
 }

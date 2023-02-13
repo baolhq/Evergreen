@@ -64,6 +64,8 @@ namespace EvergreenAPI.Repositories
                 Token = GenerateToken(accountDto.Username, "User")
             };
 
+
+
             var found = _context.Accounts.Any(a => a.Username == account.Username);
             if (found) return false;
 

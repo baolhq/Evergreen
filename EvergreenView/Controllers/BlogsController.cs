@@ -30,7 +30,7 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-
+            
             BlogApiUrl = "https://localhost:44334/api/Blog";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;

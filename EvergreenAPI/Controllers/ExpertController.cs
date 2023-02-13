@@ -1,69 +1,72 @@
 ﻿using AutoMapper;
-using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class ExpertController : ControllerBase
     {
-        private readonly IUserRepository _UserRepository;
+        private readonly IExpertRepository _ExpertRepository;
         private readonly IMapper _mapper;
 
-        public UserController(IUserRepository UserRepository, IMapper mapper)
+        public ExpertController(IExpertRepository ExpertRepository, IMapper mapper)
         {
-            _UserRepository = UserRepository;
+            _ExpertRepository = ExpertRepository;
             _mapper = mapper;
         }
 
+
+
         [HttpGet]
-        [Authorize(Roles = "User,Admin")]
-        public IActionResult GetUsers()
+        [Authorize(Roles = "Professor,Admin")]
+        public IActionResult GetExperts()
         {
-            var Users = _mapper.Map<List<Account>>(_UserRepository.GetUsers());
+            var Experts = _mapper.Map<List<Account>>(_ExpertRepository.GetExperts());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Users);
+            return Ok(Experts);
         }
+
+
+
 
         [HttpGet("{username}")]
-        [Authorize (Roles = "User,Admin")]
-        public IActionResult GetUser(string username)
+        [Authorize(Roles = "Professor,Admin")]
+        public IActionResult GetExpert(string username)
         {
-            if (!_UserRepository.UserExist(username))
+            if (!_ExpertRepository.ExpertExist(username))
                 return NotFound($"User '{username}' is not exists!!");
 
-            var Users = _mapper.Map<Account>(_UserRepository.GetUser(username));
+            var Experts = _mapper.Map<Account>(_ExpertRepository.GetExpert(username));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Users);
+            return Ok(Experts);
         }
+
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult CreateUser([FromBody] Account UserCreate)
+        public IActionResult CreateExpert([FromBody] Account ExpertCreate)
         {
-            if (UserCreate == null)
+            if (ExpertCreate == null)
                 return BadRequest(ModelState);
 
-            var User = _UserRepository.GetUsers()
-                .Where(c => c.Username.Trim().ToUpper() == UserCreate.Username.TrimEnd().ToUpper())
+            var Expert = _ExpertRepository.GetExperts()
+                .Where(c => c.Username.Trim().ToUpper() == ExpertCreate.Username.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
-            if (User != null)
+            if (Expert != null)
             {
                 ModelState.AddModelError("", "It is already exists");
                 return StatusCode(422, ModelState);
@@ -72,9 +75,9 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<Account>(UserCreate);
+            var ExpertMap = _mapper.Map<Account>(ExpertCreate);
 
-            if (!_UserRepository.SaveUser(UserMap))
+            if (!_ExpertRepository.SaveExpert(ExpertMap))
             {
                 ModelState.AddModelError("", "Something was wrong while saving");
                 return StatusCode(500, ModelState);
@@ -85,24 +88,24 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPut("{username}")]
-        [Authorize(Roles = "User,Admin")]
-        public IActionResult UpdateUser(string username, [FromBody] Account updatedUser)
+        [Authorize(Roles = "Professor,Admin")]
+        public IActionResult UpdateExpert(string username, [FromBody] Account updateExpert)
         {
-            if (updatedUser == null)
+            if (updateExpert == null)
                 return BadRequest(ModelState);
 
-            if (username != updatedUser.Username)
+            if (username != updateExpert.Username)
                 return BadRequest(ModelState);
 
-            if (!_UserRepository.UserExist(username))
+            if (!_ExpertRepository.ExpertExist(username))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<Account>(updatedUser);
+            var ExpertMap = _mapper.Map<Account>(updateExpert);
 
-            if (!_UserRepository.UpdateUser(UserMap))
+            if (!_ExpertRepository.UpdateExpert(ExpertMap))
             {
                 ModelState.AddModelError("", "Something was wrong when saving");
                 return StatusCode(500, ModelState);
@@ -112,20 +115,19 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
         [HttpDelete("{username}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteUser(string username)
+        public IActionResult DeleteExpert(string username)
         {
-            if (!_UserRepository.UserExist(username))
+            if (!_ExpertRepository.ExpertExist(username))
                 return NotFound();
 
-            var UserToDelete = _UserRepository.GetUser(username);
+            var ExpertToDelete = _ExpertRepository.GetExpert(username);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_UserRepository.DeleteUser(UserToDelete))
+            if (!_ExpertRepository.DeleteExpert(ExpertToDelete))
             {
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);

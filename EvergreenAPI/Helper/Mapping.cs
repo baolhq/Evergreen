@@ -12,8 +12,6 @@ namespace EvergreenAPI.Helper
             CreateMap<Disease, DiseaseDTO>().ReverseMap();
             CreateMap<MedicineCategory, MedicineCategoryDTO>().ReverseMap();
             CreateMap<Medicine, MedicineDTO>().ReverseMap();
-            CreateMap<PlantCategory, PlantCategoryDTO>().ReverseMap();
-            CreateMap<Plant, PlantDTO>().ReverseMap();
             CreateMap<Treatment, TreatmentDTO>().ReverseMap();
             CreateMap<Blog, BlogDTO>().ReverseMap();
             CreateMap<Account, UserDTO>().ReverseMap();

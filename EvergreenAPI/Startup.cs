@@ -39,8 +39,6 @@ namespace EvergreenAPI
             services.AddScoped<IDiseaseRepository, DiseaseRepository>();
             services.AddScoped<IMedicineCategoryRepository, MedicineCategoryRepository>();
             services.AddScoped<IMedicineRepository, MedicineRepository>();
-            services.AddScoped<IPlantCategoryRepository, PlantCategoryRepository>();
-            services.AddScoped<IPlantRepository, PlantRepository>();
             services.AddScoped<ITreatmentRepository, TreatmentRepository>();
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

@@ -17,8 +17,6 @@ namespace EvergreenAPI.Models
         public DbSet<Disease> Diseases { get; set; }
         public DbSet<MedicineCategory> MedicineCategories { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
-        public DbSet<PlantCategory> PlantCategories { get; set; }
-        public DbSet<Plant> Plants { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -192,43 +190,6 @@ namespace EvergreenAPI.Models
                     Uses = "Trị lá úa sớm",
                     MedicineCategoryId = 1,
                     ImageId = 9
-                }
-            );
-
-            #endregion
-
-            #region PlantCategory seed
-
-            modelBuilder.Entity<PlantCategory>().HasData(
-                new PlantCategory { PlantCategoryId = 1, Name = "Cây lương thực" },
-                new PlantCategory { PlantCategoryId = 2, Name = "Cây rau" }
-            );
-
-            #endregion
-
-            #region Plant seed
-
-            modelBuilder.Entity<Plant>().HasData(
-                new Plant
-                {
-                    PlantId = 1,
-                    Name = "Cà chua",
-                    Description = "Cà chua được phát triển trên toàn thế giới do sự tăng trưởng tối ưu của nó trong nhiều điều kiện phát triển khác nhau. Các loại cà chua được trồng trọt phổ biến nhất là loại quả đường kính khoảng 5–6 cm. Hầu hết các giống được trồng đề cho ra trái cây màu đỏ, nhưng một số giống cho quả vàng, cam, hồng, tím, xanh lá cây, đen hoặc màu trắng. Đặc biệt có loại cà chua nhiều màu và có sọc.",
-                    PlantCategoryId = 2
-                },
-                new Plant
-                {
-                    PlantId = 2,
-                    Name = "Lúa",
-                    Description = "Lúa là một trong năm loại cây lương thực chính của thế giới, cùng với bắp, lúa mì, sắn và khoai tây. Theo quan niệm xưa lúa cũng là một trong sáu loại lương thực chủ yếu trong Lục cốc.",
-                    PlantCategoryId = 1
-                },
-                new Plant
-                {
-                    PlantId = 3,
-                    Name = "Dưa chuột",
-                    Description = "Dưa chuột là một cây trồng phổ biến trong họ bầu bí, là loại rau ăn quả thương mại quan trọng, nó được trồng lâu đời trên thế giới và trở thành thực phẩm của nhiều nước. Những nước dẫn đầu về diện tích gieo trồng và năng suất là: Trung Quốc, Nga, Nhật Bản, Mỹ, Hà Lan, Thổ Nhĩ Kỳ, Ba Lan, Ai Cập và Tây Ban Nha.",
-                    PlantCategoryId = 2
                 }
             );
 

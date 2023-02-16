@@ -7,9 +7,6 @@ namespace EvergreenAPI.Models
 {
     public class DiseaseMedicine
     {
-        [Key]
-        public int DiseaseMedicineId { get; set; }
-
         [ForeignKey("Disease")]
         public int DiseaseId { get; set; }
         [ForeignKey("Medicine")]

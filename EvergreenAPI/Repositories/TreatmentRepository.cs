@@ -38,7 +38,10 @@ namespace EvergreenAPI.Repositories
 
         public ICollection<Treatment> GetTreatments()
         {
-            return _context.Treatments.Include(d => d.Disease).ToList();
+            return _context.Treatments.Include(d => d.Disease)
+                .Include(d => d.Disease.DiseaseCategory)
+                .Include(d => d.Image)
+                .ToList();
         }
 
         public bool Save()

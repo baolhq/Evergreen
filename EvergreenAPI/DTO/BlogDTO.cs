@@ -23,5 +23,7 @@ namespace EvergreenAPI.DTO
         public string Content { get; set; }
         public DateTime LastModifiedDate { get; set; } = DateTime.Now;
         public int ViewCount { get; set; } = 0;
+        [Required]
+        public int ImageId { get; set; }
     }
 }

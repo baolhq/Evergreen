@@ -31,12 +31,12 @@ namespace EvergreenAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetBlogs()
         {
-            var Blogs = _mapper.Map<List<BlogDTO>>(_BlogRepository.GetBlogs());
+            var blogs = _mapper.Map<List<Blog>>(_BlogRepository.GetBlogs());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Blogs);
+            return Ok(blogs);
         }
 
 

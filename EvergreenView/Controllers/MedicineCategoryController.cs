@@ -62,7 +62,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DiseaseCategory diseaseCategory)
+        public IActionResult Create(DiseaseCategory diseaseCategory)
         {
             if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
             {
@@ -101,7 +101,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, MedicineCategory medicineCategory)
+        public ActionResult Edit(int id, MedicineCategory medicineCategory)
         {
             if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
             {

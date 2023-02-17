@@ -61,7 +61,6 @@ namespace EvergreenView.Controllers
             };
             List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
             return View(listUsers);
-
         }
         
         public async Task<ActionResult> Details()
@@ -98,10 +97,6 @@ namespace EvergreenView.Controllers
 
             return View(user);
         }
-
-
-
-
         
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -178,6 +173,29 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index");
             }
             return View();
+        }
+
+        public async Task<IActionResult> AdminIndex()
+        {
+
+            var token = HttpContext.Session.GetString("t");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            token = token.Replace("\"", string.Empty);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage response = await client.GetAsync(UserApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
+            return View(listUsers);
         }
     }
 }

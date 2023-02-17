@@ -8,13 +8,6 @@
     ViewData["Title"] = "Index";
 }
 
-@if (session.GetString("r") == "Admin")
-{
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
-    </p>
-}
-
 @*<table class="table">
     <thead>
         <tr>

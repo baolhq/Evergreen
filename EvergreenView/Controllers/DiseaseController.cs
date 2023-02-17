@@ -14,7 +14,7 @@ namespace EvergreenView.Controllers
 {
     public class DiseaseController : Controller
     {
-        
+
         private string DiseaseApiUrl = "";
         private string DiseaseCategoryApiUrl = "";
         private string ImageApiUrl = "";
@@ -285,6 +285,18 @@ namespace EvergreenView.Controllers
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
             var listImage = await GetImages();
             ViewData["Images"] = new SelectList(listImage, "ImageId", "AltText");
+        }
+
+        public async Task<IActionResult> AdminIndex()
+        {
+            HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Disease> diseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
+            return View(diseases);
         }
     }
 }

@@ -1,0 +1,69 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+@model IEnumerable<EvergreenAPI.Models.Disease>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+@if (session.GetString("r") == "Admin")
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Identification)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Affect)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DiseaseCategoryId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ImageId)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Identification)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Affect)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DiseaseCategoryId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ImageId)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.DiseaseId" class="btn btn-info">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+}
+
+
+
+

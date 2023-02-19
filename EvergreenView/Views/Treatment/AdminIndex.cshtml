@@ -22,10 +22,10 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Disease.Name)
                 </th>
-                <th></th>
                 <th>
                     @Html.DisplayNameFor(model => model.ImageId)
                 </th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -38,9 +38,9 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Disease.Name)
                     </td>
-                        <td>
-                    @Html.DisplayFor(modelItem => item.Image.Url)
-                        </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Image.Url)
+                    </td>
                     <td>
                         <a asp-action="AdminDetails" asp-route-id="@item.TreatmentId" class="btn btn-info"> View </a>
                     </td>

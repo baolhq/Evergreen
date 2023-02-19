@@ -1,4 +1,4 @@
-﻿@model EvergreenAPI.Models.Disease
+﻿@model EvergreenAPI.Models.Treatment
 @using Microsoft.AspNetCore.Http;
 @using System.Net
 @inject IHttpContextAccessor httpContentAccessor
@@ -6,9 +6,11 @@
     var session = httpContentAccessor.HttpContext.Session;
 }
 @{
-    ViewData["Title"] = "Delete";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Details";
 }
+
+
 
 <div class="container">
     <div class="card card-outline-secondary">
@@ -24,27 +26,22 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="col-sm-12 pb-3">
-                        <label for="exampleFirst">Disease Title : </label>
-                        <h2>@Model.Name</h2>
-                    </div>
-                    <div class="col-sm-12 pb-3">
-                        <label for="exampleCity">Disease Description :</label>
-                        <p>@Model.Identification</p>
+                    <div class="col-md-6">
+                        <div class="col-sm-12 pb-3">
+                            <label for="exampleCity">Treatment Description :</label>
+                            <p>@Model.Method</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-footer">
-            <div class="justify-content-between">
-                <form asp-action="Delete" method="post">
-                    <input type="hidden" asp-for="DiseaseId" />
-                    <input type="submit" value="Delete" class="btn btn-danger" /> 
-                    <a asp-action="AdminIndex" class="btn btn-success"> Back to List </a>
-                </form>
+            <div class="card-footer">
+                <div class="justify-content-between">
+                        <a asp-action="Delete" asp-route-id="@Model.TreatmentId" class="btn btn-danger px-5"> Delete </a>
+                        <a asp-action="Edit" asp-route-id="@Model.TreatmentId" class="btn btn-warning px-5"> Update </a>
+                    <a asp-action="AdminIndex" class="btn btn-success px-5"> Back </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
+}

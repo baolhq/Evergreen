@@ -48,8 +48,8 @@
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-username="@item.Username" class="btn btn-outline-info">Edit</a> |
-                        <a asp-action="Details" asp-route-username="@item.Username" class="btn btn-outline-warning">Details</a>
+                        <a asp-action="Edit" asp-route-username="@item.Username" class="btn btn-info">Update</a> |
+                        <a asp-action="Details" asp-route-username="@item.Username" class="btn btn-warning">Details</a>
                     </td>
                 </tr>
             }
@@ -69,9 +69,9 @@
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-username="@item.Username" class="btn btn-outline-info">Edit</a> |
-                        <a asp-action="Details" asp-route-username="@item.Username" class="btn btn-outline-warning">Details</a> |
-                        <a asp-action="Delete" asp-route-username="@item.Username" class="btn btn-outline-danger">Delete</a>
+                        <a asp-action="Edit" asp-route-username="@item.Username" class="btn btn-info">Update</a> |
+                        <a asp-action="Details" asp-route-username="@item.Username" class="btn btn-warning">Details</a> |
+                        <a asp-action="Delete" asp-route-username="@item.Username" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
             }

@@ -36,6 +36,7 @@ namespace EvergreenView.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(AccountDTO account)
         {
+
             if (account == null) return View();
 
             string data = JsonSerializer.Serialize(account);

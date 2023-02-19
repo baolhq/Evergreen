@@ -9,10 +9,9 @@
     ViewData["Title"] = "Index";
 }
 
-@if (session.GetString("r") == "Admin")
-{
+
     <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
+        <a asp-action="Create" class="btn btn-primary">Create</a>
     </p>
     <table class="table">
         <thead>
@@ -52,18 +51,16 @@
                         @Html.DisplayFor(modelItem => item.DiseaseCategoryId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ImageId)
+                        @Html.DisplayFor(modelItem => item.Image.Url)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@item.DiseaseId" class="btn btn-info">Details</a>
+                        <a asp-action="AdminDetails" asp-route-id="@item.DiseaseId" class="btn btn-info"> View </a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    
-}
-
+   
 
 
 

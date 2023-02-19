@@ -89,19 +89,14 @@
                         <li class="nav-item">
                             <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Treatment" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
                         </li>
-                        @if (session.GetString("r") == "Admin")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/User" ? "text-danger" : "text-dark")" asp-area="" asp-controller="User" asp-action="Index">Member</a>
-                            </li>
-                        }
-                        else if (session.GetString("n") != null)
+                        
+                        @if (session.GetString("n") != null && session.GetString("r") != "Admin")
                         {
                             <li class="nav-item">
                                 <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/User" ? "text-danger" : "text-dark")" asp-area="" asp-controller="User" asp-action="Details">Profile</a>
                             </li>
                         }
-                        @if (session.GetString("n") != null)
+                        @if (session.GetString("n") != null && session.GetString("r") != "Admin")
                         {
                             <li class="nav-item">
                                 <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Logout" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a>

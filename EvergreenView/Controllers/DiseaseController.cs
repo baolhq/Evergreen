@@ -53,7 +53,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Create()
         {
-            if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -84,7 +84,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Disease disease)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -97,7 +97,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(DiseaseApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
             HttpResponseMessage responeDiseaseCategory = await client.GetAsync(DiseaseCategoryApiUrl);
             string strData = await responeDiseaseCategory.Content.ReadAsStringAsync();
@@ -122,9 +122,11 @@ namespace EvergreenView.Controllers
             return View();
         }
 
+
+
         public async Task<ActionResult> Edit(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -163,7 +165,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, Disease disease)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -176,7 +178,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(DiseaseApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
 
             HttpResponseMessage responeDiseaseCategory = await client.GetAsync(DiseaseCategoryApiUrl);
@@ -218,7 +220,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -233,7 +235,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -245,7 +247,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(DiseaseApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
             return View();
         }
@@ -263,6 +265,9 @@ namespace EvergreenView.Controllers
             return listDiseaseCategory;
         }
 
+
+
+
         public async Task<IEnumerable<Image>> GetImages()
         {
             HttpResponseMessage response = await client.GetAsync(ImageApiUrl);
@@ -276,6 +281,9 @@ namespace EvergreenView.Controllers
             return listImage;
         }
 
+
+
+
         public async Task SetViewData()
         {
             var listDiseaseCategory = await GetDiseaseCategory();
@@ -284,8 +292,17 @@ namespace EvergreenView.Controllers
             ViewData["Images"] = new SelectList(listImage, "ImageId", "AltText");
         }
 
+
+
+
+
+
         public async Task<IActionResult> AdminIndex()
-        {
+        { 
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            {
+                return RedirectToAction("Index");
+            }
             HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -294,6 +311,23 @@ namespace EvergreenView.Controllers
             };
             List<Disease> diseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
             return View(diseases);
+        }
+
+
+
+
+
+        public async Task<IActionResult> AdminDetails( int id)
+        {
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            {
+                return RedirectToAction("Index");
+            }
+
+            var disease = await GetDiseaseById(id);
+            if (disease == null)
+                return NotFound();
+            return View(disease);
         }
     }
 }

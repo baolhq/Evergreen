@@ -10,22 +10,15 @@
     ViewData["Title"] = "Index";
 }
 
-@if (session.GetString("r") == "Admin")
-{
+
     <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
+        <a asp-action="Create" class="btn btn-primary">Create</a>
     </p>
     <table class="table">
         <thead>
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Content)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.LastModifiedDate)
@@ -44,23 +37,16 @@
                         @Html.DisplayFor(modelItem => item.Title)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Content)
-                    </td>
-                    <td>
                         @Html.DisplayFor(modelItem => item.LastModifiedDate)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ViewCount)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@item.BlogId" class="btn btn-info">Details</a>
+                        <a asp-action="Details" asp-route-id="@item.BlogId" class="btn btn-info">View</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
-}

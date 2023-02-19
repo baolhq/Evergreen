@@ -9,7 +9,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group py-2">
                 <label asp-for="Name" class="control-label"></label>
@@ -17,8 +17,8 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group py-2">
-                <input type="submit" value="Create" class="btn btn-primary" /> |
-                <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-success">Back to List</a>
             </div>
         </form>
     </div>

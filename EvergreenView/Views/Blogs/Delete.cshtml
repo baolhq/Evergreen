@@ -7,9 +7,8 @@
 }
 @{
     ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<link rel="stylesheet" href="#" type="text/css" />
 
 <div class="container">
     <div class="card card-outline-secondary">
@@ -46,10 +45,10 @@
         </div>
         <div class="card-footer">
             <div class="justify-content-between">
-                <form asp-action="Delete">
+                <form asp-action="Delete" method="post">
                     <input type="hidden" asp-for="BlogId" />
-                    <input type="submit" value="Delete" class="btn btn-danger" /> |
-                    <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                    <input type="submit" value="Delete" class="btn btn-danger" /> 
+                    <a asp-action="AdminIndex" class="btn btn-success">Back to List</a>
                 </form>
             </div>
         </div>

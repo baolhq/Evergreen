@@ -23,9 +23,9 @@ namespace EvergreenAPI.Models
         public DbSet<DiseaseTreatment> DiseaseTreatments { get; set; }*/
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-/*<<<<<<< HEAD
 
-           *//* modelBuilder.Entity<DiseaseTreatment>()
+
+           /**//* modelBuilder.Entity<DiseaseTreatment>()
                 .HasAlternateKey(dt => new { dt.DiseaseId, dt.TreatmentId });
             modelBuilder.Entity<DiseaseTreatment>()
                 .HasOne(dt => dt.Disease)
@@ -45,11 +45,11 @@ namespace EvergreenAPI.Models
             modelBuilder.Entity<DiseaseMedicine>()
                 .HasOne(dt => dt.Medicine)
                 .WithMany(t => t.DiseaseMedicines)
-                .OnDelete(DeleteBehavior.Cascade);*//*
+                .OnDelete(DeleteBehavior.Cascade);*//**/
 
 
 
-=======*/
+
             #region Images seed
             modelBuilder.Entity<Image>().HasData(
                 new Image { ImageId = 1, Url = "https://www.fao.org.vn/wp-content/uploads/2019/08/benh-vang-la-greening.jpg", AltText = "Hình ảnh bệnh vàng lá" },

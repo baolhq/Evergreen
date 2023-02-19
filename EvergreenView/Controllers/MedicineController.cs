@@ -229,5 +229,17 @@ namespace EvergreenView.Controllers
             var listMedicineCategory = await GetMedicineCategories();
             ViewData["MedicineCategories"] = new SelectList(listMedicineCategory, "MedicineCategoryId", "Name");
         }
+
+        public async Task<IActionResult> AdminIndex()
+        {
+            HttpResponseMessage response = await client.GetAsync(MedicineApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Medicine> medicines = JsonSerializer.Deserialize<List<Medicine>>(strData, options);
+            return View(medicines);
+        }
     }
 }

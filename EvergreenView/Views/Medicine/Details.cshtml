@@ -9,8 +9,6 @@
     ViewData["Title"] = "Details";
 }
 
-<link rel="stylesheet" href="#" type="text/css" />
-
 <div class="container">
     <div class="card card-outline-secondary">
         <div class="card-header">
@@ -32,8 +30,7 @@
                         <h2>@Model.Name</h2>
                     </div>
                     <div class="col-sm-12 pb-3">
-                        <label for="exampleCity">Medicine Description :</label>
-                        <p>@Model.MedicineCategory.Name</p>
+                        <label for="exampleCity">Disease Description :</label>
                         <p>@Model.Uses</p>
                     </div>
                 </div>
@@ -41,9 +38,7 @@
         </div>
         <div class="card-footer">
             <div class="justify-content-between">
-                    <a asp-action="Delete" class="btn btn-danger px-5"> Delete </a>
-                    <a asp-action="Update" class="btn btn-warning px-5"> Update </a>
-                    <a asp-action="Index" class="btn btn-success px-5"> Back </a>
+                <a asp-action="Index" class="btn btn-success px-5"> Back </a>
             </div>
         </div>
     </div>

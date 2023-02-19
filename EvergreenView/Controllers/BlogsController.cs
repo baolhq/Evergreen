@@ -228,5 +228,17 @@ namespace EvergreenView.Controllers
 
         }
 
+        public async Task<IActionResult> AdminIndex()
+        {
+            string query = null;
+            HttpResponseMessage response = await client.GetAsync(BlogApiUrl + query);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Blog> listBlogs = JsonSerializer.Deserialize<List<Blog>>(strData, options);
+            return View(listBlogs);
+        }
     }
 }

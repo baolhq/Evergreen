@@ -50,7 +50,15 @@ namespace EvergreenView.Controllers
                 HttpContext.Session.SetString("r", body.Role);
                 HttpContext.Session.SetString("t", body.Token);
 
-                return RedirectToAction("Index", "Home");
+                if (HttpContext.Session.GetString("r") == "Admin")
+                { 
+                    return RedirectToAction("Index", "Admin"); 
+                } 
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                   
             }
 
             ViewData["error"] = "Username or password is incorrect";

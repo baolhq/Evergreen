@@ -1,5 +1,6 @@
 ﻿@model EvergreenAPI.Models.Medicine
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Create";
     var listMedicineCategories = ViewData["MedicineCategories"] as SelectList;
 }
@@ -26,8 +27,8 @@
                 <select asp-for="MedicineCategoryId" class="form-control" asp-items="listMedicineCategories"></select>
             </div>
             <div class="form-group py-2">
-                <input type="submit" value="Create" class="btn btn-primary" /> |
-                <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                <input type="submit" value="Create" asp-action="AdminIndex" class="btn btn-primary" /> |
+                <a asp-action="AdminIndex" class="btn btn-outline-primary">Back to List</a>
             </div>
         </form>
     </div>

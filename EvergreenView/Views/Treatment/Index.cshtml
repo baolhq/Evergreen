@@ -8,86 +8,7 @@
     ViewData["Title"] = "Index";
 }
 
-@if (session.GetString("r") == "Admin" || session.GetString("r") == "Professor")
-                {
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create</a>
-</p>
-                }
-@*<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Method)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Disease.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Method)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Disease.Name)
-                </td>
-                @if (session.GetString("r") == "Admin" || session.GetString("r") == "Professor")
-                {
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.TreatmentId" class="btn btn-warning">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.TreatmentId" class="btn btn-info">Details</a>|
-                    <a asp-action="Delete" asp-route-id="@item.TreatmentId" class="btn btn-danger">Delete</a>
-                </td>
-                }
-=======*@
-@*@if (session.GetString("r") == "Admin")
-{
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Method)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Disease.Name)
-                </th>
-                <th></th>
 
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Method)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Disease.Name)
-                    </td>
-                    @if (session.GetString("r") == "Admin")
-                    {
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.TreatmentId" class="btn btn-warning">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.TreatmentId" class="btn btn-info">Details</a>|
-                            <a asp-action="Delete" asp-route-id="@item.TreatmentId" class="btn btn-danger">Delete</a>
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{*@
     <div class="container">
         <div class="row">
             @foreach (var item in Model)
@@ -99,7 +20,7 @@ else
                                 <a class="text-dark" href="#">@item.Method</a>
                             </h4>
                             <div class="mb-1 text-muted">@item.Disease.DiseaseCategory.Name</div>
-                            <p class="card-text mb-auto text-ellipsis" style="max-width: 248px;">@item.Disease.Name</p>
+                            <p class="card-text mb-auto text-ellipsis" style="max-width: 248px;">@item.Method</p>
                         <a class="btn btn-danger rounded" asp-action="Details" asp-route-id="@item.TreatmentId">Read More</a>
                         </div>
                         <div class="img-hover-zoom flex-auto d-none d-md-block card-img-right" style="width: 250px; height: 250px; border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;">
@@ -109,4 +30,17 @@ else
                 </div>
             }
         </div>
+
     </div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+            if ($("#dttb"))
+                $("#dttb").DataTable();
+        })
+    </script>
+}
+

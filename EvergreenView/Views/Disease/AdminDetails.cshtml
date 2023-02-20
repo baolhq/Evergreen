@@ -13,6 +13,7 @@
 <div class="container">
     <div class="card card-outline-secondary">
         <div class="card-header">
+            <h4 for="exampleFirst">Disease Title: @Model.Name</h4>
         </div>
         <div class="card-body">
             <div class="row mt-4  justify-content-center">
@@ -27,12 +28,16 @@
                 </div>
                 <div class="col-md-6">
                     <div class="col-sm-12 pb-3">
-                        <label for="exampleFirst">Disease Title : </label>
-                        <h2>@Model.Name</h2>
-                    </div>
-                    <div class="col-sm-12 pb-3">
                         <label for="exampleCity">Disease Description :</label>
                         <p>@Model.Identification</p>
+                    </div>
+                    <div class="col-sm-12 pb-3">
+                        <label for="exampleCity">Disease Affect :</label>
+                        <p>@Model.Affect</p>
+                    </div>
+                    <div class="col-sm-12 pb-3">
+                        <label for="exampleCity">Disease Category :</label>
+                        <p>@Model.DiseaseCategory.Name</p>
                     </div>
                 </div>
             </div>

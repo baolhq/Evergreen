@@ -10,7 +10,7 @@
 }
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -53,7 +53,7 @@
                                 @Html.DisplayFor(modelItem => item.Affect)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.DiseaseCategoryId)
+                                @Html.DisplayFor(modelItem => item.DiseaseCategory.Name)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Image.Url)

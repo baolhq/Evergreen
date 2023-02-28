@@ -1,49 +1,50 @@
-﻿@model EvergreenAPI.Models.Blog
+﻿@using Microsoft.AspNetCore.Http
+@model EvergreenAPI.Models.Blog
+@inject IHttpContextAccessor httpContentAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
 @{
     ViewData["Title"] = "Create";
-    
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
-<h4>Blog</h4>
-<br />
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group py-2">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="LastModifiedDate" class="control-label"></label>
-                <input asp-for="LastModifiedDate" class="form-control" />
-                <span asp-validation-for="LastModifiedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="ViewCount" class="control-label"></label>
-                <input asp-for="ViewCount" class="form-control" />
-                <span asp-validation-for="ViewCount" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <input type="submit" value="Create" class="btn btn-primary" /> |
-                <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
-            </div>
-        </form>
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group py-2">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group py-2">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group py-2">
+                    <label asp-for="Content" class="control-label"></label>
+                    <input asp-for="Content" class="form-control" />
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="form-group py-2">
+                    <label asp-for="LastModifiedDate" class="control-label"></label>
+                    <input asp-for="LastModifiedDate" class="form-control" />
+                    <span asp-validation-for="LastModifiedDate" class="text-danger"></span>
+                </div>
+                <div class="form-group py-2">
+                    <label asp-for="ViewCount" class="control-label"></label>
+                    <input asp-for="ViewCount" class="form-control" />
+                    <span asp-validation-for="ViewCount" class="text-danger"></span>
+                </div>
+                <div class="form-group py-2">
+                    <input type="submit" value="Create" class="btn btn-primary" /> 
+                    <a asp-action="AdminIndex" class="btn btn-success">Back to List</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
 @section Scripts {
     @{

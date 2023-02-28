@@ -30,7 +30,7 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-
+            
             BlogApiUrl = "https://localhost:44334/api/Blog";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;
@@ -62,7 +62,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -83,7 +83,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Create()
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -102,7 +102,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Blog p)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -116,7 +116,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.PostAsync(BlogApiUrl, content);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
             return View();
 
@@ -124,7 +124,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -140,7 +140,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -152,7 +152,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(BlogApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
             return View();
         }
@@ -181,7 +181,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -203,7 +203,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, Blog blog)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -216,7 +216,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.PutAsync(BlogApiUrl + "/" + id, content);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
             var options = new JsonSerializerOptions
             {
@@ -228,5 +228,21 @@ namespace EvergreenView.Controllers
 
         }
 
+        public async Task<IActionResult> AdminIndex()
+        {
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            {
+                return RedirectToAction("Index");
+            }
+            string query = null;
+            HttpResponseMessage response = await client.GetAsync(BlogApiUrl + query);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Blog> listBlogs = JsonSerializer.Deserialize<List<Blog>>(strData, options);
+            return View(listBlogs);
+        }
     }
 }

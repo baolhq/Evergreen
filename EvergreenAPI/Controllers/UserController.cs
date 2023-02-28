@@ -84,7 +84,7 @@ namespace EvergreenAPI.Controllers
         }
 
 
-            [HttpPut("{username}")]
+        [HttpPut("{username}")]
         [Authorize(Roles = "User,Admin")]
         public IActionResult UpdateUser(string username, [FromBody] Account updatedUser)
         {

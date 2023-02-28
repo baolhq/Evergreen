@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace EvergreenAPI.Models
@@ -18,9 +19,37 @@ namespace EvergreenAPI.Models
         public DbSet<MedicineCategory> MedicineCategories { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
-
+        /*public DbSet<DiseaseMedicine> DiseasesMedicines { get; set; }
+        public DbSet<DiseaseTreatment> DiseaseTreatments { get; set; }*/
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
+           /**//* modelBuilder.Entity<DiseaseTreatment>()
+                .HasAlternateKey(dt => new { dt.DiseaseId, dt.TreatmentId });
+            modelBuilder.Entity<DiseaseTreatment>()
+                .HasOne(dt => dt.Disease)
+                .WithMany(d => d.DiseaseTreatments)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<DiseaseTreatment>()
+                .HasOne(dt => dt.Treatment)
+                .WithMany(t => t.DiseaseTreatments)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DiseaseMedicine>()
+               .HasAlternateKey(dt => new { dt.DiseaseId, dt.MedicineId });
+            modelBuilder.Entity<DiseaseMedicine>()
+                .HasOne(dt => dt.Disease)
+                .WithMany(d => d.DiseaseMedicines)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<DiseaseMedicine>()
+                .HasOne(dt => dt.Medicine)
+                .WithMany(t => t.DiseaseMedicines)
+                .OnDelete(DeleteBehavior.Cascade);*//**/
+
+
+
+
             #region Images seed
             modelBuilder.Entity<Image>().HasData(
                 new Image { ImageId = 1, Url = "https://www.fao.org.vn/wp-content/uploads/2019/08/benh-vang-la-greening.jpg", AltText = "Hình ảnh bệnh vàng lá" },
@@ -36,6 +65,7 @@ namespace EvergreenAPI.Models
                 new Image { ImageId = 11, Url = "https://xuannong.vn/images/bo-tri-tren-cay-mai.jpg", AltText = "Lặt bỏ lá bị nhiễm bệnh" }
             );
             #endregion
+
 
             #region Blog seed
 
@@ -104,21 +134,25 @@ namespace EvergreenAPI.Models
 
             #endregion
 
-            #region Disease seed
-
+            #region DiseaseCategory seed
             modelBuilder.Entity<DiseaseCategory>().HasData(
                 new DiseaseCategory
                 {
                     DiseaseCategoryId = 1,
-                    Name = "Bệnh trên lá"
+                    Name = "Loại 1"
                 },
                 new DiseaseCategory
                 {
                     DiseaseCategoryId = 2,
-                    Name = "Bệnh trên thân"
+                    Name = "Loại 2"
+                },
+                new DiseaseCategory
+                {
+                    DiseaseCategoryId = 3,
+                    Name = "Loại 3"
                 }
-            );
 
+                );
             #endregion
 
             #region Disease seed
@@ -188,8 +222,10 @@ namespace EvergreenAPI.Models
                     MedicineId = 9,
                     Name = "AT Vaccino",
                     Uses = "Trị lá úa sớm",
+
                     MedicineCategoryId = 1,
                     ImageId = 9
+
                 }
             );
 
@@ -201,6 +237,7 @@ namespace EvergreenAPI.Models
                 new Treatment { TreatmentId = 2, Method = "Lặt bỏ lá bị nhiễm bệnh", DiseaseId = 3, ImageId = 11 }
             );
             #endregion
+
         }
     }
 }

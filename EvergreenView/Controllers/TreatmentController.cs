@@ -16,6 +16,7 @@ namespace EvergreenView.Controllers
     
     public class TreatmentController : Controller
     {
+        private string ImageApiUrl = "";
         private string TreatmentApiUrl = "";
         private string DiseaseApiUrl = "";
         private readonly HttpClient client = null;
@@ -27,6 +28,7 @@ namespace EvergreenView.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
             TreatmentApiUrl = "https://localhost:44334/api/Treatment";
             DiseaseApiUrl = "https://localhost:44334/api/Disease";
+            ImageApiUrl = "https://localhost:44334/api/Image";
         }
 
         public async Task<IActionResult> Index()
@@ -43,10 +45,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
-            {
-                return RedirectToAction("Index");
-            }
+            
             var treatment = await GetTreatmentById(id);
             if (treatment == null)
                 return NotFound();
@@ -55,7 +54,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Create()
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -69,6 +68,15 @@ namespace EvergreenView.Controllers
             List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
             ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
 
+            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            string strData1 = await responeImage.Content.ReadAsStringAsync();
+            var options1 = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData1, options1);
+            ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
             return View();
         }
 
@@ -76,7 +84,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Treatment treatment)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -89,7 +97,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(TreatmentApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
             HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
             string strData = await responeDisease.Content.ReadAsStringAsync();
@@ -101,12 +109,21 @@ namespace EvergreenView.Controllers
             List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
             ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
 
+            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            string strData1 = await responeImage.Content.ReadAsStringAsync();
+            var options1 = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData1, options1);
+            ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
             return View();
         }
 
         public async Task<ActionResult> Edit(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -128,6 +145,15 @@ namespace EvergreenView.Controllers
             List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData1, options1);
             ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
 
+            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            string strData2 = await responeImage.Content.ReadAsStringAsync();
+            var options2 = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData2, options2);
+            ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
             return View(treatment);
         }
 
@@ -135,7 +161,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, Treatment treatment)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -148,7 +174,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(TreatmentApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
 
             HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
@@ -161,12 +187,21 @@ namespace EvergreenView.Controllers
             List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
             ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
 
+            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            string strData2 = await responeImage.Content.ReadAsStringAsync();
+            var options2 = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData2, options2);
+            ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
             return View();
         }
 
         public async Task<ActionResult> Delete(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -181,7 +216,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -193,7 +228,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(TreatmentApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
             return View();
         }
@@ -229,6 +264,52 @@ namespace EvergreenView.Controllers
         {
             var listDiseases = await GetPlantCategories();
             ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
+            var listImage = await GetImages();
+            ViewData["Images"] = new SelectList(listImage, "ImageId", "AltText");
+        }
+
+        public async Task<IEnumerable<Image>> GetImages()
+        {
+            HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            List<Image> listImage = JsonSerializer.Deserialize<List<Image>>(strData, options);
+            return listImage;
+        }
+
+        public async Task<IActionResult> AdminIndex()
+        {
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            {
+                return RedirectToAction("Index");
+            }
+
+            HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Treatment> treatments = JsonSerializer.Deserialize<List<Treatment>>(strData, options);
+            return View(treatments);
+        }
+
+        public async Task<IActionResult> AdminDetails(int id)
+        {
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            {
+                return RedirectToAction("Index");
+            }
+
+            var treatment = await GetTreatmentById(id);
+            if (treatment == null)
+                return NotFound();
+            return View(treatment);
+
         }
     }
 }

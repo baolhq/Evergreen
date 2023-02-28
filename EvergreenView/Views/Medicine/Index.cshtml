@@ -8,56 +8,6 @@
     ViewData["Title"] = "Index";
 }
 
-@if (session.GetString("r") == "Admin")
-{
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
-    </p>
-}
-
-@*<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Uses)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MedicineCategory.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Uses)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MedicineCategory.Name)
-                </td>
-                @if (session.GetString("r") == "Admin")
-                {
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MedicineId" class="btn btn-warning">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MedicineId" class="btn btn-info">Details</a>|
-                    <a asp-action="Delete" asp-route-id="@item.MedicineId" class="btn btn-danger">Delete</a>
-                </td>
-                }
-            </tr>
-        }
-    </tbody>
-</table>*@
-
-
-
 <div class="container">
     <div class="row">
         @foreach (var item in Model)
@@ -70,7 +20,7 @@
                         </h4>
                         <div class="mb-1 text-muted">@item.MedicineCategory.Name</div>
                         <p class="card-text mb-auto text-ellipsis" style="max-width: 248px;">@item.Uses</p>
-                        <a class="btn btn-danger rounded" href="#">Continue reading</a>
+                        <a class="btn btn-danger rounded" asp-action="Details" asp-route-id="@item.MedicineId">Read More</a>
                     </div>
                     <div class="img-hover-zoom flex-auto d-none d-md-block card-img-right" style="width: 250px; height: 250px; border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;">
                         <img alt="Thumbnail" style="width: 100%; height: 250px; object-fit: cover;" src="@item.Image.Url" data-holder-rendered="true">

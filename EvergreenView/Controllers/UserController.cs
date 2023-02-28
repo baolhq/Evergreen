@@ -61,14 +61,13 @@ namespace EvergreenView.Controllers
             };
             List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
             return View(listUsers);
-
         }
         
         public async Task<ActionResult> Details()
         {
-            if (HttpContext.Session.GetString("r") == null)
+            if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var username = HttpContext.Session.GetString("n");
@@ -80,9 +79,9 @@ namespace EvergreenView.Controllers
         
         public async Task<ActionResult> Edit(string username)
         {
-            if (HttpContext.Session.GetString("r") == null)
+            if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
@@ -98,18 +97,17 @@ namespace EvergreenView.Controllers
 
             return View(user);
         }
-
-
-
-
         
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(string username, Account user)
         {
-            if (HttpContext.Session.GetString("r") == null )
+            if (HttpContext.Session.GetString("r") == null  && HttpContext.Session.GetString("r") == "Admin")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             var token = HttpContext.Session.GetString("t");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -119,7 +117,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.PutAsync(UserApiUrl + "/" + username, content);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Details");
             }
             var options = new JsonSerializerOptions
             {
@@ -135,13 +133,13 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
-            var product = await GetUser(username);
-            if (product == null)
+            var acc = await GetUser(username);
+            if (acc == null)
                 return NotFound();
-            return View(product);
+            return View(acc);
         }
 
         private async Task<Account> GetUser(string username)
@@ -167,7 +165,7 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             var token = HttpContext.Session.GetString("t");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -175,9 +173,37 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(UserApiUrl + "/" + username);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminIndex");
             }
             return View();
+        }
+
+
+
+        public async Task<IActionResult> AdminIndex()
+        {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var token = HttpContext.Session.GetString("t");
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+            token = token.Replace("\"", string.Empty);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage response = await client.GetAsync(UserApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
+            return View(listUsers);
         }
     }
 }

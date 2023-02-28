@@ -19,66 +19,8 @@
     }
 </style>
 
-@*Admin view*@
-@if (session.GetString("r") == "Admin")
-{
-    <p>
-        <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
-    </p>
-    <table class="table table-striped table-bordered dt-responsive nowrap" id="dttb" style="width:100%">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Content)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.LastModifiedDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ViewCount)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Content)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastModifiedDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ViewCount)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.BlogId" class="btn btn-outline-info">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.BlogId" class="btn btn-outline-warning">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.BlogId" class="btn btn-outline-danger">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
-}
-@*User and guess view*@
-else
-{
+
     <div class="container">
         <div class="row">
             @foreach (var item in Model)
@@ -91,7 +33,7 @@ else
                             </h4>
                             <div class="mb-1 text-muted">@item.LastModifiedDate</div>
                             <p class="card-text mb-auto text-ellipsis" style="max-width: 248px;">@item.Description</p>
-                            <a class="btn btn-danger rounded" href="#">Continue reading</a>
+                            <a class="btn btn-danger rounded" asp-action="Read" asp-route-id="@item.BlogId"> Read More </a>
                         </div>
                         <div class="img-hover-zoom flex-auto d-none d-md-block card-img-right" style="width: 250px; height: 250px; border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;">
                             <img alt="Thumbnail" style="width: 100%; height: 250px; object-fit: cover;" src="@item.Image.Url" data-holder-rendered="true">
@@ -101,7 +43,6 @@ else
             }
         </div>
     </div>
-}
 
 
 @section Scripts {

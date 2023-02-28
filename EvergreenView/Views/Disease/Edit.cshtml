@@ -1,47 +1,52 @@
-﻿@model EvergreenAPI.Models.Disease
+﻿@using Microsoft.AspNetCore.Http
+@model EvergreenAPI.Models.Disease
+@inject IHttpContextAccessor httpContentAccessor
 @{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+@{
+
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Edit";
     var listDiseaseCategories = ViewData["DiseaseCategories"] as SelectList;
     var listImages = ViewData["Images"] as SelectList;
 }
-<h1>Edit</h1>
-<h4>Disease Category</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DiseaseId" />
-            <div class="form-group py-2">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control"/>
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="Identification" class="control-label"></label>
-                <input asp-for="Identification" class="form-control" />
-                <span asp-validation-for="Identification" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="Affect" class="control-label"></label>
-                <input asp-for="Affect" class="form-control"/>
-                <span asp-validation-for="Affect" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="DiseaseCategoryId" class="control-label"></label>
-                <select asp-for="DiseaseCategoryId" class="form-control" asp-items="listDiseaseCategories"></select>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="ImageId" class="control-label"></label>
-                <select asp-for="ImageId" class="form-control" asp-items="listImages"></select>
-            </div>
-            <div class="form-group py-2">
-                <input type="submit" value="Save" class="btn btn-primary" /> |
-                <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
-            </div>
-        </form>
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="DiseaseId" />
+                <div class="form-group py-2">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control"/>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group py-2">
+                    <label asp-for="Identification" class="control-label"></label>
+                    <input asp-for="Identification" class="form-control" />
+                    <span asp-validation-for="Identification" class="text-danger"></span>
+                </div>
+                <div class="form-group py-2">
+                    <label asp-for="Affect" class="control-label"></label>
+                    <input asp-for="Affect" class="form-control"/>
+                    <span asp-validation-for="Affect" class="text-danger"></span>
+                </div>
+                <div class="form-group py-2">
+                    <label asp-for="DiseaseCategoryId" class="control-label"></label>
+                    <select asp-for="DiseaseCategoryId" class="form-control" asp-items="listDiseaseCategories"></select>
+                </div>
+                <div class="form-group py-2">
+                    <label asp-for="ImageId" class="control-label"></label>
+                    <select asp-for="ImageId" class="form-control" asp-items="listImages"></select>
+                </div>
+                <div class="form-group py-2">
+                    <input type="submit" value="Save" class="btn btn-primary" /> 
+                    <a asp-action="AdminDetails" asp-route-id="@Model.DiseaseId" class="btn btn-success">Back to List</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
 @section Scripts {
     @{

@@ -33,12 +33,21 @@ namespace EvergreenAPI.Repositories
 
         public Medicine GetMedicine(int id)
         {
-            return _context.Medicines.Include(d => d.MedicineCategory).Where(s => s.MedicineId == id).FirstOrDefault();
+            return _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Image).Where(s => s.MedicineId == id).FirstOrDefault(); ;
+        }
+        public ICollection<Image> GetImages()
+        {
+            return _context.Images.ToList();
+        }
+
+        public ICollection<MedicineCategory> GetMedicineCategories()
+        {
+            return _context.MedicineCategories.ToList();
         }
 
         public ICollection<Medicine> GetMedicines()
         {
-            return _context.Medicines.Include(d => d.MedicineCategory).Include(m => m.Image).ToList();
+            return _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Image).ToList();
         }
 
         public bool Save()

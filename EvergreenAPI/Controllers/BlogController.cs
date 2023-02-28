@@ -48,7 +48,7 @@ namespace EvergreenAPI.Controllers
             if (!_BlogRepository.BlogExist(BlogId))
                 return NotFound($"Blog Category '{BlogId}' is not exists!!");
 
-            var Blogs = _mapper.Map<BlogDTO>(_BlogRepository.GetBlogById(BlogId));
+            var Blogs = _mapper.Map<BlogDTO>(_BlogRepository.GetBlog(BlogId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -125,7 +125,7 @@ namespace EvergreenAPI.Controllers
             if (!_BlogRepository.BlogExist(BlogId))
                 return NotFound();
 
-            var BlogToDelete = _BlogRepository.GetBlogById(BlogId);
+            var BlogToDelete = _BlogRepository.GetBlog(BlogId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -50,6 +50,7 @@ namespace EvergreenView.Controllers
                 HttpContext.Session.SetString("n", body.Username);
                 HttpContext.Session.SetString("r", body.Role);
                 HttpContext.Session.SetString("t", body.Token);
+                HttpContext.Session.SetString("i", body.AccountId.ToString());
 
                 if (HttpContext.Session.GetString("r") == "Admin")
                 { 

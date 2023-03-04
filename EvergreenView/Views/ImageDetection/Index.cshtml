@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Disease detection";
+}
+
+@section Styles {
+    <style>
+        .wrapper {
+            margin: auto;
+            max-width: 640px;
+            padding-top: 60px;
+            text-align: center;
+            margin-bottom: 3em;
+        }
+
+        .browse-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1.title {
+            color: #130f40;
+            letter-spacing: -.5px;
+            font-weight: 700;
+            padding-bottom: 16px;
+        }
+
+        .upload-container {
+            background-color: rgb(239, 239, 239);
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .border-container {
+            border: 5px dashed rgba(198, 198, 198, 0.65);
+            padding: 20px;
+            position: relative;
+        }
+
+            .border-container p {
+                color: #130f40;
+                font-weight: 600;
+                font-size: 1.1em;
+                letter-spacing: -1px;
+                margin: 12px auto;
+                opacity: 0.65;
+            }
+
+        #file-upload {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: absolute;
+        }
+
+        #file-browser {
+            text-decoration: none;
+            color: rgb(22,42,255);
+            border-bottom: 3px dotted rgba(22, 22, 255, 0.85);
+        }
+
+            #file-browser:hover {
+                color: rgb(0, 0, 255);
+                border-bottom: 3px dotted rgba(0, 0, 255, 0.85);
+            }
+
+        #submit-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .list-group-item:hover {
+            cursor: pointer;
+            transition: background .2s ease;
+            background: rgb(239, 239, 239);
+        }
+
+        .list-group-title {
+            position: relative;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, 0);
+        }
+
+        .item-link {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+}
+
+<div class="wrapper">
+    <form class="browse-container ftco-animate">
+        <h1 class="title">Upload a file</h1>
+        <div class="upload-container">
+            <div class="border-container" method="post">
+                <input type="file" id="file-upload" title="Click to choose image">
+                <p id="preview">
+                    Drag and drop files here, or
+                    <a href="#" id="file-browser">browse</a> your computer.
+                </p>
+            </div>
+        </div>
+        <button id="submit-btn"
+                type="submit"
+                class="btn btn-block btn-danger text-white mt-2 p-2"
+                disabled>
+            Submit
+        </button>
+    </form>
+</div>
+
+<div class="container ftco-animate">
+    <h3 class="text-center title">History</h3>
+    <div class="mb-2 list-group-title">
+        <a class="item-link" href="#">
+            <div class="d-flex justify-content-between" title="Click to view details">
+                <span class="img-name w-25">Image name</span>
+                <span class="disease-name w-50">Detected disease</span>
+                <span class="acc w-25 text-right">Accuracy</span>
+            </div>
+        </a>
+    </div>
+
+    <div id="data-container"></div>
+    <div id="pagination-container"></div>
+</div>
+
+<input type="hidden" id="pass-data" value=@ViewBag.history />
+
+@section Scripts {
+    <script>
+        $("#file-upload").css("opacity", "0");
+
+        $("#file-upload").on("change", () => {
+            // Get file name
+            var filename = $('#file-upload').val().split('\\').pop();
+            // If any file selected
+            if (filename) {
+                $("#preview").html(`${filename} selected`)
+                $("#submit-btn").attr("disabled", false);
+            }
+        })
+
+        $("#file-browser").click((e) => {
+            e.preventDefault();
+            $("#file-upload").trigger("click");
+        });
+
+        function simpleTemplating(data) {
+            let html = `<ul class="list-group">`;
+            data.forEach((item) => {
+                html += `<li class="list-group-item mb-2">`
+                    + `<a class="item-link" href="#">`
+                    + `<div class="d-flex justify-content-between" title="Click to view details">`
+                    + `<span class="img-name w-25"> Item ${item["name"]}</span>`
+                    + `<span class="disease-name w-50">${item["detected"]}</span>`
+                    + `<span class="acc w-25 text-right">${item["acc"]}</span>`
+                    + `</div>`
+                    + `</a>`
+                    + `</li>`;
+            })
+            html += `</ul>`;
+            return html;
+        }
+
+        let sample = [
+            { name: 'Item 1', detected: 'Moss', acc: '90%' },
+            { name: 'Item 2', detected: 'Moss', acc: '90%' },
+            { name: 'Item 3', detected: 'Moss', acc: '90%' },
+            { name: 'Item 4', detected: 'Moss', acc: '90%' },
+            { name: 'Item 5', detected: 'Moss', acc: '90%' },
+            { name: 'Item 6', detected: 'Moss', acc: '90%' },
+            { name: 'Item 7', detected: 'Moss', acc: '90%' },
+            { name: 'Item 8', detected: 'Moss', acc: '90%' },
+            { name: 'Item 9', detected: 'Moss', acc: '90%' },
+            { name: 'Item 10', detected: 'Moss', acc: '90%' },
+        ]
+
+        // TODO: Format data
+        let data = $("#pass-data").val();
+        console.log(data)
+        for (let i = 0; i < data.length; i++) {
+            console.log(data[i])
+        }
+
+        // History pagination
+        $('#pagination-container').pagination({
+            dataSource: sample,
+            pageSize: 8,
+            callback: function (data, pagination) {
+                // template method of yourself
+                let html = simpleTemplating(data);
+                $('#data-container').html(html);
+            }
+        })
+    </script>
+}

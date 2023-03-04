@@ -34,6 +34,11 @@
     <link rel="stylesheet" href="~/css/icomoon.css">
     <link rel="stylesheet" href="~/css/style.css">
 
+    <link rel="stylesheet" href="~/css/pagination.css">
+
+    @RenderSection("Styles", required: false)
+
+
     <style>
         ul.navbar-nav > .nav-item:hover > a {
             color: red !important;
@@ -84,7 +89,7 @@
                             <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Medicine" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Medicine" asp-action="Index">Medicine</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Treatment" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/ImageDetection" ? "text-danger" : "text-dark")" asp-area="" asp-controller="ImageDetection" asp-action="Index">Detect</a>
                         </li>
 
                         @if (session.GetString("n") != null && session.GetString("r") != "Admin")
@@ -193,6 +198,8 @@
     <script src="~/js/bootstrap-datepicker.js"></script>
     <script src="~/js/scrollax.min.js"></script>
     <script src="~/js/main.js"></script>
+
+    <script src="~/js/pagination.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

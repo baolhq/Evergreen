@@ -18,7 +18,7 @@ namespace EvergreenAPI.Models
         public int DiseaseId { get; set; }
         public virtual Disease Disease { get; set; }
 
-        /*public List<DiseaseTreatment> DiseaseTreatments { get; set; }*/
+        
 
         [ForeignKey("Images")]
         [DisplayName("Image Description")]

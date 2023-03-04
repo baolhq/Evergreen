@@ -224,13 +224,13 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var plant = await GetTreatmentById(id);
+            var treatment = await GetTreatmentById(id);
             HttpResponseMessage response = await client.DeleteAsync(TreatmentApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("AdminIndex");
             }
-            return View();
+            return View(treatment);
         }
 
         private async Task<Treatment> GetTreatmentById(int id)
@@ -247,7 +247,7 @@ namespace EvergreenView.Controllers
             return JsonSerializer.Deserialize<Treatment>(strData, options);
         }
 
-        public async Task<IEnumerable<Disease>> GetPlantCategories()
+        public async Task<IEnumerable<Disease>> GetDiseases()
         {
             HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
@@ -262,7 +262,7 @@ namespace EvergreenView.Controllers
 
         public async Task SetViewData()
         {
-            var listDiseases = await GetPlantCategories();
+            var listDiseases = await GetDiseases();
             ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
             var listImage = await GetImages();
             ViewData["Images"] = new SelectList(listImage, "ImageId", "AltText");
@@ -281,6 +281,10 @@ namespace EvergreenView.Controllers
             return listImage;
         }
 
+
+
+
+
         public async Task<IActionResult> AdminIndex()
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
@@ -297,6 +301,10 @@ namespace EvergreenView.Controllers
             List<Treatment> treatments = JsonSerializer.Deserialize<List<Treatment>>(strData, options);
             return View(treatments);
         }
+
+
+
+
 
         public async Task<IActionResult> AdminDetails(int id)
         {

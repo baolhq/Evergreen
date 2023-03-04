@@ -13,7 +13,7 @@ namespace EvergreenAPI.Repositories
         ICollection<Blog> GetBlogs();
         Blog GetBlog(int id);
         bool BlogExist(int id);
-        bool SaveBlog(Blog b);
+        bool CreateBlog(Blog b);
         bool DeleteBlog(Blog b);
         bool UpdateBlog(Blog b);
         bool Save();

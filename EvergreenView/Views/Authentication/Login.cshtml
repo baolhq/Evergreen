@@ -21,12 +21,12 @@
                                 <form method="post">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="form-group py-2 d-flex align-items-center">
-                                        <input asp-for="Username" class="form-control rounded-pill" placeholder="Username"/>
-                                        <span asp-validation-for="Username" class="text-danger">@ViewData["error"]</span>
+                                        <input asp-for="Email" class="form-control rounded-pill" type="email" placeholder="Email Address" />
+                                        <span asp-validation-for="Email" class="text-danger">@ViewData["error"]</span>
                                     </div>
                                     <div class="form-group py-2 d-flex align-items-center">
                                         <input asp-for="Password" class="form-control rounded-pill" type="password" placeholder="Password"/>
-                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                        <span asp-validation-for="Password" class="text-danger">@ViewData["error"]</span>
                                     </div>
                                     <div class="form-group py-2 mt-3">
                                         <input type="submit" value="Login" class="btn btn-danger btn-block p-3" />

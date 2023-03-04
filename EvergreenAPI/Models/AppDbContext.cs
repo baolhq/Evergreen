@@ -19,33 +19,11 @@ namespace EvergreenAPI.Models
         public DbSet<MedicineCategory> MedicineCategories { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
-        /*public DbSet<DiseaseMedicine> DiseasesMedicines { get; set; }
-        public DbSet<DiseaseTreatment> DiseaseTreatments { get; set; }*/
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
 
-           /**//* modelBuilder.Entity<DiseaseTreatment>()
-                .HasAlternateKey(dt => new { dt.DiseaseId, dt.TreatmentId });
-            modelBuilder.Entity<DiseaseTreatment>()
-                .HasOne(dt => dt.Disease)
-                .WithMany(d => d.DiseaseTreatments)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<DiseaseTreatment>()
-                .HasOne(dt => dt.Treatment)
-                .WithMany(t => t.DiseaseTreatments)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<DiseaseMedicine>()
-               .HasAlternateKey(dt => new { dt.DiseaseId, dt.MedicineId });
-            modelBuilder.Entity<DiseaseMedicine>()
-                .HasOne(dt => dt.Disease)
-                .WithMany(d => d.DiseaseMedicines)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<DiseaseMedicine>()
-                .HasOne(dt => dt.Medicine)
-                .WithMany(t => t.DiseaseMedicines)
-                .OnDelete(DeleteBehavior.Cascade);*//**/
+           
 
 
 
@@ -110,24 +88,36 @@ namespace EvergreenAPI.Models
                 {
                     AccountId = 1,
                     Username = "admin",
-                    Password = "Admin@",
+                    FullName = "abc",
+                    Password = "Admin@123",
+                    Email = "Admin123@gmail.com",
+                    Professions = "Administrator",
                     Role = "Admin",
+                    PhoneNumber = "0915333952",
                     Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwibmJmIjoxNjY3NjUwNjM2LCJleHAiOjE2Njc2NTI0MzYsImlhdCI6MTY2NzY1MDYzNiwiaXNzIjoiYmFvbGhxLmdpdGh1Yi5jb20iLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxIn0.r2GcLny8UrBAOwCA8FcPj1hY3Zdq69IdfHjebWlFqDs"
                 },
                 new Account
                 {
                     AccountId = 2,
                     Username = "test01",
-                    Password = "123123",
+                    FullName = "nhan hieu",
+                    Password = "Us@12345",
+                    Email = "Nhan123@gmail.com",
+                    Professions = "Farmer",
                     Role = "User",
+                    PhoneNumber = "0915333952",
                     Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QwMSIsInJvbGUiOiJVc2VyIiwibmJmIjoxNjY3NjUxMDI4LCJleHAiOjE2Njc2NTI4MjgsImlhdCI6MTY2NzY1MTAyOCwiaXNzIjoiYmFvbGhxLmdpdGh1Yi5jb20iLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxIn0.AWCcGJhaKRot6ZKxyFPUM-uIry3nR91_-0_834EtZ_o"
                 },
                 new Account
                 {
                     AccountId = 3,
                     Username = "pbc",
-                    Password = "121212",
+                    FullName = "thien duc",
+                    Password = "Exp@12345678",
+                    Email = "Exp123@gmail.com", 
+                    Professions = "Expert",
                     Role = "Professor",
+                    PhoneNumber = "0915333952",
                     Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBiYyIsInJvbGUiOiJQcm9mZXNzb3IiLCJuYmYiOjE2Njc2OTE2OTcsImV4cCI6MTY2NzY5MzQ5NywiaWF0IjoxNjY3NjkxNjk3LCJpc3MiOiJiYW9saHEuZ2l0aHViLmNvbSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEifQ.gBY9L51QgnFnrHjyS_wKxq6dLVZsU2dzFQqKiwGcYEs"
                 }
             );
@@ -207,7 +197,8 @@ namespace EvergreenAPI.Models
                     Name = "Chaetumium",
                     Uses = "Trị bệnh vàng lá",
                     MedicineCategoryId = 1,
-                    ImageId = 7
+                    ImageId = 7,
+                    DiseaseId = 2
                 },
                 new Medicine
                 {
@@ -215,16 +206,17 @@ namespace EvergreenAPI.Models
                     Name = "Basudin",
                     Uses = "Trừ sâu trong thân cây",
                     MedicineCategoryId = 2,
-                    ImageId = 8
+                    ImageId = 8,
+                    DiseaseId = 2
                 },
                 new Medicine
                 {
                     MedicineId = 9,
                     Name = "AT Vaccino",
                     Uses = "Trị lá úa sớm",
-
                     MedicineCategoryId = 1,
-                    ImageId = 9
+                    ImageId = 9,
+                    DiseaseId = 3
 
                 }
             );

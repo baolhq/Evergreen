@@ -18,20 +18,15 @@ namespace EvergreenAPI.Repositories
             _context = context;
         }
 
-        public bool DeleteUser(Account b)
+        public bool DeleteUser(Account user)
         {
-            _context.Remove(b);
+            _context.Remove(user);
             return Save();
         }
 
-        public Account GetUserByEmail(string email)
+        public Account GetUser(string email)
         {
-            return _context.Accounts.Where(a => a.Email == email).FirstOrDefault();
-        }
-
-        public Account GetUser(string username)
-        {
-            return _context.Accounts.Where(s => s.Username == username).FirstOrDefault();
+            return _context.Accounts.Where(s => s.Email == email).FirstOrDefault();
         }
 
         public ICollection<Account> GetUsers()
@@ -45,21 +40,21 @@ namespace EvergreenAPI.Repositories
             return saved > 0 ? true : false;
         }
 
-        public bool SaveUser(Account b)
+        public bool CreateUser(UserDTO user)
         {
-            _context.Add(b);
+            _context.Add(user);
             return Save();
         }
 
-        public bool UpdateUser(Account b)
+        public bool UpdateUser(UserDTO user)
         {
-            _context.Update(b);
+            _context.Update(user);
             return Save();
         }
 
-        public bool UserExist(string username)
+        public bool UserExist(string email)
         {
-            return _context.Accounts.Any(f => f.Username == username);
+            return _context.Accounts.Any(f => f.Email == email);
         }
     }
 }

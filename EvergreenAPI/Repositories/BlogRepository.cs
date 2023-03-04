@@ -14,9 +14,9 @@ namespace EvergreenAPI.Repositories
         public BlogRepository(AppDbContext context)
         {
             _context = context;
-        }
+        } 
 
-        public bool SaveBlog(Blog Blog)
+        public bool CreateBlog(Blog Blog)
         {
             _context.Add(Blog);
             return Save();

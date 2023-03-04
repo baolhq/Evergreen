@@ -7,7 +7,7 @@
 }
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Delete";
 }
 
 <div class="container">
@@ -26,6 +26,10 @@
                     </div>
                 </div>
                 <div class="col-md-6">
+                     <div class="col-sm-12 pb-3">
+                        <label for="exampleCity">Disease :</label>
+                        <p>@Model.Disease.Name</p>
+                    </div>
                     <div class="col-sm-12 pb-3">
                         <label for="exampleCity">Treatment Description :</label>
                         <p>@Model.Method</p>

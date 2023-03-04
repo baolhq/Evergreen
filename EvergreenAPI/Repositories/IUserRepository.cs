@@ -9,16 +9,16 @@ namespace EvergreenAPI.Repositories
 {
     public interface IUserRepository
     {
-        bool SaveUser(Account b);
+        bool CreateUser(UserDTO user);
 
-        Account GetUser(string username);
+        Account GetUser(string email);
 
-        bool DeleteUser(Account b);
+        bool DeleteUser(Account user);
 
-        bool UpdateUser(Account b);
+        bool UpdateUser(UserDTO user);
 
         ICollection<Account> GetUsers();
-        bool UserExist(string username);
+        bool UserExist(string email);
         bool Save();
 
         

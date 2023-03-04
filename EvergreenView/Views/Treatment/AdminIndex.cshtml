@@ -10,11 +10,11 @@
 }
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create</a>
 </p>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h4 class="m-0 font-weight-bold text-primary">Medicine Category Managements</h4>
+        <h4 class="m-0 font-weight-bold text-primary">Treatments Managements</h4>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -27,7 +27,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.Disease.Name)
                         </th>
-                        <th>
+                        <th hidden>
                             @Html.DisplayNameFor(model => model.ImageId)
                         </th>
                         <th></th>
@@ -43,7 +43,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Disease.Name)
                             </td>
-                            <td>
+                            <td hidden>
                                 @Html.DisplayFor(modelItem => item.Image.Url)
                             </td>
                             <td>

@@ -33,7 +33,7 @@ namespace EvergreenAPI.Repositories
 
         public Medicine GetMedicine(int id)
         {
-            return _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Image).Where(s => s.MedicineId == id).FirstOrDefault(); ;
+            return _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Disease).Include(d => d.Image).Where(s => s.MedicineId == id).FirstOrDefault(); ;
         }
         public ICollection<Image> GetImages()
         {
@@ -47,7 +47,11 @@ namespace EvergreenAPI.Repositories
 
         public ICollection<Medicine> GetMedicines()
         {
-            return _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Image).ToList();
+            return _context.Medicines.Include(d => d.Disease).Include(d => d.MedicineCategory).Include(d => d.Image).ToList();
+        }
+        public ICollection<Disease> GetDiseases()
+        {
+            return _context.Diseases.ToList();
         }
 
         public bool Save()

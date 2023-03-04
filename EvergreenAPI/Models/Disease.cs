@@ -25,10 +25,6 @@ namespace EvergreenAPI.Models
         [DisplayName("Image Description")]
         public int ImageId { get; set; }
         public virtual Image Image { get; set; }
-        /*public List<DiseaseTreatment> DiseaseTreatments { get; set; }*/
-
-
-        /*public List<DiseaseMedicine> DiseaseMedicines { get; set; }
-        public List<Treatment> Treatments { get; set; }*/
+        
     }
 }

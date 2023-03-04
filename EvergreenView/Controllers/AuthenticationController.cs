@@ -47,7 +47,7 @@ namespace EvergreenView.Controllers
             {
                 var body = await response.Content.ReadFromJsonAsync<Account>();
 
-                HttpContext.Session.SetString("n", body.Username);
+                HttpContext.Session.SetString("n", body.Email);
                 HttpContext.Session.SetString("r", body.Role);
                 HttpContext.Session.SetString("t", body.Token);
 
@@ -62,7 +62,7 @@ namespace EvergreenView.Controllers
                    
             }
 
-            ViewData["error"] = "Username or password is incorrect";
+            ViewData["error"] = "Email or password is incorrect";
             return View();
         }
 

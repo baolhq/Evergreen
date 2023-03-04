@@ -26,7 +26,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetUsers()
         {
             var Users = _mapper.Map<List<Account>>(_UserRepository.GetUsers());
@@ -37,14 +37,16 @@ namespace EvergreenAPI.Controllers
             return Ok(Users);
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("{email}")]
         [Authorize (Roles = "User,Admin")]
-        public IActionResult GetUser(string username)
+        public IActionResult GetUser(string email)
         {
-            if (!_UserRepository.UserExist(username))
-                return NotFound($"User '{username}' is not exists!!");
+            
+            if (!_UserRepository.UserExist(email))
+                return BadRequest($"User '{email}' is not exists!!");
 
-            var Users = _mapper.Map<Account>(_UserRepository.GetUser(username));
+
+            var Users = _mapper.Map<Account>(_UserRepository.GetUser(email));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -54,13 +56,13 @@ namespace EvergreenAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult CreateUser([FromBody] Account UserCreate)
+        public IActionResult CreateUser([FromBody] UserDTO UserCreate)
         {
             if (UserCreate == null)
                 return BadRequest(ModelState);
 
             var User = _UserRepository.GetUsers()
-                .Where(c => c.Username.Trim().ToUpper() == UserCreate.Username.TrimEnd().ToUpper())
+                .Where(c => c.Email.Trim().ToUpper() == UserCreate.Email.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
             if (User != null)
@@ -72,9 +74,9 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<Account>(UserCreate);
+            var UserMap = _mapper.Map<UserDTO>(UserCreate);
 
-            if (!_UserRepository.SaveUser(UserMap))
+            if (!_UserRepository.CreateUser(UserMap))
             {
                 ModelState.AddModelError("", "Something was wrong while saving");
                 return StatusCode(500, ModelState);
@@ -84,23 +86,23 @@ namespace EvergreenAPI.Controllers
         }
 
 
-        [HttpPut("{username}")]
-        [Authorize(Roles = "User,Admin")]
-        public IActionResult UpdateUser(string username, [FromBody] Account updatedUser)
+        [HttpPut("{email}")]
+        [Authorize(Roles = "User")]
+        public IActionResult UpdateUser(string email, [FromBody] UserDTO updatedUser)
         {
             if (updatedUser == null)
                 return BadRequest(ModelState);
 
-            if (username != updatedUser.Username)
+            if (email != updatedUser.Email)
                 return BadRequest(ModelState);
 
-            if (!_UserRepository.UserExist(username))
+            if (!_UserRepository.UserExist(email))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<Account>(updatedUser);
+            var UserMap = _mapper.Map<UserDTO>(updatedUser);
 
             if (!_UserRepository.UpdateUser(UserMap))
             {
@@ -113,14 +115,14 @@ namespace EvergreenAPI.Controllers
 
 
 
-        [HttpDelete("{username}")]
+        [HttpDelete("{email}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteUser(string username)
+        public IActionResult DeleteUser(string email)
         {
-            if (!_UserRepository.UserExist(username))
+            if (!_UserRepository.UserExist(email))
                 return NotFound();
 
-            var UserToDelete = _UserRepository.GetUser(username);
+            var UserToDelete = _UserRepository.GetUser(email);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

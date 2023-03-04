@@ -208,13 +208,13 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var member = await GetDiseaseCategoryById(id);
+            var disease = await GetDiseaseCategoryById(id);
             HttpResponseMessage response = await client.DeleteAsync(DiseaseCategoryApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(disease);
         }
     }
 }

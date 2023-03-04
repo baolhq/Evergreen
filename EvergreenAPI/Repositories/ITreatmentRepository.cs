@@ -7,6 +7,7 @@ namespace EvergreenAPI.Repositories
     {
         ICollection<Image> GetImages();
         ICollection<Treatment> GetTreatments();
+        ICollection<Disease> GetDiseases();
         Treatment GetTreatment(int id);
         bool TreatmentExist(int id);
         bool CreateTreatment(Treatment treatment);

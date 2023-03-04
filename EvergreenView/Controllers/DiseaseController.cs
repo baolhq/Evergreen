@@ -157,7 +157,6 @@ namespace EvergreenView.Controllers
 
             List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData2, options2);
             ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
-
             return View(disease);
         }
 
@@ -249,7 +248,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("AdminIndex");
             }
-            return View();
+            return View(disease);
         }
 
         public async Task<IEnumerable<DiseaseCategory>> GetDiseaseCategory()

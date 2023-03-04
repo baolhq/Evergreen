@@ -1,6 +1,7 @@
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using EvergreenAPI.Services;
+using EvergreenAPI.Services.EmailService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EvergreenAPI.DTO;
 
 namespace EvergreenAPI
 {
@@ -42,10 +44,10 @@ namespace EvergreenAPI
             services.AddScoped<ITreatmentRepository, TreatmentRepository>();
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IExpertRepository, ExpertRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IEmailService, EmailService>();
 
             services.AddDbContext<AppDbContext>(opitons =>
                 opitons.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -69,11 +71,24 @@ namespace EvergreenAPI
                 };
             });
 
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //Auto mapper DTO
+
             services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EvergreenAPI", Version = "v1" });
             });
+
+
+            #region Send Mail
+            services.AddOptions();
+            var mailsettings = Configuration.GetSection("MailSettings");
+            services.Configure<EmailDTO>(mailsettings);
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

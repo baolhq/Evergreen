@@ -33,7 +33,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.DiseaseCategoryId)
                         </th>
-                        <th>
+                        <th hidden>
                             @Html.DisplayNameFor(model => model.ImageId)
                         </th>
                         <th></th>
@@ -55,7 +55,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.DiseaseCategory.Name)
                             </td>
-                            <td>
+                            <td hidden>
                                 @Html.DisplayFor(modelItem => item.Image.Url)
                             </td>
                             <td>

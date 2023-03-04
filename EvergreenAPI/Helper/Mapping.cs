@@ -16,7 +16,7 @@ namespace EvergreenAPI.Helper
             CreateMap<Blog, BlogDTO>().ReverseMap();
             CreateMap<Account, UserDTO>().ReverseMap();
             CreateMap<Image, ImageDTO>().ReverseMap();
-            CreateMap<Account, ExpertDTO>().ReverseMap();
+            
 
         }
     }

@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var listImages = ViewData["Images"] as SelectList;
     
 }
 
@@ -10,6 +11,8 @@
         <form asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BlogId" />
+            <input asp-for="ViewCount" type="hidden" />
+            <input asp-for="LastModifiedDate" type="hidden" />
             <div class="form-group py-2">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -26,14 +29,8 @@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group py-2">
-                <label asp-for="LastModifiedDate" class="control-label"></label>
-                <input asp-for="LastModifiedDate" class="form-control" />
-                <span asp-validation-for="LastModifiedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="ViewCount" class="control-label"></label>
-                <input asp-for="ViewCount" class="form-control" />
-                <span asp-validation-for="ViewCount" class="text-danger"></span>
+                <label asp-for="ImageId" class="control-label"></label>
+                <select asp-for="ImageId" class="form-control" asp-items="listImages"></select>
             </div>
             <div class="form-group py-2">
                 <input type="submit" value="Save" class="btn btn-primary" /> 

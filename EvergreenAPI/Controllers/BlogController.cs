@@ -15,7 +15,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Professor")]
     public class BlogController : ControllerBase
     {
         private readonly IBlogRepository _BlogRepository;
@@ -48,7 +48,7 @@ namespace EvergreenAPI.Controllers
             if (!_BlogRepository.BlogExist(BlogId))
                 return NotFound($"Blog Category '{BlogId}' is not exists!!");
 
-            var Blogs = _mapper.Map<BlogDTO>(_BlogRepository.GetBlog(BlogId));
+            var Blogs = _mapper.Map<Blog>(_BlogRepository.GetBlog(BlogId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -80,7 +80,7 @@ namespace EvergreenAPI.Controllers
 
             var BlogMap = _mapper.Map<Blog>(BlogCreate);
 
-            if (!_BlogRepository.SaveBlog(BlogMap))
+            if (!_BlogRepository.CreateBlog(BlogMap))
             {
                 ModelState.AddModelError("", "Something was wrong while saving");
                 return StatusCode(500, ModelState);

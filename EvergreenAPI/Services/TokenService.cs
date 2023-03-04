@@ -10,12 +10,12 @@ namespace EvergreenAPI.Services
 {
     public class TokenService : ITokenService
     {
-        private const double EXPIRY_DURATION_MINUTES = 30;
+        
 
         public string BuildToken(string key, string issuer, Account account)
         {
             var claims = new[] {
-            new Claim(ClaimTypes.Name, account.Username),
+            new Claim(ClaimTypes.Email, account.Email),
             new Claim(ClaimTypes.Role, account.Role),
             new Claim(ClaimTypes.NameIdentifier,
             Guid.NewGuid().ToString())
@@ -24,7 +24,7 @@ namespace EvergreenAPI.Services
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
             var tokenDescriptor = new JwtSecurityToken(issuer, issuer, claims,
-                expires: DateTime.Now.AddMinutes(EXPIRY_DURATION_MINUTES), signingCredentials: credentials);
+                expires: DateTime.Now.AddDays(1), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
         public bool ValidateToken(string key, string issuer, string token)

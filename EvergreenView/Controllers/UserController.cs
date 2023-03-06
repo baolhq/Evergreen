@@ -31,16 +31,6 @@ namespace EvergreenView.Controllers
             
         }
 
-
-
-
-        
-        
-
-        [Authorize("User")]
-        public async Task<ActionResult> Details(int id)
-
-
         public async Task<IActionResult> Index()
         {
 
@@ -64,7 +54,7 @@ namespace EvergreenView.Controllers
             return View(listUsers);
         }
 
-        public async Task<ActionResult> Details()
+        public async Task<ActionResult> Details(int id)
 
         {
             if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")

@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor httpContentAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
     ViewData["Title"] = "Disease detection";
 }
 
@@ -44,7 +47,12 @@
                 letter-spacing: -1px;
                 margin: 12px auto;
                 opacity: 0.65;
+                user-select: none;
             }
+
+                .border-container p:hover {
+                    cursor: default;
+                }
 
         #file-upload {
             width: 100%;
@@ -87,11 +95,21 @@
             text-decoration: none;
             color: black;
         }
+
+        #small {
+            opacity: 0.5;
+            font-size: 0.9em;
+        }
+
+        code {
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.15px;
+        }
     </style>
 }
 
 <div class="wrapper">
-    <form class="browse-container ftco-animate">
+    <div class="browse-container ftco-animate">
         <h1 class="title">Upload a file</h1>
         <div class="upload-container">
             <div class="border-container" method="post">
@@ -100,15 +118,15 @@
                     Drag and drop files here, or
                     <a href="#" id="file-browser">browse</a> your computer.
                 </p>
+                <p id="small">For best result, we recommend using <code>.JPEG</code> format</p>
             </div>
         </div>
         <button id="submit-btn"
-                type="submit"
                 class="btn btn-block btn-danger text-white mt-2 p-2"
                 disabled>
             Submit
         </button>
-    </form>
+    </div>
 </div>
 
 <div class="container ftco-animate">
@@ -127,7 +145,8 @@
     <div id="pagination-container"></div>
 </div>
 
-<input type="hidden" id="pass-data" value=@ViewBag.history />
+<input type="hidden" id="pass-data" value="@ViewBag.history" />
+<input type="hidden" id="uid" value="@session.GetString("i")" />
 
 @section Scripts {
     <script>
@@ -138,12 +157,12 @@
             var filename = $('#file-upload').val().split('\\').pop();
             // If any file selected
             if (filename) {
-                $("#preview").html(`${filename} selected`)
+                $("#preview").html(`File <code>${filename}</code> selected`)
                 $("#submit-btn").attr("disabled", false);
             }
         })
 
-        $("#file-browser").click((e) => {
+        $("#preview, #small").click((e) => {
             e.preventDefault();
             $("#file-upload").trigger("click");
         });
@@ -154,9 +173,9 @@
                 html += `<li class="list-group-item mb-2">`
                     + `<a class="item-link" href="#">`
                     + `<div class="d-flex justify-content-between" title="Click to view details">`
-                    + `<span class="img-name w-25"> Item ${item["name"]}</span>`
-                    + `<span class="disease-name w-50">${item["detected"]}</span>`
-                    + `<span class="acc w-25 text-right">${item["acc"]}</span>`
+                    + `<span class="img-name w-25">${item["ImageName"]}</span>`
+                    + `<span class="disease-name w-50">${item["DetectedDisease"]}</span>`
+                    + `<span class="acc w-25 text-right">${item["Accuracy"].toFixed(2)}%</span>`
                     + `</div>`
                     + `</a>`
                     + `</li>`;
@@ -165,35 +184,84 @@
             return html;
         }
 
-        let sample = [
-            { name: 'Item 1', detected: 'Moss', acc: '90%' },
-            { name: 'Item 2', detected: 'Moss', acc: '90%' },
-            { name: 'Item 3', detected: 'Moss', acc: '90%' },
-            { name: 'Item 4', detected: 'Moss', acc: '90%' },
-            { name: 'Item 5', detected: 'Moss', acc: '90%' },
-            { name: 'Item 6', detected: 'Moss', acc: '90%' },
-            { name: 'Item 7', detected: 'Moss', acc: '90%' },
-            { name: 'Item 8', detected: 'Moss', acc: '90%' },
-            { name: 'Item 9', detected: 'Moss', acc: '90%' },
-            { name: 'Item 10', detected: 'Moss', acc: '90%' },
-        ]
+        let sample = []
+        $(document).ready(() => {
+            let data = $("#pass-data").val()
+            sample = JSON.parse(data)
+            paginate(sample)
+        })
 
-        // TODO: Format data
-        let data = $("#pass-data").val();
-        console.log(data)
-        for (let i = 0; i < data.length; i++) {
-            console.log(data[i])
+        const paginate = (data) => {
+            // History pagination
+            $('#pagination-container').pagination({
+                dataSource: data,
+                pageSize: 8,
+                callback: function (data, pagination) {
+                    // template method of yourself
+                    let html = simpleTemplating(data);
+                    $('#data-container').html(html);
+                }
+            })
         }
 
-        // History pagination
-        $('#pagination-container').pagination({
-            dataSource: sample,
-            pageSize: 8,
-            callback: function (data, pagination) {
-                // template method of yourself
-                let html = simpleTemplating(data);
-                $('#data-container').html(html);
-            }
+        $("#submit-btn").on("click", (e) => {
+            e.preventDefault();
+            $("#submit-btn").attr("disabled", true);
+
+            let fileName = $('#file-upload').val().replace(/.*(\/|\\)/, '');
+            let fileData = document.getElementById("file-upload").files[0];
+
+            let apiUrl = "https://localhost:44334/api/DetectionHistory"
+            let uid = $("#uid").val()
+
+            let formData = new FormData();
+            formData.append('image', fileData)
+            formData.append('uid', uid)
+
+            $.ajax({
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                url: apiUrl,
+                data: formData,
+                success: function (response, textStatus, xhr) {
+                    // Remove previous list first
+                    $('#pagination-container').html()
+
+                    // Re-render data without reload
+                    $.ajax({
+                        contentType: false,
+                        processData: false,
+                        url: `${apiUrl}/${uid}`,
+                        success: function (data, textStatus, xhr) {
+                            // Transform text to PascalCase format
+                            for (var i = 0; i < data.length; i++) {
+
+                                var a = data[i];
+                                for (var key in a) {
+                                    if (a.hasOwnProperty(key)) {
+                                        a[key.charAt(0).toUpperCase() + key.substring(1)] = a[key];
+                                        delete a[key];
+
+                                    }
+                                }
+                                data[i] = a;
+
+                            }
+
+                            // Finally, paginate'm
+                            paginate(data)
+                        }, error: function (xhr, status, error) {
+                            console.log(error)
+                        }
+                    });
+
+                }, error: function (xhr, status, error) {
+                    console.log(error)
+                }, complete: function () {
+                    $("#submit-btn").attr("disabled", false);
+                }
+            });
         })
     </script>
 }

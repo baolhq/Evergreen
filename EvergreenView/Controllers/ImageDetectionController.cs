@@ -1,4 +1,5 @@
-﻿using EvergreenAPI.Models;
+﻿using EvergreenAPI.DTO;
+using EvergreenAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -49,7 +50,8 @@ namespace EvergreenView.Controllers
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<DetectionHistory> history = JsonSerializer.Deserialize<List<DetectionHistory>>(strData, options);
+            List<ExtractDetectionHistoriesDTO> history =
+                JsonSerializer.Deserialize<List<ExtractDetectionHistoriesDTO>>(strData, options);
 
             var result = JsonSerializer.Serialize(history);
             ViewBag.history = result;

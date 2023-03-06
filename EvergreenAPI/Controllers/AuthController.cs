@@ -43,11 +43,11 @@ namespace EvergreenAPI.Controllers
 
         [Route("register")]
         [HttpPost]
-        public IActionResult Register([FromBody] AccountDTO account)
+        public async Task <IActionResult> Register([FromBody] AccountDTO account)
         {
             if (account == null) return BadRequest();
 
-            if (_accountRepository.Register(account)) return Ok("Register Successfully.");
+            if (await _accountRepository.Register(account)) return Ok("Register Successfully.");
             else return BadRequest("An error occured, please contact admin.");
         }
 
@@ -55,12 +55,13 @@ namespace EvergreenAPI.Controllers
 
         [Route("verify")]
         [HttpPost]
-        public IActionResult Verify(string account)
+        public async Task <IActionResult> Verify(string token)
         {
-            var acc = _accountRepository.Verify(account);
+            var acc = await _accountRepository.Verify(token);
             if (acc != null)
             {
-                return Ok("User Verified.");
+                
+                return Ok($"User {acc.Email} verified at {acc.VerifiedAt}!");
             }
             else
             {
@@ -75,9 +76,9 @@ namespace EvergreenAPI.Controllers
 
         [Route("forgot-password")]
         [HttpPost]
-        public IActionResult ForgotPassword(string email)
+        public async Task< IActionResult> ForgotPassword(string email)
         {
-            var mail = _accountRepository.ForgotPassword(email);
+            var mail = await _accountRepository.ForgotPassword(email);
             if(mail != null)
             {
                 return Ok("You may now reset your password.");
@@ -91,13 +92,13 @@ namespace EvergreenAPI.Controllers
 
 
 
-       
+        [Route("reset-password")]
         [HttpPost]
-        public IActionResult ResetPassword(ResetPasswordDTO request)
+        public async Task <IActionResult> ResetPassword(ResetPasswordDTO request)
         {
             if (request == null) return BadRequest();
 
-            if (_accountRepository.ResetPassword(request))
+            if (await _accountRepository.ResetPassword(request))
             {
                 return Ok("Password Successfully Reset.");
             }

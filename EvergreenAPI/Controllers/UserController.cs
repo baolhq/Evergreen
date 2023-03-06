@@ -29,30 +29,31 @@ namespace EvergreenAPI.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult GetUsers()
         {
-            var Users = _mapper.Map<List<Account>>(_UserRepository.GetUsers());
+            var users =  _UserRepository.GetUsers();
+            return Ok(_mapper.Map<List<Account>>(users));
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Users);
-        }
-
-        [HttpGet("{email}")]
-        [Authorize (Roles = "User,Admin")]
-        public IActionResult GetUser(string email)
-        {
             
-            if (!_UserRepository.UserExist(email))
-                return BadRequest($"User '{email}' is not exists!!");
+        }
 
 
-            var Users = _mapper.Map<Account>(_UserRepository.GetUser(email));
+
+
+        [HttpGet("{id}")]
+        [Authorize (Roles = "User,Admin")]
+        public IActionResult GetUser(int id)
+        {
+            var user = _UserRepository.GetUser(id);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Users);
+            return Ok(_mapper.Map<Account>(user));
         }
+
+
+
+
+
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -82,57 +83,55 @@ namespace EvergreenAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Create Success");
+            return Ok("Create User Successfully");
         }
 
 
-        [HttpPut("{email}")]
+
+
+
+        [HttpPut("{id}")]
         [Authorize(Roles = "User")]
-        public IActionResult UpdateUser(string email, [FromBody] UserDTO updatedUser)
+        public IActionResult UpdateUser(int id, Account updatedUser)
         {
-            if (updatedUser == null)
+            var user = _UserRepository.GetUser(id);
+            if (user == null)
                 return BadRequest(ModelState);
 
-            if (email != updatedUser.Email)
+            if (user.AccountId != updatedUser.AccountId)
                 return BadRequest(ModelState);
-
-            if (!_UserRepository.UserExist(email))
-                return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<UserDTO>(updatedUser);
-
-            if (!_UserRepository.UpdateUser(UserMap))
+            if (!_UserRepository.UpdateUser(updatedUser, id))
             {
                 ModelState.AddModelError("", "Something was wrong when saving");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Updated Success");
+            return NoContent();
         }
 
 
 
         [HttpDelete("{email}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteUser(string email)
+        public IActionResult DeleteUser(int id)
         {
-            if (!_UserRepository.UserExist(email))
-                return NotFound();
 
-            var UserToDelete = _UserRepository.GetUser(email);
-
+            var user = _UserRepository.GetUser(id);
+            if (user == null)
+                return BadRequest(ModelState);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_UserRepository.DeleteUser(UserToDelete))
+            if (!_UserRepository.DeleteUser(id))
             {
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);
             }
-            return Ok("Delete Success");
+            return NoContent();
         }
     }
 }

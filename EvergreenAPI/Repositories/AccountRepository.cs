@@ -5,6 +5,7 @@ using EvergreenAPI.Services.EmailService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
@@ -17,6 +18,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
+using System.Threading.Tasks;
 using static EvergreenAPI.Services.EmailService.EmailService;
 
 namespace EvergreenAPI.Repositories
@@ -29,11 +31,12 @@ namespace EvergreenAPI.Repositories
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailService _emailService;
 
-        public AccountRepository(ITokenService tokenService, IConfiguration config, AppDbContext context)
+        public AccountRepository(ITokenService tokenService, IConfiguration config, AppDbContext context, IEmailService emailService)
         {
             _context = context;
             _tokenService = tokenService;
             _config = config;
+            _emailService = emailService;
         }
         public Account GetAccount(AccountDTO account)
         {
@@ -80,7 +83,7 @@ namespace EvergreenAPI.Repositories
        
 
 
-        public bool Register(AccountDTO accountDto)
+        public async Task<bool>  Register(AccountDTO accountDto)
         {
             string userRole = "User";
             var found = _context.Accounts.Any(a => a.Email == accountDto.Email);
@@ -125,27 +128,15 @@ namespace EvergreenAPI.Repositories
             #region Add Email Template
             try
             {
-                var builder = new BodyBuilder();
-                //Giao thuc IO Truyen file
-                using (StreamReader SourceReader = System.IO.File.OpenText($"{_webHostEnvironment.WebRootPath}Templates/VerifyAccountTemplate.html"))
-                {
-                    builder.HtmlBody = SourceReader.ReadToEnd();
-                }
-
-                // replace chữ trong indexs
-                string htmlBody = builder.HtmlBody.Replace("Welcome!", $"Welcome {account.Email}!")
-                .Replace("#Token", account.Token)
-                .Replace("#memberEmail", account.Email);
-                string messagebody = string.Format("{0}", htmlBody);
-
+                
                 #region Send Verification Mail To User
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "art.gulgowski@ethereal.email"; //temp email
+                    mailContent1.To = "graham37@ethereal.email"; //temp email
                     mailContent1.Subject = "Welcome To Evergreen!";
-                    mailContent1.Body = messagebody;
-                    _emailService.SendMail(mailContent1);
+                    mailContent1.Body = account.Token.ToString();
+                   await _emailService.SendMail(mailContent1);
                 }
                 catch (System.ArgumentNullException)
                 {
@@ -171,9 +162,9 @@ namespace EvergreenAPI.Repositories
 
 
 
-        public Account Verify(string token)
+        public async Task  <Account> Verify(string token)
         {
-            var user = _context.Accounts.FirstOrDefault(x => x.Token == token);
+            var user = await _context.Accounts.FirstOrDefaultAsync(x => x.Token == token);
             if(user == null)
             {
                 return null;
@@ -184,13 +175,13 @@ namespace EvergreenAPI.Repositories
             }
             user.VerifiedAt = DateTime.Now;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return user;
 
         }
 
 
-        public Account ForgotPassword(string email)
+        public async Task <Account> ForgotPassword(string email)
         {
             var user = _context.Accounts.FirstOrDefault(x => x.Email == email);
             if (user == null)
@@ -204,28 +195,16 @@ namespace EvergreenAPI.Repositories
             #region Add Email Template
             try
             {
-                var builder = new BodyBuilder();
-                //Giao thuc IO Truyen file
-                using (StreamReader SourceReader = System.IO.File.OpenText($"{_webHostEnvironment.WebRootPath}Templates/ResetPasswordTemplate.html"))
-                {
-                    builder.HtmlBody = SourceReader.ReadToEnd();
-                }
-
-                // replace chữ trong indexs
-                string htmlBody = builder.HtmlBody.Replace("Welcome!", $"Welcome {user.Email}!")
-                .Replace("We're excited to have you get started. First, you need to confirm your account. Just press the button below.", "RESET PASSWORD REQUEST!")
-                .Replace("Confirm Account", "Reset Password")
-                .Replace("#Token", user.PasswordResetToken);
-                string messagebody = string.Format("{0}", htmlBody);
+                
 
                 #region Send Verification Mail To User
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "art.gulgowski@ethereal.email"; //temp email
+                    mailContent1.To = "amalia58@ethereal.email"; //temp email
                     mailContent1.Subject = "Reset Password!";
-                    mailContent1.Body = messagebody;
-                    _emailService.SendMail(mailContent1);
+                    mailContent1.Body = user.PasswordResetToken.ToString();
+                    await _emailService.SendMail(mailContent1);
                 }
                 catch (System.ArgumentNullException)
                 {
@@ -248,9 +227,9 @@ namespace EvergreenAPI.Repositories
         }
 
 
-        public bool ResetPassword(ResetPasswordDTO request)
+        public async Task <bool> ResetPassword(ResetPasswordDTO request)
         {
-            var user = _context.Accounts.FirstOrDefault(x => x.PasswordResetToken == request.Token);
+            var user = await _context.Accounts.FirstOrDefaultAsync(x => x.PasswordResetToken == request.Token);
 
             if (user == null || user.ResetTokenExpires < DateTime.Now)
             {
@@ -273,7 +252,8 @@ namespace EvergreenAPI.Repositories
                 user.PasswordSalt = passwordSalt;
             user.PasswordResetToken = null;
             user.ResetTokenExpires = null;
-            _context.SaveChanges();
+            user.Password = password;
+            await _context.SaveChangesAsync();
             return true;
 
         }
@@ -302,11 +282,7 @@ namespace EvergreenAPI.Repositories
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
-        /// <summary>
-        /// Use the below code to generate symmetric Secret Key
-        ///     var hmac = new HMACSHA256();
-        ///     var key = Convert.ToBase64String(hmac.Key);
-        /// </summary>
+        
         private string GenerateToken(string email, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

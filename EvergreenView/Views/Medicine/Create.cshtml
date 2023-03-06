@@ -7,11 +7,8 @@
     var listDiseases = ViewData["Diseases"] as SelectList;
 }
 
-<h1>Create</h1>
-<h4>Medicine</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 text-dark">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group py-2">

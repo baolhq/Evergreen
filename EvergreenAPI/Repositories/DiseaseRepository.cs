@@ -33,7 +33,10 @@ namespace EvergreenAPI.Repositories
 
         public Disease GetDisease(int id)
         {   
-            return _context.Diseases.Include(d => d.DiseaseCategory).Include(d => d.Image).Where(s => s.DiseaseId == id).FirstOrDefault(); ;
+            return _context.Diseases
+                .Include(d => d.DiseaseCategory)
+                .Include(d => d.Image)
+                .Where(s => s.DiseaseId == id).FirstOrDefault(); ;
         }
 
         public ICollection<Disease> GetDiseases()

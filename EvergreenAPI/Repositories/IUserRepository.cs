@@ -11,17 +11,16 @@ namespace EvergreenAPI.Repositories
     {
         bool CreateUser(UserDTO user);
 
-        Account GetUser(string email);
+        Account GetUser(int Id);
 
-        bool DeleteUser(Account user);
+        bool DeleteUser(int id);
 
-        bool UpdateUser(UserDTO user);
-
-        ICollection<Account> GetUsers();
-        bool UserExist(string email);
-        bool Save();
-
+        bool UpdateUser(Account user, int id);
         
+        ICollection<Account> GetUsers();
+        void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
+
+
 
     }
 }

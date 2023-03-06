@@ -1,5 +1,6 @@
 ﻿using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
+using System.Threading.Tasks;
 
 namespace EvergreenAPI.Repositories
 {
@@ -7,10 +8,10 @@ namespace EvergreenAPI.Repositories
     {
         Account GetAccount(AccountDTO account);
         Account Login(LoginDTO account);
-        bool Register(AccountDTO account);
-        Account Verify(string token);
-        Account ForgotPassword(string email);
-        bool ResetPassword(ResetPasswordDTO request);
+        Task<bool> Register(AccountDTO account);
+        Task<Account> Verify(string token);
+        Task<Account> ForgotPassword(string email);
+        Task<bool> ResetPassword(ResetPasswordDTO request);
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
     }
 }

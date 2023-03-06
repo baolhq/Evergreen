@@ -35,8 +35,11 @@ namespace EvergreenView.Controllers
 
         public async Task<IActionResult> Index()
         {
+
             
             HttpResponseMessage response = await client.GetAsync(BlogApiUrl);
+
+            
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

@@ -18,11 +18,13 @@ namespace EvergreenAPI.Controllers
     {
         private readonly IUserRepository _UserRepository;
         private readonly IMapper _mapper;
+        private readonly AppDbContext _context;
 
-        public UserController(IUserRepository UserRepository, IMapper mapper)
+        public UserController(IUserRepository UserRepository, IMapper mapper, AppDbContext context)
         {
             _UserRepository = UserRepository;
             _mapper = mapper;
+            _context = context;
         }
 
         [HttpGet]
@@ -38,7 +40,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet("{username}")]
-        [Authorize (Roles = "User,Admin")]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult GetUser(string username)
         {
             if (!_UserRepository.UserExist(username))
@@ -50,6 +52,21 @@ namespace EvergreenAPI.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Users);
+        }
+
+        [HttpPut("ManageRole")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SetRole(RoleDTO roleDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var account = _context.Accounts.Where(a => a.AccountId == int.Parse(roleDTO.AccountId)).FirstOrDefault();
+            if (account == null) return NotFound($"Account {roleDTO.AccountId} cannot be found");
+
+            account.Role = roleDTO.Role;
+            await _context.SaveChangesAsync();
+
+            return Ok(account);
         }
 
         [HttpPost]

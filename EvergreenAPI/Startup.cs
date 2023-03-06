@@ -70,7 +70,8 @@ namespace EvergreenAPI
                 };
             });
 
-            services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()));
+            services.AddCors();
+            services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores())).SetCompatibilityVersion(CompatibilityVersion.Latest);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EvergreenAPI", Version = "v1" });
@@ -86,6 +87,12 @@ namespace EvergreenAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EvergreenAPI v1"));
             }
+
+            // Enabling CORS
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             // JWT Auth
             app.UseHttpsRedirection();

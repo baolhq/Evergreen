@@ -10,8 +10,12 @@
     ViewData["Title"] = "Index";
 }
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h4 class="m-0 font-weight-bold text-primary">User Managements</h4>
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="btn btn-success text-white" asp-action="Create">Create Account</a>
+            <a class="btn btn-danger text-white ml-2" asp-action="ManageRole">Manage Role</a>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -56,7 +60,7 @@
                                 @Html.DisplayFor(modelItem => item.Role)
                             </td>
                             <td>
-                                <a asp-action="Delete" asp-route-username="@item.Username" class="btn btn-info">View</a>
+                                <a asp-action="Details" asp-route-username="@item.Username" class="btn btn-info">View</a>
                             </td>
                         </tr>
                     }

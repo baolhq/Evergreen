@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -35,10 +41,119 @@
 </head>
 
 <body class="bg-gradient-primary">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+            <div class="container">
+                <a class="navbar-brand text-danger" asp-controller="Home" asp-action="Index">Evergreen</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="oi oi-menu"></span> Menu
+                </button>
+
+                <div class="collapse navbar-collapse" id="ftco-nav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Blogs" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Disease" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Disease" asp-action="Index">Disease</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Medicine" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Medicine" asp-action="Index">Medicine</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/ImageDetection" ? "text-danger" : "text-dark")" asp-area="" asp-controller="ImageDetection" asp-action="Index">Detect</a>
+                        </li>
+
+                        @if (session.GetString("n") != null && session.GetString("r") != "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/User" ? "text-danger" : "text-dark")" asp-area="" asp-controller="User" asp-action="Details">Profile</a>
+                            </li>
+                        }
+                        @if (session.GetString("n") != null && session.GetString("r") != "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Logout" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a>
+                            </li>
+
+                        }
+                        else
+                        {
+
+                            <li class="nav-item">
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Login" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Register" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Register">Register</a>
+                            </li>
+
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
     <main class="px-5">
         @RenderBody()
         @RenderSection("Scripts", required: false)
     </main>
+
+    <footer class="ftco-footer ftco-section">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-4">
+                        <h2 class="ftco-heading-2">Evergreen</h2>
+                        <p>A friendly application for farmer</p>
+                        <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+                            <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                            <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                            <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-4 ml-md-5">
+                        <h2 class="ftco-heading-2">Menu</h2>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="py-2 d-block">Shop</a></li>
+                            <li><a href="#" class="py-2 d-block">About</a></li>
+                            <li><a href="#" class="py-2 d-block">Journal</a></li>
+                            <li><a href="#" class="py-2 d-block">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="ftco-footer-widget mb-4">
+                        <h2 class="ftco-heading-2">Help</h2>
+                        <div class="d-flex">
+                            <ul class="list-unstyled mr-l-5 pr-l-3 mr-4">
+                                <li><a href="#" class="py-2 d-block">Returns &amp; Exchange</a></li>
+                                <li><a href="#" class="py-2 d-block">Terms &amp; Conditions</a></li>
+                                <li><a href="#" class="py-2 d-block">Privacy Policy</a></li>
+                            </ul>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="py-2 d-block">FAQs</a></li>
+                                <li><a href="#" class="py-2 d-block">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-4">
+                        <h2 class="ftco-heading-2">Have a Questions?</h2>
+                        <div class="block-23 mb-3">
+                            <ul>
+                                <li><span class="icon icon-map-marker"></span><span class="text">600 Nguyen Van Cu, Can Tho City</span></li>
+                                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+84 696 6969</span></a></li>
+                                <li><a href="#"><span class="icon icon-envelope"></span><span class="text">evergreenproject.com</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="~/js/jquery-migrate-3.0.1.min.js"></script>

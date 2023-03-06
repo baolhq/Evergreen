@@ -33,11 +33,39 @@ namespace EvergreenView.Controllers
 
 
 
+
         
         
 
         [Authorize("User")]
         public async Task<ActionResult> Details(int id)
+
+
+        public async Task<IActionResult> Index()
+        {
+
+            var token = HttpContext.Session.GetString("t");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            token = token.Replace("\"", string.Empty);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage response = await client.GetAsync(UserApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
+            return View(listUsers);
+        }
+
+        public async Task<ActionResult> Details()
+
         {
             if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")
             {
@@ -76,8 +104,10 @@ namespace EvergreenView.Controllers
 
 
 
+
         [Authorize("User")]
         public async Task<ActionResult> Edit(int id)
+
         {
             if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")
             {
@@ -116,7 +146,7 @@ namespace EvergreenView.Controllers
 
             return View(user);
         }
-        
+
 
 
 
@@ -125,7 +155,7 @@ namespace EvergreenView.Controllers
         [Authorize("User")]
         public async Task<ActionResult> Edit(int id, Account user)
         {
-            if (HttpContext.Session.GetString("r") == null  && HttpContext.Session.GetString("r") == "Admin")
+            if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -230,10 +260,10 @@ namespace EvergreenView.Controllers
             }
             var token = HttpContext.Session.GetString("t");
 
-                if (string.IsNullOrEmpty(token))
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             token = token.Replace("\"", string.Empty);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -246,6 +276,42 @@ namespace EvergreenView.Controllers
             };
             List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
             return View(listUsers);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManageRole()
+        {
+            var token = HttpContext.Session.GetString("t");
+            if (HttpContext.Session.GetString("r") != "Admin" || string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            token = token.Replace("\"", string.Empty);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            // Get users
+            HttpResponseMessage response = await client.GetAsync(UserApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
+
+            return View(listUsers);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageRole([FromBody] List<Account> accounts)
+        {
+            return RedirectToAction("ManageRole");
         }
     }
 }

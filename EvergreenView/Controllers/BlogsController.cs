@@ -33,22 +33,12 @@ namespace EvergreenView.Controllers
             ImageApiUrl = "https://localhost:44334/api/Image";
         }
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index()
         {
-            string query = null;
-            if (searchString != null)
-                query = "/Search" + "?search=" + searchString;
 
 
-            HttpResponseMessage response;
-            if (query == null)
-            {
-                response = await client.GetAsync(BlogApiUrl);
-            }
-            else
-            {
-                response = await client.GetAsync(BlogApiUrl + query);
-            }
+
+            HttpResponseMessage response = await client.GetAsync(BlogApiUrl);
 
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions

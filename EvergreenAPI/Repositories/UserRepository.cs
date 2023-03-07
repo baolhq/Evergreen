@@ -21,6 +21,7 @@ namespace EvergreenAPI.Repositories
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
 
+
         public UserRepository(AppDbContext context, IMapper mapper, IConfiguration config)
         {
             _context = context;
@@ -131,6 +132,7 @@ namespace EvergreenAPI.Repositories
             user.Role = userDTO.Role;
             user.Professions = userDTO.Professions;
             user.PhoneNumber = userDTO.PhoneNumber;
+            /*user.AvatarUrl = userDTO.AvatarUrl;*/
             _context.Update(user);
             try
             {
@@ -193,6 +195,21 @@ namespace EvergreenAPI.Repositories
             var token = tokenHandler.WriteToken(stoken);
 
             return token;
+        }
+
+
+        public List<Account> Search(string search)
+        {
+            List<Account> d = new List<Account>();
+            try
+            {
+                d = _context.Accounts.Where(d => d.Username.Contains(search.ToLower()) || d.Email.Contains(search.ToLower()) || d.FullName.Contains(search.ToLower())).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return d;
         }
     }
 }

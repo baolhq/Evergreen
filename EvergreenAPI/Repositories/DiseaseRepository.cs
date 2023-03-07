@@ -1,5 +1,6 @@
 ﻿using EvergreenAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -64,6 +65,22 @@ namespace EvergreenAPI.Repositories
         {
             _context.Update(disease);
             return Save();
+        }
+
+
+
+
+        public List<Disease> Search(string search)
+        {
+            List<Disease> d = new List<Disease>();
+            try
+            {
+                d = _context.Diseases.Where(d => string.IsNullOrEmpty(d.Name) || d.Name.Contains(search.ToLower())).ToList();
+            } catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return d;
         }
     }
 }

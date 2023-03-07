@@ -28,7 +28,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        
         public IActionResult GetUsers()
         {
             var users = _UserRepository.GetUsers();
@@ -42,7 +42,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "User,Admin")]
+
         public IActionResult GetUser(int id)
         {
             var user = _UserRepository.GetUser(id);
@@ -70,8 +70,8 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public IActionResult CreateUser([FromBody] UserDTO user)
+
         {
             if (user == null)
                 return BadRequest(ModelState);
@@ -105,7 +105,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "User")]
+        
         public IActionResult UpdateUser(int id, Account updatedUser)
         {
             var user = _UserRepository.GetUser(id);
@@ -130,7 +130,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpDelete("{email}")]
-        [Authorize(Roles = "Admin")]
+     
         public IActionResult DeleteUser(int id)
         {
 
@@ -146,6 +146,15 @@ namespace EvergreenAPI.Controllers
                 return StatusCode(500, ModelState);
             }
             return NoContent();
+        }
+
+
+        [HttpGet("Search")]
+        public ActionResult<List<Account>> Search(string search)
+        {
+            var list = _UserRepository.Search(search);
+
+            return Ok(list);
         }
     }
 }

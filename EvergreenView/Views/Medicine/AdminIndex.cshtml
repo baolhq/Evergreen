@@ -9,6 +9,16 @@
     ViewData["Title"] = "Index";
 }
 
+<form method="get">
+    <div class="form-actions no-color">
+        <p>
+            <input type="search" name="searchString" placeholder="Search for.." class="m-2" />
+            <button type="submit" value="Search" class="btn btn-success m-2"><i class="fa fa-search"></i></button>
+            <a class="btn btn-dark m-2" asp-action="AdminIndex">Back to full list</a>
+        </p>
+    </div>
+</form>
+
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>

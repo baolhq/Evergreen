@@ -15,7 +15,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, Professor")]
+    
     public class BlogController : ControllerBase
     {
         private readonly IBlogRepository _BlogRepository;
@@ -138,5 +138,13 @@ namespace EvergreenAPI.Controllers
             return Ok("Delete Success");
         }
 
+
+        [HttpGet("Search")]
+        public ActionResult<List<Blog>> Search(string search)
+        {
+            var list = _BlogRepository.Search(search);
+
+            return Ok(list);
+        }
     }
 }

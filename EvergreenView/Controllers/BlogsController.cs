@@ -36,10 +36,10 @@ namespace EvergreenView.Controllers
         public async Task<IActionResult> Index()
         {
 
-            
+
+
             HttpResponseMessage response = await client.GetAsync(BlogApiUrl);
 
-            
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -273,14 +273,34 @@ namespace EvergreenView.Controllers
             ViewData["Images"] = new SelectList(listImage, "ImageId", "AltText");
         }
 
-        public async Task<IActionResult> AdminIndex()
+
+
+
+
+        public async Task<IActionResult> AdminIndex(string searchString)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
+
+            string query = null;
+            if (searchString != null)
+                query = "/Search" + "?search=" + searchString;
+
+
+            HttpResponseMessage response;
+            if (query == null)
+            {
+                response = await client.GetAsync(BlogApiUrl);
+            }
+            else
+            {
+                response = await client.GetAsync(BlogApiUrl + query);
+            }
+
+
             
-            HttpResponseMessage response = await client.GetAsync(BlogApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

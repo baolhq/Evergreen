@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace EvergreenView.Controllers
 {
@@ -32,7 +33,9 @@ namespace EvergreenView.Controllers
 
         public async Task<IActionResult> Index()
         {
+            
             HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl);
+           
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -296,13 +299,28 @@ namespace EvergreenView.Controllers
 
 
 
-        public async Task<IActionResult> AdminIndex()
+        public async Task<IActionResult> AdminIndex(string searchString)
         { 
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
-            HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl);
+
+            string query = null;
+            if (searchString != null)
+                query =  "/Search" + "?search=" + searchString;
+              
+
+            HttpResponseMessage response; 
+            if(query == null)
+            {
+                response = await client.GetAsync(DiseaseApiUrl);
+            }
+            else
+            {
+                response = await client.GetAsync(DiseaseApiUrl + query);
+            }
+            
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

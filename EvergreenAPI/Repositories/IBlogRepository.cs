@@ -17,6 +17,7 @@ namespace EvergreenAPI.Repositories
         bool DeleteBlog(Blog b);
         bool UpdateBlog(Blog b);
         bool Save();
+        List<Blog> Search(string search);
 
     }
 }

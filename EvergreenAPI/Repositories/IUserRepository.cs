@@ -20,7 +20,7 @@ namespace EvergreenAPI.Repositories
         ICollection<Account> GetUsers();
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
 
-
+        List<Account> Search(string search);
 
     }
 }

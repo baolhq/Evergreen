@@ -14,5 +14,6 @@ namespace EvergreenAPI.Repositories
         bool UpdateTreatment(Treatment treatment);
         bool DeleteTreatment(Treatment treatment);
         bool Save();
+        List<Treatment> Search(string search);
     }
 }

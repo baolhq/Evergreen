@@ -34,13 +34,6 @@ namespace EvergreenView.Controllers
 
 
 
-        
-        
-
-        [Authorize("User")]
-        public async Task<ActionResult> Details(int id)
-
-
         public async Task<IActionResult> Index()
         {
 
@@ -64,7 +57,7 @@ namespace EvergreenView.Controllers
             return View(listUsers);
         }
 
-        public async Task<ActionResult> Details()
+        public async Task<ActionResult> Details(int id)
 
         {
             if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")
@@ -105,7 +98,7 @@ namespace EvergreenView.Controllers
 
 
 
-        [Authorize("User")]
+       
         public async Task<ActionResult> Edit(int id)
 
         {
@@ -152,7 +145,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize("User")]
+        
         public async Task<ActionResult> Edit(int id, Account user)
         {
             if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")
@@ -251,8 +244,8 @@ namespace EvergreenView.Controllers
         }
 
 
-        [Authorize("Admin")]
-        public async Task<IActionResult> AdminIndex()
+       
+        public async Task<IActionResult> AdminIndex(string searchString)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
@@ -268,7 +261,22 @@ namespace EvergreenView.Controllers
             token = token.Replace("\"", string.Empty);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            HttpResponseMessage response = await client.GetAsync(UserApiUrl);
+            string query = null;
+            if (searchString != null)
+                query = "/Search" + "?search=" + searchString;
+
+
+            HttpResponseMessage response;
+            if (query == null)
+            {
+                response = await client.GetAsync(UserApiUrl);
+            }
+            else
+            {
+                response = await client.GetAsync(UserApiUrl + query);
+            }
+
+            
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

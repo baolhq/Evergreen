@@ -9,6 +9,17 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Index";
 }
+
+<form method="get">
+    <div class="form-actions no-color">
+        <p>
+            <input type="search" name="searchString" placeholder="Search for.." class="m-2" />
+            <button type="submit" value="Search" class="btn btn-success m-2"><i class="fa fa-search"></i></button>
+            <a class="btn btn-dark m-2" asp-action="AdminIndex">Back to full list</a>
+        </p>
+    </div>
+</form>
+
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h4 class="m-0 font-weight-bold text-primary">User Managements</h4>
@@ -60,7 +71,7 @@
                                 @Html.DisplayFor(modelItem => item.Role)
                             </td>
                             <td>
-                                <a asp-action="Details" asp-route-username="@item.Username" class="btn btn-info">View</a>
+                                <a asp-action="Details" asp-route-username="@item.AccountId" class="btn btn-info">View</a>
                             </td>
                         </tr>
                     }

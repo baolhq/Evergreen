@@ -38,10 +38,20 @@ namespace EvergreenAPI.Repositories
             _config = config;
             _emailService = emailService;
         }
+
+
+
+
+
+
         public Account GetAccount(AccountDTO account)
         {
             return _context.Accounts.Where(x => x.Password == account.Password && x.Email == account.Email).FirstOrDefault();
         }
+
+
+
+
 
         public Account Login(LoginDTO account)
         {
@@ -133,7 +143,7 @@ namespace EvergreenAPI.Repositories
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "graham37@ethereal.email"; //temp email
+                    mailContent1.To = "amalia58@ethereal.email"; //temp email
                     mailContent1.Subject = "Welcome To Evergreen!";
                     mailContent1.Body = account.Token.ToString();
                    await _emailService.SendMail(mailContent1);

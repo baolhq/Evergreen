@@ -32,9 +32,25 @@ namespace EvergreenView.Controllers
             DiseaseApiUrl = "https://localhost:44334/api/Disease";
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            HttpResponseMessage response = await client.GetAsync(MedicineApiUrl);
+
+            string query = null;
+            if (searchString != null)
+                query = "/Search" + "?search=" + searchString;
+
+
+            HttpResponseMessage response;
+            if (query == null)
+            {
+                response = await client.GetAsync(MedicineApiUrl);
+            }
+            else
+            {
+                response = await client.GetAsync(MedicineApiUrl + query);
+            }
+
+           
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -345,14 +361,30 @@ namespace EvergreenView.Controllers
             return listImage;
         }
 
-        public async Task<IActionResult> AdminIndex()
+        public async Task<IActionResult> AdminIndex(string searchString)
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
 
-            HttpResponseMessage response = await client.GetAsync(MedicineApiUrl);
+            string query = null;
+            if (searchString != null)
+                query = "/Search" + "?search=" + searchString;
+
+
+            HttpResponseMessage response;
+            if (query == null)
+            {
+                response = await client.GetAsync(MedicineApiUrl);
+            }
+            else
+            {
+                response = await client.GetAsync(MedicineApiUrl + query);
+            }
+
+
+
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

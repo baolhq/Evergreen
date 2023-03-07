@@ -61,5 +61,19 @@ namespace EvergreenAPI.Repositories
         }
 
 
+        public List<Blog> Search(string search)
+        {
+            List<Blog> d = new List<Blog>();
+            try
+            {
+                d = _context.Blogs.Where(d => string.IsNullOrEmpty(d.Title) || d.Title.Contains(search.ToLower())).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return d;
+        }
+
     }
 }

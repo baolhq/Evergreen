@@ -63,6 +63,9 @@ namespace EvergreenAPI.Models
         public string PasswordResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; }
 
+        /*[Required]
+        public string AvatarUrl { get; set; }*/
+
     }
 
         

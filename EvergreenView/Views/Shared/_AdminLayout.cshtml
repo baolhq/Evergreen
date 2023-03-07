@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -67,6 +74,7 @@
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
+
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
@@ -122,7 +130,7 @@
                                     Activity Log
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" data-toggle="modal" asp-controller="Authentication" asp-action="Logout">
+                                <a class="dropdown-item" href="/Authentication/Logout">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -167,16 +175,10 @@
             </div>
         </div>
 
-        <!-- Bootstrap core JavaScript-->
         <script src="~/js/jquery-3.2.1.min.js"></script>
         <script src="~/AdminAssets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Core plugin JavaScript-->
         <script src="~/AdminAssets/vendor/jquery-easing/jquery.easing.min.js"></script>
-        <!-- Custom scripts for all pages-->
         <script src="~/AdminAssets/js/sb-admin-2.min.js"></script>
-
-
         @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

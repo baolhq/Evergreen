@@ -10,43 +10,47 @@
         <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-                <div class="col-lg-6 d-none d-lg-block bg-register-image">
-                    <img src="~/images/tomatoRegister.jpg" class="  "/>
+                <div class="col-lg-5">
+                    <img src="~/images/tomatoRegister.jpg"/>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-7">
                     <div class="p-5">
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                         </div>
                         <form method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group py-2 d-flex align-items-center">
-                                <input asp-for="Username" class="form-control rounded-pill" placeholder="Username"/>
-                                <span asp-validation-for="Username" class="text-danger"></span>
+                            <div class="form-group d-flex align-items-center">
+                                 <input asp-for="Username" class="form-control rounded-pill" placeholder="Username"/>
+                                 <span asp-validation-for="Username" class="text-danger"></span>
                             </div>
-                            <div class="form-group py-2 d-flex align-items-center">
-                                <input asp-for="Email" class="form-control rounded-pill" type="email" id="email" placeholder="Email Adress" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
+                            <div class="form-group d-flex align-items-center">
+                                 <input asp-for="Email" class="form-control rounded-pill" type="email" id="email" placeholder="Email Address" />
+                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
-                            <div class="form-group py-2 d-flex align-items-center">
-                                <input asp-for="Password" class="form-control rounded-pill" type="password" id="password" placeholder="Password"/>
-                                <span asp-validation-for="Password" class="text-danger"></span>
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input asp-for="Password" class="form-control rounded-pill" type="password" id="password" placeholder="Password"/>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input asp-for="ConfirmPassword" class="form-control rounded-pill" type="password" id="confirm-password" placeholder="Confirm password"/>
+                                    <span asp-validation-for="ConfirmPassword" id="confirm-error" class="text-danger"></span>
+                                </div>
                             </div>
-                            <div class="form-group py-2 d-flex align-items-center">
-                                <input asp-for="ConfirmPassword" class="form-control rounded-pill" type="password" id="confirm-password" placeholder="Confirm password"/>
-                                <span asp-validation-for="ConfirmPassword" id="confirm-error" class="text-danger"></span>
-                            </div>
-                            <div class="form-group py-2 d-flex align-items-center">
+                            <div class="form-group d-flex align-items-center">
                                 <input asp-for="FullName" class="form-control rounded-pill" placeholder="Full Name" />
                                 <span asp-validation-for="FullName" class="text-danger"></span>
                             </div>
-                            <div class="form-group py-2 d-flex align-items-center">
-                                <input asp-for="Professions" class="form-control rounded-pill" placeholder="Professions" />
-                                <span asp-validation-for="Professions" class="text-danger"></span>
-                            </div>
-                            <div class="form-group py-2 d-flex align-items-center">
-                                <input asp-for="PhoneNumber" class="form-control rounded-pill" placeholder="Phone Number" />
-                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            <div class ="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input asp-for="Professions" class="form-control rounded-pill" placeholder="Professions" />
+                                    <span asp-validation-for="Professions" class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input asp-for="PhoneNumber" class="form-control rounded-pill" placeholder="Phone Number" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
                             </div>
                             <div class="form-group py-2 mt-3">
                                 <input type="submit" value="Register" class="btn btn-danger btn-block p-3" id="submitBtn"/>
@@ -54,12 +58,12 @@
                         </form>
                         <hr>
                         <div class="text-center">
-                            <a class="small" asp-controller="Authentication" asp-action="Login">Already have an account? Login!</a>
+                            <a class="small" asp-controller="Authentication" asp-action="Login">Already have an account? Login!</a>              
                         </div>
-                        <div class="text-center">
+                        <div class="text-center"> 
                             <a class="small" asp-controller="Home" asp-action="Index">Return to homepage!</a>
-                            </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>

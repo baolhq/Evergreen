@@ -31,10 +31,10 @@ namespace EvergreenAPI.Controllers
         
         public IActionResult GetUsers()
         {
-            var users =  _UserRepository.GetUsers();
+            var users = _UserRepository.GetUsers();
             return Ok(_mapper.Map<List<Account>>(users));
 
-            
+
         }
 
 
@@ -42,7 +42,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpGet("{id}")]
-       
+
         public IActionResult GetUser(int id)
 
 
@@ -78,14 +78,14 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPost]
-        
-        public IActionResult CreateUser([FromBody] UserDTO UserCreate)
+        public IActionResult CreateUser([FromBody] UserDTO user)
+
         {
-            if (UserCreate == null)
+            if (user == null)
                 return BadRequest(ModelState);
 
             var User = _UserRepository.GetUsers()
-                .Where(c => c.Email.Trim().ToUpper() == UserCreate.Email.TrimEnd().ToUpper())
+                .Where(c => c.Email.Trim().ToUpper() == user.Email.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
             if (User != null)
@@ -97,7 +97,7 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<UserDTO>(UserCreate);
+            var UserMap = _mapper.Map<UserDTO>(user);
 
             if (!_UserRepository.CreateUser(UserMap))
             {

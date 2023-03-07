@@ -12,6 +12,8 @@ using EvergreenAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using System;
+using EvergreenAPI.DTO;
+using System.Net.Http.Json;
 
 namespace EvergreenView.Controllers
 {
@@ -19,7 +21,7 @@ namespace EvergreenView.Controllers
     {
         private readonly HttpClient client;
         private string UserApiUrl = "";
-        
+
 
         public UserController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
@@ -28,10 +30,8 @@ namespace EvergreenView.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
 
             UserApiUrl = "https://localhost:44334/api/User";
-            
+
         }
-
-
 
 
         public async Task<IActionResult> Index()
@@ -118,7 +118,7 @@ namespace EvergreenView.Controllers
 
             var temp = JObject.Parse(strData);
 
-            if(temp == null)
+            if (temp == null)
             {
                 return View("Not Found");
             }
@@ -155,7 +155,7 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-           if(!IsCurrentUser(user.AccountId)) return BadRequest();
+            if (!IsCurrentUser(user.AccountId)) return BadRequest();
 
             var userEdit = new Account()
             {
@@ -173,7 +173,7 @@ namespace EvergreenView.Controllers
             {
                 return View(user);
             }
-            return RedirectToAction("Details", "User", new {Id = user.AccountId});
+            return RedirectToAction("Details", "User", new { Id = user.AccountId });
         }
 
 
@@ -181,7 +181,7 @@ namespace EvergreenView.Controllers
 
         private bool IsCurrentUser(int id)
         {
-            string currentUserId = HttpContext.Session.GetString("id");
+            string currentUserId = HttpContext.Session.GetString("i");
             if (currentUserId != id.ToString()) return false;
             return true;
         }
@@ -244,8 +244,10 @@ namespace EvergreenView.Controllers
         }
 
 
+
        
         public async Task<IActionResult> AdminIndex(string searchString)
+
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
@@ -292,6 +294,37 @@ namespace EvergreenView.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(Account account)
+        {
+            if (HttpContext.Session.GetString("r") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var formUser = new UserDTO()
+            {
+                Email = account.Email,
+                FullName = account.FullName,
+                Username = account.Username,
+                PhoneNumber = account.PhoneNumber,
+                Professions = account.Professions,
+                Role = account.Role,
+                Password = account.Password,
+                ConfirmPassword = account.Password
+            };
+            var newUser = JsonSerializer.Serialize(formUser);
+            StringContent content = new StringContent(newUser, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(UserApiUrl, content);
+            if (!response.IsSuccessStatusCode)
+            {
+                return View(account);
+            }
+            return RedirectToAction("AdminIndex");
+        }
+
         [HttpGet]
         public async Task<IActionResult> ManageRole()
         {
@@ -314,12 +347,6 @@ namespace EvergreenView.Controllers
             List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
 
             return View(listUsers);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ManageRole([FromBody] List<Account> accounts)
-        {
-            return RedirectToAction("ManageRole");
         }
     }
 }

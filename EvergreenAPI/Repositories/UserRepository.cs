@@ -21,9 +21,11 @@ namespace EvergreenAPI.Repositories
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
 
-        public UserRepository(AppDbContext context)
+        public UserRepository(AppDbContext context, IMapper mapper, IConfiguration config)
         {
             _context = context;
+            _mapper = mapper;
+            _config = config;
         }
 
 
@@ -58,7 +60,7 @@ namespace EvergreenAPI.Repositories
 
 
 
-        public Account GetUser( int Id)
+        public Account GetUser(int Id)
         {
             var user = _context.Accounts.SingleOrDefault(u => u.AccountId == Id);
             if (user == null) return null;
@@ -81,11 +83,11 @@ namespace EvergreenAPI.Repositories
 
 
 
-        
+
 
         public bool CreateUser(UserDTO user)
         {
-            if (_context.Accounts.Any(u => u.Email == user.Email) == false)
+            if (_context.Accounts.Any(u => u.Email == user.Email))
             {
                 return false;
             }
@@ -95,7 +97,7 @@ namespace EvergreenAPI.Repositories
             {
                 return false;
             }
-            if(password.Length < 6)
+            if (password.Length < 6)
             {
                 return false;
             }
@@ -107,15 +109,21 @@ namespace EvergreenAPI.Repositories
             var member = new Account
             {
                 Username = user.Username,
+                FullName = user.FullName,
+                Password = password,
+                ConfirmPassword = user.ConfirmPassword,
                 Email = user.Email,
+                Professions = user.Professions,
+                PhoneNumber = user.PhoneNumber,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                Role = "User",
-                Token = GenerateToken(user.Email.ToString(), user.Role.ToString())
+                Role = user.Role != string.Empty ? user.Role : "User",
+                Token = GenerateToken(user.Email, user.Role),
+                VerifiedAt = DateTime.Now
             };
-            
+
             _context.Accounts.Add(member);
-           _context.SaveChanges();
+            _context.SaveChanges();
 
             return true;
         }
@@ -153,7 +161,7 @@ namespace EvergreenAPI.Repositories
             return true;
         }
 
-        
+
 
 
 

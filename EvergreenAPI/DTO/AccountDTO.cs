@@ -42,9 +42,6 @@ namespace EvergreenAPI.DTO
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
-
-
-        [Required(ErrorMessage = "Cannot be blank")]
         public string Professions { get; set; }
 
 

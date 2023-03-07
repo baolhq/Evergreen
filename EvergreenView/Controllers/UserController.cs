@@ -36,7 +36,6 @@ namespace EvergreenView.Controllers
 
         public async Task<IActionResult> Index()
         {
-
             var token = HttpContext.Session.GetString("t");
 
             if (string.IsNullOrEmpty(token))
@@ -58,7 +57,6 @@ namespace EvergreenView.Controllers
         }
 
         public async Task<ActionResult> Details(int id)
-
         {
             if (HttpContext.Session.GetString("r") == null && HttpContext.Session.GetString("r") == "Admin")
             {
@@ -67,7 +65,17 @@ namespace EvergreenView.Controllers
 
             if (!IsCurrentUser(id)) return BadRequest();
 
-            var response = await client.GetAsync($"{UserApiUrl}/({id})");
+            var token = HttpContext.Session.GetString("t");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            token = token.Replace("\"", string.Empty);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.GetAsync($"{UserApiUrl}/{id}");
             string strData = await response.Content.ReadAsStringAsync();
 
             var temp = JObject.Parse(strData);
@@ -83,6 +91,10 @@ namespace EvergreenView.Controllers
                 Email = (string)temp["email"],
                 Username = (string)temp["username"],
                 PhoneNumber = (string)temp["phoneNumber"],
+                FullName = (string)temp["fullName"],
+                Role = (string)temp["role"],
+                AvatarUrl = (string)temp["avatarUrl"],
+                VerifiedAt = DateTime.Parse((string)temp["verifiedAt"]),
                 Professions = (string)temp["professions"]
             };
 

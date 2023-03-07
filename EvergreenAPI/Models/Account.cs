@@ -43,8 +43,6 @@ namespace EvergreenAPI.Models
         [Required]
         public string Token { get; set; }
         public bool IsBlocked { get; set; } = false;
-
-        [Required(ErrorMessage = "Cannot be blank")]
         public string Professions { get; set; }
 
 
@@ -63,8 +61,10 @@ namespace EvergreenAPI.Models
         public string PasswordResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; }
 
+        public string AvatarUrl { get; set; } = "https://i.imgur.com/n1rrde0.png";
+        public string Bio { get; set; }
     }
 
-        
-    
+
+
 }

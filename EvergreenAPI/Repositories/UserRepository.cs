@@ -54,36 +54,19 @@ namespace EvergreenAPI.Repositories
             return true;
         }
 
-
-
-
-
-
-
         public Account GetUser(int Id)
         {
-            var user = _context.Accounts.SingleOrDefault(u => u.AccountId == Id);
+            var user = _context.Accounts.FirstOrDefault(u => u.AccountId == Id);
             if (user == null) return null;
 
             return user;
         }
-
-
-
-
-
 
         public ICollection<Account> GetUsers()
         {
             var users = _context.Accounts.ToList();
             return users;
         }
-
-
-
-
-
-
 
         public bool CreateUser(UserDTO user)
         {

@@ -38,6 +38,19 @@
     <link rel="stylesheet" href="~/css/icomoon.css">
     <link rel="stylesheet" href="~/css/style.css">
 
+    <style>
+        ul.navbar-nav .nav-item > a {
+            font-family: "Raleway", sans-serif;
+            color: black !important;
+            padding-left: 30px !important;
+            padding-right: 0 !important;
+            letter-spacing: 1px !important;
+        }
+
+        ul.navbar-nav > .nav-item:hover > a {
+            color: red !important;
+        }
+    </style>
 </head>
 
 <body class="bg-gradient-primary">
@@ -50,7 +63,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="ftco-nav">
-                    <ul class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ml-auto align-items-center">
                         <li class="nav-item">
                             <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Blogs" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
                         </li>
@@ -59,6 +72,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Medicine" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Medicine" asp-action="Index">Medicine</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Treatment" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/ImageDetection" ? "text-danger" : "text-dark")" asp-area="" asp-controller="ImageDetection" asp-action="Index">Detect</a>
@@ -176,4 +192,3 @@
 </body>
 
 </html>
-    

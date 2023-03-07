@@ -80,10 +80,10 @@ namespace EvergreenAPI.Repositories
         }
 
 
-       
 
 
-        public async Task<bool>  Register(AccountDTO accountDto)
+
+        public async Task<bool> Register(AccountDTO accountDto)
         {
             string userRole = "User";
             var found = _context.Accounts.Any(a => a.Email == accountDto.Email);
@@ -121,22 +121,21 @@ namespace EvergreenAPI.Repositories
                 PasswordSalt = passwordSalt,
                 Role = "User",
                 Token = GenerateToken(accountDto.Email.ToString(), userRole.ToString())
-
             };
 
 
             #region Add Email Template
             try
             {
-                
+
                 #region Send Verification Mail To User
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "graham37@ethereal.email"; //temp email
+                    mailContent1.To = "berneice.hoppe65@ethereal.email"; //temp email
                     mailContent1.Subject = "Welcome To Evergreen!";
                     mailContent1.Body = account.Token.ToString();
-                   await _emailService.SendMail(mailContent1);
+                    await _emailService.SendMail(mailContent1);
                 }
                 catch (System.ArgumentNullException)
                 {
@@ -162,14 +161,14 @@ namespace EvergreenAPI.Repositories
 
 
 
-        public async Task  <Account> Verify(string token)
+        public async Task<Account> Verify(string token)
         {
             var user = await _context.Accounts.FirstOrDefaultAsync(x => x.Token == token);
-            if(user == null)
+            if (user == null)
             {
                 return null;
             }
-            if(user.VerifiedAt != null)
+            if (user.VerifiedAt != null)
             {
                 return null;
             }
@@ -181,7 +180,7 @@ namespace EvergreenAPI.Repositories
         }
 
 
-        public async Task <Account> ForgotPassword(string email)
+        public async Task<Account> ForgotPassword(string email)
         {
             var user = _context.Accounts.FirstOrDefault(x => x.Email == email);
             if (user == null)
@@ -195,13 +194,13 @@ namespace EvergreenAPI.Repositories
             #region Add Email Template
             try
             {
-                
+
 
                 #region Send Verification Mail To User
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "amalia58@ethereal.email"; //temp email
+                    mailContent1.To = "berneice.hoppe65@ethereal.email"; //temp email
                     mailContent1.Subject = "Reset Password!";
                     mailContent1.Body = user.PasswordResetToken.ToString();
                     await _emailService.SendMail(mailContent1);
@@ -227,7 +226,7 @@ namespace EvergreenAPI.Repositories
         }
 
 
-        public async Task <bool> ResetPassword(ResetPasswordDTO request)
+        public async Task<bool> ResetPassword(ResetPasswordDTO request)
         {
             var user = await _context.Accounts.FirstOrDefaultAsync(x => x.PasswordResetToken == request.Token);
 
@@ -237,19 +236,19 @@ namespace EvergreenAPI.Repositories
             }
             var password = request.Password;
             var confirmpassword = request.ConfirmPassword;
-            if(password != confirmpassword)
+            if (password != confirmpassword)
             {
                 return false;
             }
 
-            if(password.Length < 6)
+            if (password.Length < 6)
             {
                 return false;
             }
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
             user.PasswordResetToken = null;
             user.ResetTokenExpires = null;
             user.Password = password;
@@ -259,7 +258,7 @@ namespace EvergreenAPI.Repositories
         }
 
 
-        
+
 
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -276,13 +275,13 @@ namespace EvergreenAPI.Repositories
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {
-                
+
                 var computedHash = hmac
                     .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
-        
+
         private string GenerateToken(string email, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

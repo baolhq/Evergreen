@@ -44,8 +44,6 @@ namespace EvergreenAPI.Controllers
         [HttpGet("{id}")]
         [Authorize(Roles = "User,Admin")]
         public IActionResult GetUser(int id)
-
-
         {
             var user = _UserRepository.GetUser(id);
 
@@ -54,12 +52,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(_mapper.Map<Account>(user));
         }
-
-
-
-
-
-
 
         [HttpPut("ManageRole")]
         [AllowAnonymous]

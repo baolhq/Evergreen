@@ -241,7 +241,6 @@ namespace EvergreenView.Controllers
         }
 
 
-        [Authorize("Admin")]
         public async Task<IActionResult> AdminIndex()
         {
             if (HttpContext.Session.GetString("r") != "Admin")

@@ -22,8 +22,6 @@ namespace EvergreenView.Controllers
         private readonly HttpClient client;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-
-
         public AuthenticationController(IHttpContextAccessor httpContextAccessor)
         {
             client = new HttpClient();
@@ -35,7 +33,6 @@ namespace EvergreenView.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
         public ISession session { get { return _httpContextAccessor.HttpContext.Session; } }
-
 
         [HttpGet]
         [AllowAnonymous]
@@ -89,16 +86,12 @@ namespace EvergreenView.Controllers
             return View("Login", account);
         }
 
-
-
         [HttpGet]
         public IActionResult Logout()
         {
             session.Clear();
             return RedirectToAction("Login", "Authentication");
         }
-
-
 
         [HttpGet]
         [AllowAnonymous]
@@ -138,11 +131,6 @@ namespace EvergreenView.Controllers
             return View("Register", account);
         }
 
-
-
-
-
-
         [AllowAnonymous]
         [HttpGet]
         public ActionResult VerifyAccount(string email)
@@ -153,7 +141,6 @@ namespace EvergreenView.Controllers
             };
             return View(verifyaccountDTO);
         }
-
 
         [HttpPost]
         public async Task<ActionResult> VerifyAccount(VerifyAccountDTO verifyAccountDTO)
@@ -179,12 +166,6 @@ namespace EvergreenView.Controllers
             return View(verifyAccountDTO);
 
         }
-
-
-
-
-
-
 
         [HttpGet]
         public ActionResult ForgotPassword()

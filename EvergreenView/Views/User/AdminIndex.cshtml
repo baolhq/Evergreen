@@ -24,7 +24,7 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h4 class="m-0 font-weight-bold text-primary">User Managements</h4>
         <div class="d-flex justify-content-between align-items-center">
-            <a class="btn btn-success text-white" asp-action="Create">Create Account</a>
+            <a class="btn btn-success text-white" asp-action="AdminCreate">Create Account</a>
             <a class="btn btn-danger text-white ml-2" asp-action="ManageRole">Manage Role</a>
         </div>
     </div>
@@ -71,7 +71,7 @@
                                 @Html.DisplayFor(modelItem => item.Role)
                             </td>
                             <td>
-                                <a asp-action="Details" asp-route-username="@item.AccountId" class="btn btn-info">View</a>
+                                <a asp-action="AdminDetails" asp-route-id="@item.AccountId" class="btn btn-info">View</a>
                             </td>
                         </tr>
                     }

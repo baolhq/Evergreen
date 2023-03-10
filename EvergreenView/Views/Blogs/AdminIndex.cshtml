@@ -44,7 +44,7 @@
                             @Html.DisplayNameFor(model => model.ViewCount)
                         </th>
                         <th hidden>
-                            @Html.DisplayNameFor(model => model.ImageId)
+                            @Html.DisplayNameFor(model => model.ThumbnailId)
                         </th>
                         <th></th>
                     </tr>
@@ -63,7 +63,7 @@
                                 @Html.DisplayFor(modelItem => item.ViewCount)
                             </td>
                             <td hidden>
-                                @Html.DisplayFor(modelItem => item.Image.Url)
+                                @Html.DisplayFor(modelItem => item.Thumbnail.Url)
                             </td>
                             <td>
                                 <a asp-action="Details" asp-route-id="@item.BlogId" class="btn btn-info">

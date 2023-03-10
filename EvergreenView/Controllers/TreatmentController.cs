@@ -76,8 +76,8 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData1, options1);
-            ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
+            List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData1, options1);
+            ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View();
         }
 
@@ -117,8 +117,8 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData1, options1);
-            ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
+            List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData1, options1);
+            ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View();
         }
 
@@ -153,8 +153,8 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData2, options2);
-            ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
+            List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
+            ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View(treatment);
         }
 
@@ -195,8 +195,8 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData2, options2);
-            ViewData["Images"] = new SelectList(listImages, "ImageId", "AltText");
+            List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
+            ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View();
         }
 
@@ -266,10 +266,10 @@ namespace EvergreenView.Controllers
             var listDiseases = await GetDiseases();
             ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
             var listImage = await GetImages();
-            ViewData["Images"] = new SelectList(listImage, "ImageId", "AltText");
+            ViewData["Thumbnails"] = new SelectList(listImage, "ThumbnailId", "AltText");
         }
 
-        public async Task<IEnumerable<Image>> GetImages()
+        public async Task<IEnumerable<Thumbnail>> GetImages()
         {
             HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
@@ -278,7 +278,7 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            List<Image> listImage = JsonSerializer.Deserialize<List<Image>>(strData, options);
+            List<Thumbnail> listImage = JsonSerializer.Deserialize<List<Thumbnail>>(strData, options);
             return listImage;
         }
 

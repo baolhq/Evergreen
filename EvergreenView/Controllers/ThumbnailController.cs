@@ -10,22 +10,22 @@ using System.Threading.Tasks;
 
 namespace EvergreenView.Controllers
 {
-    public class ImageController : Controller
+    public class ThumbnailController : Controller
     {
         private readonly HttpClient client = null;
-        private string ImageApiUrl = "";
+        private string ThumnailApiUrl = "";
         private readonly IConfiguration _config;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public ImageController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public ThumbnailController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
 
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
 
-            ImageApiUrl = "https://localhost:44334/api/Image";
+            ThumnailApiUrl = "https://localhost:44334/api/Thumbnail";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -40,18 +40,15 @@ namespace EvergreenView.Controllers
         public async Task<IActionResult> Index()
         {
             if (HttpContext.Session.GetString("r") != "Admin")
-            {
                 return RedirectToAction("Index", "Home");
-            }
 
-            string query = "";
-            HttpResponseMessage response = await client.GetAsync(ImageApiUrl + query);
-            string strData = await response.Content.ReadAsStringAsync();
+            var response = await client.GetAsync(ThumnailApiUrl);
+            var strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<Image> listImages = JsonSerializer.Deserialize<List<Image>>(strData, options);
+            var listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData, options);
             return View(listImages);
         }
     }

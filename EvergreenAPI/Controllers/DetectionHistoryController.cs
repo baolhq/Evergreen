@@ -57,35 +57,36 @@ namespace EvergreenAPI.Controllers
 
             string fileName = Path.GetFileName(postedFile.FileName);
             string uniqueFilePath = Path.Combine(path, fileName);
+            string uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
             // Check if file name exist, use Windows style rename
             if (System.IO.File.Exists(uniqueFilePath))
             {
                 int count = 1;
 
-                string fileNameOnly = Path.GetFileNameWithoutExtension(uniqueFilePath);
                 string extension = Path.GetExtension(uniqueFilePath);
                 string newFullPath = uniqueFilePath;
 
                 while (System.IO.File.Exists(Path.Combine(path, newFullPath)))
                 {
-                    string tempFileName = string.Format("{0} ({1})", fileNameOnly, count++);
+                    string tempFileName = string.Format("{0} ({1})", uniqueFileName, count++);
                     newFullPath = Path.Combine(path, tempFileName + extension);
                 }
                 uniqueFilePath = newFullPath;
+                uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
             }
 
             using var stream = System.IO.File.Create(uniqueFilePath);
             await postedFile.CopyToAsync(stream);
 
             // Save image location to database
-            _context.Images.Add(new Image { AltText = fileName, Url = uniqueFilePath });
+            _context.Images.Add(new Image { AltText = uniqueFileName, Url = uniqueFilePath });
             await _context.SaveChangesAsync();
 
             var history = await SaveHistory(new DetectionHistory
             {
                 AccountId = int.Parse(accountId),
                 Date = DateTime.Now,
-                ImageName = fileName,
+                ImageName = uniqueFileName,
                 ImageUrl = uniqueFilePath,
             });
 

@@ -11,26 +11,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Evergreen</title>
-    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
-    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />*@
-    <title>Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 
 <body>
     <section class="" style="margin-top: 100px;">
         <div class="container-fluid h-custom">
             <div class="row d-flex justify-content-center align-items-center h-100">
-                @*   <div class="col-md-3 position-absolute" style="left: 0px;top: 3px;">
-                <img src="https://iconarchive.com/download/i109813/alex-t/splash-of-fruit/button-strawberry.ico"
-                class="img-fluid" alt="Sample image" style="width: 130px;height: 120px;">
-                <p class="" style="font-weight: 600;font-size: 20px;line-height: 30px;color: #000000;">SDD System</p>
-                </div>*@
                 <div class="col-md-8 offset-md-4">
-                    <form asp-action="VerifyAccount" asp-controller="Authentication" method="post" class="w-50 mt-5 p-5" style="border: 0.5px solid #878787;box-shadow: 0px 4px 64px rgba(0, 0, 0, 0.05);border-radius: 10px;">
+                    <form asp-action="VerifyAccount" asp-controller="Authentication" method="post" class="w-50 mt-5 p-5 post_token" style="border: 0.5px solid #878787;box-shadow: 0px 4px 64px rgba(0, 0, 0, 0.05);border-radius: 10px;">
                         <div class="divider d-flex align-items-center my-4">
                             <h2 class="text-center  mx-3 mb-0" style="font-weight:700">Verify your account</h2>
+                            <h1 class="h4 text-gray-900 mb-2">Verify Account!</h1>
+                            <p class="mb-4">
+                                We got it. Please check your email, we have sent you a token to verify your account.
+                                Then enter that token below.
+                            </p>
                         </div>
                         <input type="text" asp-for="Email" name="email" hidden/>
 
@@ -52,4 +48,30 @@
         </div>
     </section>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    const btn = document.querySelector('.btn-lg')
+    const btn2 = document.querySelector('.post_token')
+    btn.addEventListener('click',(event)=>
+    {
+        event.preventDefault();
+        Swal.fire
+            ({
+                title: 'Go to Login!!',
+                text: 'Your account is verify!!!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    btn2.submit()
+                    
+                }
+            })
+    });
+</script>
 </html>

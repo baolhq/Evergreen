@@ -3,6 +3,18 @@
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
     ViewData["Title"] = "Login";
 }
+<style>
+    .form-group{
+        position: relative;
+    }
+    .form-group i{
+        position: absolute;
+        right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+</style>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-xl-10 col-lg-12 col-md-9">
@@ -24,9 +36,10 @@
                                         <input asp-for="Email" class="form-control rounded-pill" type="email" placeholder="Email Address" />
                                         <span asp-validation-for="Email" class="text-danger">@ViewData["error"]</span>
                                     </div>
-                                    <div class="form-group py-2 d-flex align-items-center">
+                                    <div class="form-group py-2 d-flex align-items-center show_hide">
                                         <input asp-for="Password" class="form-control rounded-pill" type="password" placeholder="Password"/>
                                         <span asp-validation-for="Password" class="text-danger">@ViewData["error"]</span>
+                                        <i class="fa-solid fa-eye"></i>
                                     </div>
                                     <div class="form-group py-2 mt-3">
                                         <input type="submit" value="Login" class="btn btn-danger btn-block p-3" />
@@ -51,7 +64,29 @@
     </div>
 
 </div>
+<script src="https://kit.fontawesome.com/bdb952e5fa.js" crossorigin="anonymous"></script>
+<script>
+    const showHid = document.querySelector('.show_hide i')
+    const btn2 = document.querySelector('.show_hide input')
+    showHid.addEventListener('click', e => {
+        if (btn2.type === 'password') {
+            btn2.type = 'text'
+            showHid.classList.remove('fa-solid')
+            showHid.classList.remove('fa-eye')
+            showHid.classList.add('fa-solid')
+            showHid.classList.add('fa-eye-slash')
+        }
+        else {
+            btn2.type = 'password'
+            showHid.classList.remove('fa-solid')
+            showHid.classList.remove('fa-eye-slash')
+            showHid.classList.add('fa-solid')
+            showHid.classList.add('fa-eye')
 
+        }
+    })
+
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

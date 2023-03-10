@@ -30,6 +30,16 @@
     <link href="~/AdminAssets/css/sb-admin-2.min.css" rel="stylesheet">
 
     @RenderSection("Styles", required: false)
+
+    <style>
+        .text-ellipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+    </style>
 </head>
 
 <body id="page-top">

@@ -12,6 +12,12 @@
 
 @section Styles {
     <style>
+        .grid-container {
+            column-count: 4;
+            column-gap: 10px;
+            margin-bottom: 2rem;
+        }
+
         img {
             max-width: 100%;
             display: block;
@@ -23,6 +29,8 @@
             grid-template-rows: 1fr auto;
             margin-bottom: 10px;
             break-inside: avoid;
+            position: relative;
+            overflow: hidden;
         }
 
             figure > img {
@@ -35,18 +43,46 @@
                 text-decoration: none;
             }
 
-        figcaption {
-            grid-row: 2;
-            grid-column: 1;
-            background-color: rgba(255,255,255,.5);
-            padding: .2em .5em;
-            justify-self: start;
+            figure:hover .inner {
+                bottom: 0;
+                user-select: auto;
+                opacity: 1;
+                transition: all 0.4s cubic-bezier(0.88, 0.27, 0.17, 0.92);
+            }
+
+        .inner {
+            position: absolute;
+            opacity: 0;
+            user-select: none;
+            bottom: -100px;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white !important;
+            padding: 6px;
+            border-radius: 8px;
         }
 
-        .grid-container {
-            column-count: 4;
-            column-gap: 10px;
+            .inner p {
+                padding: 6px 6px 0px 6px;
+                margin-bottom: 0;
+            }
+
+        .card-btn {
+            padding: 0.4rem;
+            color: white !important;
+            cursor: pointer;
+            transition: 0.2s ease;
+            text-decoration: none !important;
         }
+
+            .card-btn.update:hover {
+                color: dodgerblue !important;
+            }
+
+            .card-btn.delete:hover {
+                color: rgb(255, 74, 74) !important;
+            }
     </style>
 }
 
@@ -54,8 +90,18 @@
     @foreach (var item in Model)
     {
         <figure>
-            <img src="@item.Url" alt="@item.AltText" />
-            <figcaption><a href="#">@item.ThumbnailId</a></figcaption>
+            <img src="@item.Url" alt="@item.AltText" onerror="this.onerror=null;this.src='https://i.imgur.com/MP8rmmN.png';" />
+            <div class="inner">
+                <p class="text-ellipsis">@item.AltText</p>
+                <div class="d-flex align-items-center">
+                    <a class="card-btn update mr-2" asp-action="Update" asp-route-id="@item.ThumbnailId">
+                        <i class="far fa-edit"></i>
+                    </a>
+                    <a class="card-btn delete" asp-action="Delete" asp-route-id="@item.ThumbnailId">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </div>
+            </div>
         </figure>
     }
 </div>

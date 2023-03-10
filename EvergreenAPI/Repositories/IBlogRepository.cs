@@ -9,7 +9,7 @@ namespace EvergreenAPI.Repositories
 {
     public interface IBlogRepository
     {
-        ICollection<Image> GetImages();
+        ICollection<Thumbnail> GetThumbnails();
         ICollection<Blog> GetBlogs();
         Blog GetBlog(int id);
         bool BlogExist(int id);

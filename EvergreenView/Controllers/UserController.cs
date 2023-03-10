@@ -122,11 +122,6 @@ namespace EvergreenView.Controllers
                 Professions = (string)temp["professions"]
             };
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
             return View(user);
         }
 
@@ -235,14 +230,6 @@ namespace EvergreenView.Controllers
             };
 
             return View(user);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-
-        public async Task<ActionResult> Edit(int id, Account user)
-        {
-            return RedirectToAction("Index", "Home");
         }
 
         private bool IsCurrentUser(int id)

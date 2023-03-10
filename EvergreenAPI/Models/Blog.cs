@@ -19,9 +19,9 @@ namespace EvergreenAPI.Models
         public DateTime LastModifiedDate { get; set; }
         public int ViewCount { get; set; } = 0;
 
-        [ForeignKey("Images")]
+        [ForeignKey("Thumbnails")]
         [DisplayName("Image Description")]
-        public int ImageId { get; set; }
-        public virtual Image Image { get; set; }
+        public int ThumbnailId { get; set; }
+        public virtual Thumbnail Thumbnail { get; set; }
     }
 }

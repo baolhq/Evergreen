@@ -29,6 +29,17 @@
     <!-- Custom styles for this template-->
     <link href="~/AdminAssets/css/sb-admin-2.min.css" rel="stylesheet">
 
+    @RenderSection("Styles", required: false)
+
+    <style>
+        .text-ellipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -61,7 +72,7 @@
                         <a class="collapse-item" asp-action="AdminIndex" asp-controller="Medicine">Medicine</a>
                         <a class="collapse-item" asp-action="Index" asp-controller="MedicineCategory">Medicine Category</a>
                         <a class="collapse-item" asp-action="AdminIndex" asp-controller="Treatment">Treatment</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Image">Image</a>
+                        <a class="collapse-item" asp-action="Index" asp-controller="Thumbnail">Thumbnail</a>
                         <a class="collapse-item" asp-action="AdminIndex" asp-controller="User">User</a>
                     </div>
                 </div>
@@ -84,8 +95,6 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -135,7 +144,7 @@
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="/Authentication/Logout">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Logout
+                                    Logout
                                 </a>
                             </div>
                         </li>

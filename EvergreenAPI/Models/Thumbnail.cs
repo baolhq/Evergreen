@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EvergreenAPI.Models
 {
-    public class Image
+    public class Thumbnail
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ImageId { get; set; }
+        public int ThumbnailId { get; set; }
         [Required]
         [DisplayName("Description")]
         public string AltText { get; set; }

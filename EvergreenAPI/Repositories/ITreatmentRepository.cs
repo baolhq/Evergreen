@@ -5,7 +5,7 @@ namespace EvergreenAPI.Repositories
 {
     public interface ITreatmentRepository
     {
-        ICollection<Image> GetImages();
+        ICollection<Thumbnail> GetThumbnails();
         ICollection<Treatment> GetTreatments();
         ICollection<Disease> GetDiseases();
         Treatment GetTreatment(int id);

@@ -5,9 +5,9 @@
     ViewData["Title"] = "Create Account";
 }
 
-<h1>Create Account</h1>
+<h1 class="text-dark">Create Account</h1>
 <hr />
-<div class="row">
+<div class="row text-dark">
     <div class="col-md-4">
         <form method="post" asp-action="AdminCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -60,7 +60,7 @@
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Details" class="btn btn-success">Back</a>
+                <a asp-action="AdminIndex" class="btn btn-success">Back</a>
             </div>
         </form>
     </div>

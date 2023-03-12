@@ -21,6 +21,7 @@ namespace EvergreenView.Controllers
         private string AuthApiUrl = "";
         private readonly HttpClient client;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        
 
         public AuthenticationController(IHttpContextAccessor httpContextAccessor)
         {

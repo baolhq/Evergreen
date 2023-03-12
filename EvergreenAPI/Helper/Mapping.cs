@@ -15,7 +15,7 @@ namespace EvergreenAPI.Helper
             CreateMap<Treatment, TreatmentDTO>().ReverseMap();
             CreateMap<Blog, BlogDTO>().ReverseMap();
             CreateMap<Account, UserDTO>().ReverseMap();
-            CreateMap<Image, ImageDTO>().ReverseMap();
+            CreateMap<Thumbnail, ThumbnailDTO>().ReverseMap();
             
 
         }

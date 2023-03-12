@@ -20,10 +20,10 @@ namespace EvergreenAPI.Models
 
         
 
-        [ForeignKey("Images")]
-        [DisplayName("Image Description")]
-        public int? ImageId { get; set; }
-        public virtual Image Image { get; set; }
+        [ForeignKey("Thumbnails")]
+        [DisplayName("Description")]
+        public int? ThumbnailId { get; set; }
+        public virtual Thumbnail Thumbnail { get; set; }
 
     }
 }

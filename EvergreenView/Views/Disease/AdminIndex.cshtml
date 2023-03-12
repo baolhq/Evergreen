@@ -49,7 +49,7 @@
                             @Html.DisplayNameFor(model => model.DiseaseCategoryId)
                         </th>
                         <th hidden>
-                            @Html.DisplayNameFor(model => model.ImageId)
+                            @Html.DisplayNameFor(model => model.ThumbnailId)
                         </th>
                         <th></th>
                     </tr>
@@ -71,7 +71,7 @@
                                 @Html.DisplayFor(modelItem => item.DiseaseCategory.Name)
                             </td>
                             <td hidden>
-                                @Html.DisplayFor(modelItem => item.Image.Url)
+                                @Html.DisplayFor(modelItem => item.Thumbnail.Url)
                             </td>
                             <td>
                                 <a asp-action="AdminDetails" asp-route-id="@item.DiseaseId" class="btn btn-info"> View <i class="fa fa-eye"></i> </a>

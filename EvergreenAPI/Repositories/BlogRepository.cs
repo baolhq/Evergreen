@@ -35,17 +35,17 @@ namespace EvergreenAPI.Repositories
 
         public Blog GetBlog(int id)
         {
-            return _context.Blogs.Include(d => d.Image).Where(s => s.BlogId == id).FirstOrDefault(); ;
+            return _context.Blogs.Include(d => d.Thumbnail).Where(s => s.BlogId == id).FirstOrDefault(); ;
         }
 
-        public ICollection<Image> GetImages()
+        public ICollection<Thumbnail> GetThumbnails()
         {
-            return _context.Images.ToList();
+            return _context.Thumbnails.ToList();
         }
 
         public ICollection<Blog> GetBlogs()
         {
-            return _context.Blogs.Include(d => d.Image).ToList();
+            return _context.Blogs.Include(d => d.Thumbnail).ToList();
         }
 
         public bool Save()

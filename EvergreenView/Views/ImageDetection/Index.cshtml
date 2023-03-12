@@ -96,6 +96,11 @@
             color: black;
         }
 
+            .item-link:hover {
+                color: rgb(220, 53, 69) !important;
+                cursor: pointer;
+            }
+
         #small {
             opacity: 0.5;
             font-size: 0.9em;
@@ -105,6 +110,34 @@
             font-family: 'Poppins', sans-serif;
             letter-spacing: 0.15px;
         }
+
+        .selected-file {
+            border-radius: 8px;
+            border-bottom: 1px solid rgb(209, 213, 219);
+        }
+
+            .selected-file:hover img {
+                opacity: 0.4;
+            }
+
+                .selected-file:hover img:hover {
+                    opacity: 0.8;
+                }
+
+            .selected-file img {
+                width: 24px;
+                height: 24px;
+                padding: 4px;
+                opacity: 0;
+                cursor: pointer;
+                transition: opacity 0.2s ease;
+            }
+
+        .file-name {
+            letter-spacing: 0.4px;
+            -webkit-line-clamp: 1 !important;
+            text-align: left;
+        }
     </style>
 }
 
@@ -113,7 +146,7 @@
         <h1 class="title">Upload a file</h1>
         <div class="upload-container">
             <div class="border-container" method="post">
-                <input type="file" id="file-upload" title="Click to choose image">
+                <input type="file" id="file-upload" title="Click to choose image" multiple>
                 <p id="preview">
                     Drag and drop files here, or
                     <a href="#" id="file-browser">browse</a> your computer.
@@ -121,8 +154,10 @@
                 <p id="small">For best result, we recommend using <code>.JPEG</code> format</p>
             </div>
         </div>
+        <div class="container mt-4" id="file-container">
+        </div>
         <button id="submit-btn"
-                class="btn btn-block btn-danger text-white mt-2 p-2"
+                class="btn btn-block btn-danger text-white mt-4 p-2"
                 disabled>
             Submit
         </button>
@@ -131,7 +166,8 @@
 
 <div class="container ftco-animate">
     <h3 class="text-center title">History</h3>
-    <div class="mb-2 list-group-title">
+    <p class='text-center' id="blank-history">There's currently no files in your history, please try detect one.</p>
+    <div class="mb-2 list-group-title" id="histories">
         <a class="item-link" href="#">
             <div class="d-flex justify-content-between" title="Click to view details">
                 <span class="img-name w-25">Image name</span>
@@ -152,15 +188,43 @@
     <script>
         $("#file-upload").css("opacity", "0");
 
+        let files = [];
         $("#file-upload").on("change", () => {
-            // Get file name
-            var filename = $('#file-upload').val().split('\\').pop();
-            // If any file selected
-            if (filename) {
-                $("#preview").html(`File <code>${filename}</code> selected`)
-                $("#submit-btn").attr("disabled", false);
+            let fileCount = $("#file-upload").get(0).files.length
+            for (let i = 0; i < fileCount; i++) {
+                let fileName = $("#file-upload").get(0).files[i].name
+
+                // Ignore existing files
+                if (files.indexOf(fileName) !== -1) continue;
+                files.push(fileName)
+
+                let newDiv = document.createElement("div")
+                newDiv.classList.add("selected-file", "d-flex", "justify-content-between", "align-content-center", "mt-2", "p-2")
+                let newSpan = document.createElement("span")
+                newSpan.innerHTML = fileName
+                newSpan.classList.add("file-name", "text-ellipsis")
+                let newIcon = document.createElement("img")
+                newIcon.setAttribute("src", "images/close.png")
+                newIcon.setAttribute("alt", "Remove")
+                newIcon.addEventListener("click", () => handleSelectedFileClick(newDiv, fileName))
+
+                newDiv.appendChild(newSpan)
+                newDiv.appendChild(newIcon)
+
+                $("#file-container").append(newDiv)
             }
+
+            $("#submit-btn").prop("disabled", files.length > 0 ? false : true)
         })
+
+        const handleSelectedFileClick = (elem, fileName) => {
+            // Remove clicked file from file list
+            files = files.filter(item => item !== fileName)
+            console.log(files)
+            $("#submit-btn").prop("disabled", files.length > 0 ? false : true)
+            // Remove clicked file in the file container
+            elem.remove()
+        }
 
         $("#preview, #small").click((e) => {
             e.preventDefault();
@@ -188,7 +252,15 @@
         $(document).ready(() => {
             let data = $("#pass-data").val()
             sample = JSON.parse(data)
-            paginate(sample)
+            if (sample.length === 0) {
+                $("#blank-history").css("display", "block")
+                $("#histories").css("display", "none")
+            }
+            else {
+                $("#blank-history").css("display", "none")
+                $("#histories").css("display", "block")
+                paginate(sample)
+            }
         })
 
         const paginate = (data) => {
@@ -206,62 +278,73 @@
 
         $("#submit-btn").on("click", (e) => {
             e.preventDefault();
-            $("#submit-btn").attr("disabled", true);
-
-            let fileName = $('#file-upload').val().replace(/.*(\/|\\)/, '');
-            let fileData = document.getElementById("file-upload").files[0];
-
             let apiUrl = "https://localhost:44334/api/DetectionHistory"
             let uid = $("#uid").val()
+            // Disabling submit button, avoid spammer
+            $("#submit-btn").attr("disabled", true);
 
-            let formData = new FormData();
-            formData.append('image', fileData)
-            formData.append('uid', uid)
+            files.forEach(async (_, index) => {
+                let fileData = $("#file-upload").get(0).files[index]
 
+                let formData = new FormData();
+                formData.append('image', fileData)
+                formData.append('uid', uid)
+
+                await uploadImage(formData, apiUrl)
+            })
+
+            // Remove previous list first
+            $('#pagination-container').empty()
+            $('#file-container').empty()
+            // Remove blank history notification
+            $("#blank-history").css("display", "none")
+            $("#histories").css("display", "block")
+            // Re-render data without reload
             $.ajax({
                 contentType: false,
                 processData: false,
-                type: 'POST',
-                url: apiUrl,
-                data: formData,
-                success: function (response, textStatus, xhr) {
-                    // Remove previous list first
-                    $('#pagination-container').html()
+                url: `${apiUrl}/${uid}`,
+                success: function (data, textStatus, xhr) {
+                    // Transform text to PascalCase format
+                    for (var i = 0; i < data.length; i++) {
 
-                    // Re-render data without reload
-                    $.ajax({
-                        contentType: false,
-                        processData: false,
-                        url: `${apiUrl}/${uid}`,
-                        success: function (data, textStatus, xhr) {
-                            // Transform text to PascalCase format
-                            for (var i = 0; i < data.length; i++) {
-
-                                var a = data[i];
-                                for (var key in a) {
-                                    if (a.hasOwnProperty(key)) {
-                                        a[key.charAt(0).toUpperCase() + key.substring(1)] = a[key];
-                                        delete a[key];
-
-                                    }
-                                }
-                                data[i] = a;
+                        var a = data[i];
+                        for (var key in a) {
+                            if (a.hasOwnProperty(key)) {
+                                a[key.charAt(0).toUpperCase() + key.substring(1)] = a[key];
+                                delete a[key];
 
                             }
-
-                            // Finally, paginate'm
-                            paginate(data)
-                        }, error: function (xhr, status, error) {
-                            console.log(error)
                         }
-                    });
+                        data[i] = a;
 
+                    }
+
+                    // Finally, paginate'm
+                    paginate(data)
                 }, error: function (xhr, status, error) {
                     console.log(error)
-                }, complete: function () {
-                    $("#submit-btn").attr("disabled", false);
                 }
             });
         })
+
+        const uploadImage = async (formData, apiUrl) => {
+            console.log(formData)
+            await function () {
+                $.ajax({
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    async: false,
+                    url: apiUrl,
+                    data: formData,
+                    error: function (xhr, status, error) {
+                        console.log(error)
+                    }, complete: function () {
+                        $("#submit-btn").attr("disabled", false);
+                    }
+                });
+            }()
+        }
     </script>
 }

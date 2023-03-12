@@ -132,7 +132,7 @@ namespace EvergreenAPI.Repositories
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "jessie.paucek@ethereal.email"; //temp email
+                    mailContent1.To = "kirk.pfannerstill2@ethereal.email"; //temp email
                     mailContent1.Subject = "Welcome To Evergreen!";
                     mailContent1.Body = account.Token.ToString();
                     await _emailService.SendMail(mailContent1);
@@ -200,7 +200,7 @@ namespace EvergreenAPI.Repositories
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "jessie.paucek@ethereal.email"; //temp email
+                    mailContent1.To = "kirk.pfannerstill2@ethereal.email"; //temp email
                     mailContent1.Subject = "Reset Password!";
                     mailContent1.Body = user.PasswordResetToken.ToString();
                     await _emailService.SendMail(mailContent1);

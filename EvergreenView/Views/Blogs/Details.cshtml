@@ -34,7 +34,9 @@
                             <label for="exampleCity">Blog Description :</label>
                             <p>@Model.Description</p>
                             <label for="exampleCity">Blog Content :</label>
-                            <p>@Model.Content</p>
+                            <div class="p-3">
+                                @Html.Raw(WebUtility.HtmlDecode(Model.Content))
+                            </div>
                             <label for="exampleCity">Date :</label>
                             <p>@Model.LastModifiedDate</p>
                             <label for="exampleCity">Views :</label>

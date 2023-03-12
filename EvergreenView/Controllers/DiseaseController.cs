@@ -18,7 +18,7 @@ namespace EvergreenView.Controllers
 
         private string DiseaseApiUrl = "";
         private string DiseaseCategoryApiUrl = "";
-        private string ImageApiUrl = "";
+        private string ThumbnailApiUrl = "";
         private readonly HttpClient client = null;
 
         public DiseaseController()
@@ -28,7 +28,7 @@ namespace EvergreenView.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
             DiseaseApiUrl = "https://localhost:44334/api/Disease";
             DiseaseCategoryApiUrl = "https://localhost:44334/api/DiseaseCategory";
-            ImageApiUrl = "https://localhost:44334/api/Image";
+            ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()
@@ -70,7 +70,7 @@ namespace EvergreenView.Controllers
             List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
-            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData1 = await responeImage.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
@@ -112,7 +112,7 @@ namespace EvergreenView.Controllers
             List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
-            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData1 = await responeImage.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
@@ -151,7 +151,7 @@ namespace EvergreenView.Controllers
             List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData1, options1);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
-            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData2 = await responeImage.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -193,7 +193,7 @@ namespace EvergreenView.Controllers
             List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData1, options1);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
-            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData2 = await responeImage.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -247,6 +247,7 @@ namespace EvergreenView.Controllers
 
             var disease = await GetDiseaseById(id);
             HttpResponseMessage response = await client.DeleteAsync(DiseaseApiUrl + "/" + id);
+            
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("AdminIndex");
@@ -272,7 +273,7 @@ namespace EvergreenView.Controllers
 
         public async Task<IEnumerable<Thumbnail>> GetImages()
         {
-            HttpResponseMessage response = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage response = await client.GetAsync(ThumbnailApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

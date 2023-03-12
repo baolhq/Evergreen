@@ -10,6 +10,8 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+
 <div class="container">
     <div class="card card-outline-secondary">
         <div class="card-header">
@@ -48,3 +50,24 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+<script>
+    const formPlace = document.querySelector('.btn-danger')
+    formPlace.addEventListener('click', (e) => {
+        e.preventDefault()
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sessionStorage.setItem("lastname", "Smith");
+            }
+        })
+        })
+</script>

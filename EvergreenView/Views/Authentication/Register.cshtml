@@ -4,8 +4,21 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="container">
+<style>
+    .form-group {
+        position: relative;
+    }
 
+        .form-group i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+</style>
+
+<div class="container">
     <div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
@@ -28,13 +41,13 @@
                                  <input asp-for="Email" class="form-control rounded-pill" type="email" id="email" placeholder="Email Address" />
                                  <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
-                            <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 show_hide">
                                     <input asp-for="Password" class="form-control rounded-pill" type="password" id="password" placeholder="Password"/>
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                     <i class="fa-solid fa-eye"></i>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 show_hide">
                                     <input asp-for="ConfirmPassword" class="form-control rounded-pill" type="password" id="confirm-password" placeholder="Confirm password"/>
                                     <span asp-validation-for="ConfirmPassword" id="confirm-error" class="text-danger"></span>
                                     <i class="fa-solid fa-eye"></i>
@@ -69,6 +82,47 @@
 
 </div>
 <script src="https://kit.fontawesome.com/bdb952e5fa.js" crossorigin="anonymous"></script>
+<script>
+    const checking = document.querySelectorAll('.show_hide i')
+    const btn2 = document.querySelectorAll('.show_hide input')
+    checking[0].addEventListener('click', (e) => {
+        if (btn2[0].type === 'password') {
+            btn2[0].type = 'text'
+            checking[0].classList.remove('fa-solid')
+            checking[0].classList.remove('fa-eye')
+            checking[0].classList.add('fa-solid')
+            checking[0].classList.add('fa-eye-slash')
+        }
+        else {
+            btn2[0].type = 'password'
+            checking[0].classList.remove('fa-solid')
+            checking[0].classList.remove('fa-eye-slash')
+            checking[0].classList.add('fa-solid')
+            checking[0].classList.add('fa-eye')
+        }
+    })
+
+
+    checking[1].addEventListener('click', (e) => {
+        if (btn2[1].type === 'password') {
+            btn2[1].type = 'text'
+            checking[1].classList.remove('fa-solid')
+            checking[1].classList.remove('fa-eye')
+            checking[1].classList.add('fa-solid')
+            checking[1].classList.add('fa-eye-slash')
+        }
+        else {
+            btn2[1].type = 'password'
+            checking[1].classList.remove('fa-solid')
+            checking[1].classList.remove('fa-eye-slash')
+            checking[1].classList.add('fa-solid')
+            checking[1].classList.add('fa-eye')
+        }
+    })
+
+</script>
+
+
 <script>
     let password = document.querySelector("#password");
     let passwordConfirm = document.querySelector("#password-conf");

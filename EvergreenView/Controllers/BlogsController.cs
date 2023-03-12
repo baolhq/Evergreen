@@ -20,7 +20,7 @@ namespace EvergreenView.Controllers
     {
         
         private string BlogApiUrl = "";
-        private string ImageApiUrl = "";
+        private string ThumbnailApiUrl = "";
         private readonly HttpClient client = null;
 
         public BlogsController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
@@ -30,7 +30,7 @@ namespace EvergreenView.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             BlogApiUrl = "https://localhost:44334/api/Blog";
-            ImageApiUrl = "https://localhost:44334/api/Image";
+            ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()
@@ -79,7 +79,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index");
             }
             
-            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData1 = await responeImage.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
@@ -114,7 +114,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("AdminIndex");
             }
 
-            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData1 = await responeImage.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
@@ -145,7 +145,7 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
             Blog blog = JsonSerializer.Deserialize<Blog>(strData, options);
-            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData2 = await responeImage.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -184,7 +184,7 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            HttpResponseMessage responeImage = await client.GetAsync(ImageApiUrl);
+            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData2 = await responeImage.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {

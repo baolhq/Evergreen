@@ -8,22 +8,25 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Index";
 }
-
-<form method="get">
-    <div class="form-actions no-color">
+<div class="row">
+    <div class="col-8">
         <p>
-            <input type="search" name="searchString" placeholder="Search for.." class="m-2" />
-            <button type="submit" value="Search" class="btn btn-success m-2"><i class="fa fa-search"></i></button>
-            <a class="btn btn-dark m-2" asp-action="AdminIndex">Back to full list</a>
+            <a asp-action="Create" class="btn btn-primary">Create New</a>
         </p>
     </div>
-</form>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
-
-
+    <div class="col-4">
+        <form method="get">
+            <div class="input-group">
+                <div class="form-outline">
+                    <input type="search" name="searchString" placeholder="Search for.." class="form-control" />
+                </div>
+                <button type="submit" value="Search" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h4 class="m-0 font-weight-bold text-primary">Disease Managements</h4>
@@ -71,7 +74,7 @@
                                 @Html.DisplayFor(modelItem => item.Image.Url)
                             </td>
                             <td>
-                                <a asp-action="AdminDetails" asp-route-id="@item.DiseaseId" class="btn btn-info"> View </a>
+                                <a asp-action="AdminDetails" asp-route-id="@item.DiseaseId" class="btn btn-info"> View <i class="fa fa-eye"></i> </a>
                             </td>
                         </tr>
                     }

@@ -198,9 +198,6 @@ namespace EvergreenView.Controllers
 
         }
 
-
-
-
         public async Task<ActionResult> Delete(int id)
         {
             if (HttpContext.Session.GetString("r") != "Admin")

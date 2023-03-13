@@ -12,7 +12,7 @@
 
 @section Styles {
     <style>
-        .grid-container {
+        #grid-container {
             column-count: 4;
             column-gap: 10px;
             margin-bottom: 2rem;
@@ -86,7 +86,8 @@
     </style>
 }
 
-<div class="grid-container">
+<a asp-action="Create" class="btn btn-primary mb-2">Create new thumbnail</a>
+<div id="grid-container">
     @foreach (var item in Model)
     {
         <figure>

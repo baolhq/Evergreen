@@ -8,28 +8,22 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Index";
 }
-<div class="row">
-    <div class="col-8">
-        <p>
-            <a asp-action="Create" class="btn btn-primary">Create New</a>
-        </p>
-    </div>
-    <div class="col-4">
-        <form method="get">
-            <div class="input-group">
-                <div class="form-outline">
-                    <input type="search" name="searchString" placeholder="Search for.." class="form-control" />
-                </div>
-                <button type="submit" value="Search" class="btn btn-primary">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h4 class="m-0 font-weight-bold text-primary">Medicine Managements</h4>
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="btn btn-primary text-white" asp-action="Create"> <i class="fa fa-plus fa-fw"></i> Create New</a>
+            <form method="get" class="ml-2">
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" name="searchString" placeholder="Search for.." class="form-control" />
+                    </div>
+                    <button type="submit" value="Search" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">

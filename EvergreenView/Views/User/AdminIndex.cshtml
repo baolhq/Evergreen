@@ -9,26 +9,22 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Index";
 }
-<div class="clearfix mb-4">
-    <div class="float-left">
-        <form method="get">
-            <div class="input-group">
-                <div class="form-outline">
-                    <input type="search" name="searchString" placeholder="Search for.." class="form-control" />
-                </div>
-                <button type="submit" value="Search" class="btn btn-primary">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h4 class="m-0 font-weight-bold text-primary">User Managements</h4>
         <div class="d-flex justify-content-between align-items-center">
             <a class="btn btn-success text-white" asp-action="AdminCreate">Create Account</a>
             <a class="btn btn-danger text-white ml-2" asp-action="ManageRole">Manage Role</a>
+            <form method="get" class="ml-2">
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" name="searchString" placeholder="Search for.." class="form-control" />
+                    </div>
+                        <button type="submit" value="Search" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                </div>
+            </form>
         </div>
     </div>
     <div class="card-body">

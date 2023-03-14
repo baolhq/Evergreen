@@ -119,10 +119,10 @@ namespace EvergreenView.Controllers
                 Username = (string)temp["username"],
                 PhoneNumber = (string)temp["phoneNumber"],
                 FullName = (string)temp["fullName"],
-                Role = (string)temp["role"],
                 AvatarUrl = (string)temp["avatarUrl"],
                 VerifiedAt = DateTime.Parse((string)temp["verifiedAt"]),
-                Professions = (string)temp["professions"]
+                Professions = (string)temp["professions"],
+                Bio = (string)temp["bio"],
             };
 
             return View(user);
@@ -185,10 +185,12 @@ namespace EvergreenView.Controllers
                 Username = user.Username,
                 PhoneNumber = user.PhoneNumber,
                 Professions = user.Professions,
+                FullName = user.FullName,
+                Bio = user.Bio,
                 Role = "User"
             };
             var userToEdit = JsonSerializer.Serialize(userEdit);
-            HttpContent content = new StringContent(userToEdit, Encoding.UTF8, "application/json");
+            var content = new StringContent(userToEdit, Encoding.UTF8, "application/json");
             var response = await client.PutAsync(UserApiUrl + "/" + userEdit.AccountId, content);
             if (!response.IsSuccessStatusCode)
             {
@@ -228,13 +230,44 @@ namespace EvergreenView.Controllers
                 Username = (string)temp["username"],
                 PhoneNumber = (string)temp["phoneNumber"],
                 FullName = (string)temp["fullName"],
-                Role = (string)temp["role"],
                 AvatarUrl = (string)temp["avatarUrl"],
                 VerifiedAt = DateTime.Parse((string)temp["verifiedAt"]),
-                Professions = (string)temp["professions"]
+                Professions = (string)temp["professions"],
+                Bio = (string)temp["bio"],
             };
 
             return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public async Task<ActionResult> Edit(int id, Account user)
+        {
+            if (HttpContext.Session.GetString("r") != "User")
+                return RedirectToAction("Index", "Home");
+
+            var token = HttpContext.Session.GetString("t");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var userEdit = new AccountUpdateDTO()
+            {
+                AccountId = id,
+                Username = user.Username,
+                Email = user.Email,
+                FullName = user.FullName,
+                Bio = user.Bio,
+                PhoneNumber = user.PhoneNumber,
+                AvatarUrl = user.AvatarUrl,
+            };
+            var userToEdit = JsonSerializer.Serialize(userEdit);
+            var content = new StringContent(userToEdit, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync(UserApiUrl + "/" + id, content);
+            if (!response.IsSuccessStatusCode)
+            {
+                return View(user);
+            }
+            return RedirectToAction("Details", "User", new { Id = id });
         }
 
         private bool IsCurrentUser(int id)
@@ -245,7 +278,7 @@ namespace EvergreenView.Controllers
         }
 
 
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> AdminDelete(int id)
         {
 
             if (HttpContext.Session.GetString("r") != "Admin")
@@ -269,11 +302,9 @@ namespace EvergreenView.Controllers
             return View(model);
         }
 
-
-
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> AdminDeleteConfirmed(int id)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
@@ -301,9 +332,6 @@ namespace EvergreenView.Controllers
             }
             return View();
         }
-
-
-
 
         public async Task<IActionResult> AdminIndex(string searchString)
 
@@ -374,7 +402,7 @@ namespace EvergreenView.Controllers
                 ConfirmPassword = account.Password
             };
             var newUser = JsonSerializer.Serialize(formUser);
-            StringContent content = new StringContent(newUser, Encoding.UTF8, "application/json");
+            var content = new StringContent(newUser, Encoding.UTF8, "application/json");
             var response = await client.PostAsync(UserApiUrl, content);
             if (!response.IsSuccessStatusCode)
             {

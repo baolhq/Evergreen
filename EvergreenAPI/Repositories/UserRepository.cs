@@ -29,11 +29,6 @@ namespace EvergreenAPI.Repositories
             _config = config;
         }
 
-
-
-
-
-
         public bool DeleteUser(int id)
         {
             var user = _context.Accounts.SingleOrDefault(u => u.AccountId == id);
@@ -112,14 +107,7 @@ namespace EvergreenAPI.Repositories
             return true;
         }
 
-
-
-
-
-
-
-
-        public bool UpdateUser(Account userDTO, int id)
+        public bool UpdateUser(AccountUpdateDTO userDTO, int id)
         {
             var user = _context.Accounts.SingleOrDefault(f => f.AccountId == id);
             if (user == null)
@@ -127,12 +115,12 @@ namespace EvergreenAPI.Repositories
                 return false;
             }
 
-            user.Email = userDTO.Email;
             user.Username = userDTO.Username;
-            user.Role = userDTO.Role;
+            user.FullName = userDTO.FullName;
+            user.Bio = userDTO.Bio;
             user.Professions = userDTO.Professions;
             user.PhoneNumber = userDTO.PhoneNumber;
-            /*user.AvatarUrl = userDTO.AvatarUrl;*/
+            user.AvatarUrl = userDTO.AvatarUrl;
             _context.Update(user);
             try
             {
@@ -146,13 +134,6 @@ namespace EvergreenAPI.Repositories
             return true;
         }
 
-
-
-
-
-
-
-
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
@@ -162,13 +143,6 @@ namespace EvergreenAPI.Repositories
                     .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
-
-
-
-
-
-
-
 
         private string GenerateToken(string email, string role)
         {

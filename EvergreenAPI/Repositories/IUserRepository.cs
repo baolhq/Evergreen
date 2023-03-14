@@ -1,4 +1,4 @@
-﻿ using EvergreenAPI.DTO;
+﻿using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -15,8 +15,8 @@ namespace EvergreenAPI.Repositories
 
         bool DeleteUser(int id);
 
-        bool UpdateUser(Account user, int id);
-        
+        bool UpdateUser(AccountUpdateDTO user, int id);
+
         ICollection<Account> GetUsers();
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
 

@@ -1,8 +1,9 @@
 ﻿@model EvergreenAPI.Models.Account
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Edit Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 @section Styles {
@@ -63,7 +64,8 @@
             color: #0062cc;
         }
 
-        .profile-save-btn {
+        .profile-save-btn,
+        .profile-back-btn {
             border: none;
             border-radius: 4px;
             width: 70%;
@@ -75,17 +77,9 @@
             text-decoration: none;
         }
 
-            .profile-save-btn:hover {
-                background: rgba(235, 52, 52, 1) !important;
-                color: white !important;
-            }
-
-        .profile-back-btn {
-            background: rgba(41, 148, 255, 1);
-        }
-
+            .profile-save-btn:hover,
             .profile-back-btn:hover {
-                background: rgba(41, 148, 255, 1) !important;
+                color: white !important;
             }
 
         .profile-head .nav-tabs {
@@ -109,7 +103,7 @@
         }
 
         .info-tabs {
-            margin-top: -5.6rem;
+            margin-top: -7rem;
         }
     </style>
 }
@@ -126,15 +120,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="profile-head">
                     <h5>
-                        <input type="text" asp-for="Username" />
+                        <input class="form-control" type="text" asp-for="Username" />
                     </h5>
                     <h6>
                         @if (!string.IsNullOrEmpty(Model.Professions))
                         {
-                            <input type="text" asp-for="Professions" />
+                            <input class="form-control" type="text" asp-for="Professions" />
                         }
                     </h6>
                     <p class="verified">Verified at: <span>@Model.VerifiedAt.ToString()</span></p>
@@ -148,7 +142,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-2 d-flex align-items-center">
+            <div class="col-md-3 h-25 d-flex align-items-center">
                 <input type="submit" class="profile-save-btn text-center" value="Save" />
                 <a class="profile-back-btn text-center ml-2" asp-action="Details" asp-route-id="@Model.AccountId">Back</a>
             </div>
@@ -159,52 +153,30 @@
             <div class="col-md-8">
                 <div class="tab-content profile-tab" id="myTabContent">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>User Id</label>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" asp-for="AccountId" readonly />
-                            </div>
-                        </div>
-                        <div class="row">
+                        <input type="hidden" asp-for="AccountId" readonly />
+                        <input type="hidden" asp-for="Email" readonly />
+                        <div class="row align-items-center">
                             <div class="col-md-6">
                                 <label>Name</label>
                             </div>
                             <div class="col-md-6">
-                                <input type="text" asp-for="FullName" />
+                                <input class="form-control mb-2" type="text" asp-for="FullName" />
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row align-items-center">
                             <div class="col-md-6">
-                                <label>Email</label>
+                                <label>Phone number</label>
                             </div>
                             <div class="col-md-6">
-                                <input type="email" asp-for="Email" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Phone</label>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" asp-for="PhoneNumber" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Role</label>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" asp-for="Role" readonly />
+                                <input class="form-control" type="text" asp-for="PhoneNumber" />
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label>@(Model.Username + "'s") bio</label>
-                                <textarea asp-for="Bio" />
+                                <textarea class="form-control" asp-for="Bio" rows="5"></textarea>
                                 <br />
                                 <br />
                                 <br />

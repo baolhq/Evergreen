@@ -28,7 +28,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpGet]
-        
+
         public IActionResult GetUsers()
         {
             var users = _UserRepository.GetUsers();
@@ -36,10 +36,6 @@ namespace EvergreenAPI.Controllers
 
 
         }
-
-
-
-
 
         [HttpGet("{id}")]
 
@@ -54,7 +50,6 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPut("ManageRole")]
-        [AllowAnonymous]
         public async Task<IActionResult> SetRole(RoleDTO roleDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -100,13 +95,8 @@ namespace EvergreenAPI.Controllers
             return Ok("Create User Successfully");
         }
 
-
-
-
-
         [HttpPut("{id}")]
-        
-        public IActionResult UpdateUser(int id, Account updatedUser)
+        public IActionResult UpdateUser(int id, [FromBody] AccountUpdateDTO updatedUser)
         {
             var user = _UserRepository.GetUser(id);
             if (user == null)
@@ -130,7 +120,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpDelete("{email}")]
-     
+
         public IActionResult DeleteUser(int id)
         {
 

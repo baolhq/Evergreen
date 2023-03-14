@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using EvergreenAPI.DTO;
 using System.Net.Http.Json;
+using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
@@ -21,15 +22,17 @@ namespace EvergreenView.Controllers
     {
         private readonly HttpClient client;
         private string UserApiUrl = "";
+        private readonly IToastNotification _toastNotification;
 
 
-        public UserController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public UserController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IToastNotification toastNotification)
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
 
             UserApiUrl = "https://localhost:44334/api/User";
+            _toastNotification = toastNotification;
 
         }
 
@@ -189,8 +192,10 @@ namespace EvergreenView.Controllers
             var response = await client.PutAsync(UserApiUrl + "/" + userEdit.AccountId, content);
             if (!response.IsSuccessStatusCode)
             {
+
                 return View(user);
             }
+            _toastNotification.AddSuccessToastMessage("Create User Success!");
             return RedirectToAction("Details", "User", new { Id = user.AccountId });
         }
 
@@ -291,6 +296,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(UserApiUrl + "/" + user.AccountId);
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Delete User Success!");
                 return RedirectToAction("AdminIndex");
             }
             return View();
@@ -374,6 +380,7 @@ namespace EvergreenView.Controllers
             {
                 return View(account);
             }
+            _toastNotification.AddSuccessToastMessage("Create User Success!");
             return RedirectToAction("AdminIndex");
         }
 

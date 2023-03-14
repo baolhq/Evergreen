@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
@@ -20,8 +21,9 @@ namespace EvergreenView.Controllers
         private string MedicineCategoryApiUrl = "";
         private string DiseaseApiUrl = "";
         private readonly HttpClient client = null;
+        private readonly IToastNotification _toastNotification;
 
-        public MedicineController()
+        public MedicineController(IToastNotification toastNotification)
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -30,6 +32,7 @@ namespace EvergreenView.Controllers
             MedicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory";
             ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
             DiseaseApiUrl = "https://localhost:44334/api/Disease";
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -114,6 +117,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(MedicineApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Create Medicine Success!");
                 return RedirectToAction("AdminIndex");
             }
             HttpResponseMessage responeMedicineCategory = await client.GetAsync(MedicineCategoryApiUrl);
@@ -212,6 +216,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(MedicineApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Update Medicine Success!");
                 return RedirectToAction("AdminIndex");
             }
 
@@ -278,6 +283,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(MedicineApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Delete Medicine Success!");
                 return RedirectToAction("AdminIndex");
             }
             return View(medicine);

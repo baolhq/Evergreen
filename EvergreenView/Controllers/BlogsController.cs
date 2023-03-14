@@ -12,6 +12,7 @@ using AutoMapper.Execution;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
@@ -22,8 +23,9 @@ namespace EvergreenView.Controllers
         private string BlogApiUrl = "";
         private string ThumbnailApiUrl = "";
         private readonly HttpClient client = null;
+        private readonly IToastNotification _toastNotification;
 
-        public BlogsController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public BlogsController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IToastNotification toastNotification)
         {
 
             client = new HttpClient();
@@ -31,6 +33,7 @@ namespace EvergreenView.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
             BlogApiUrl = "https://localhost:44334/api/Blog";
             ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -111,6 +114,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(BlogApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Create Blog Success!");
                 return RedirectToAction("AdminIndex");
             }
 
@@ -177,6 +181,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.PutAsync(BlogApiUrl + "/" + id, content);
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Update Blog Success!");
                 return RedirectToAction("AdminIndex");
             }
             var options = new JsonSerializerOptions
@@ -232,6 +237,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(BlogApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Delete Blog Success!");
                 return RedirectToAction("AdminIndex");
             }
             return View(blog);

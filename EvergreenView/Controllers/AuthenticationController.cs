@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.AspNetCore.Authorization;
+using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
@@ -21,15 +22,17 @@ namespace EvergreenView.Controllers
         private string AuthApiUrl = "";
         private readonly HttpClient client;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        
+        private readonly IToastNotification _toastNotification;
 
-        public AuthenticationController(IHttpContextAccessor httpContextAccessor)
+
+        public AuthenticationController(IHttpContextAccessor httpContextAccessor, IToastNotification toastNotification)
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             AuthApiUrl = "https://localhost:44334/api/auth";
-            
+            _toastNotification = toastNotification;
+
 
             _httpContextAccessor = httpContextAccessor;
         }
@@ -60,7 +63,9 @@ namespace EvergreenView.Controllers
             string strData = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
-                    ViewData["error"] = "Cannot log-in to the application!!!";
+                    var message = await response.Content.ReadAsStringAsync();
+                    ViewData["message"] = message.Substring(1, message.Length - 2);
+                    _toastNotification.AddErrorToastMessage(message);
                     return RedirectToAction("Login", "Authentication");
                 }
                 else
@@ -84,7 +89,7 @@ namespace EvergreenView.Controllers
                 }
             }
 
-            ViewData["error"] = "Email or password is incorrect";
+            _toastNotification.AddErrorToastMessage("Your Email or Password is wrong!!");
             return View("Login", account);
         }
 
@@ -119,13 +124,15 @@ namespace EvergreenView.Controllers
                 var response = await client.PostAsync($"{AuthApiUrl}/register", content);
                 if (!response.IsSuccessStatusCode)
                 {
-                    
-                    return BadRequest("Something is wrong when trying to sign-up account!");
-                    
+
+                    var message = await response.Content.ReadAsStringAsync();
+                    _toastNotification.AddErrorToastMessage($"{message}");
+                    ViewData["message"] = message;
+
                 }
                 else 
                 {
-                    ViewData["message"] = "Register success, please visit your email to verify your account!!";
+                    _toastNotification.AddSuccessToastMessage("Register success, please visit your email to verify your account!!");
                     return RedirectToAction("VerifyAccount", "Authentication", new {email = account.Email});
                 }
 
@@ -161,7 +168,7 @@ namespace EvergreenView.Controllers
                 }
                 else
                 {
-                    ViewData["messaage"] = "Your Account Is Ready To Use!";
+                    _toastNotification.AddSuccessToastMessage("Your Account Is Ready To Use!");
                     return RedirectToAction("Login", "Authentication");
                 }
             }
@@ -187,8 +194,10 @@ namespace EvergreenView.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
 
-                    return BadRequest("Something is wrong when trying to send request!");
-                    
+                    var message = await response.Content.ReadAsStringAsync();
+                    _toastNotification.AddErrorToastMessage(message);
+                    ViewData["message"] = message.Substring(1, message.Length - 2);
+
                 }
                 else
                 {
@@ -198,8 +207,10 @@ namespace EvergreenView.Controllers
                         PropertyNameCaseInsensitive = true,
                     };
                     string TokenToResetPassword = System.Text.Json.JsonSerializer.Deserialize<string>(strData, options);
-                    
-                    ViewData["message"] = "Please visit your mail to reset your password!";
+
+                    var message = "Please visit your mail to reset your password!";
+                    _toastNotification.AddSuccessToastMessage(message);
+                    ViewData["message"] = message.Substring(1, message.Length - 2);
                     return RedirectToAction("ResetPassword", "Authentication");
                 }
             }
@@ -235,12 +246,14 @@ namespace EvergreenView.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
 
-                    return BadRequest("Something is wrong when trying to reset your password!");
+                    var message = await response.Content.ReadAsStringAsync();
+                    _toastNotification.AddErrorToastMessage(message);
+                    ViewData["message"] = message.Substring(1, message.Length - 2);
 
                 }
                 else
                 {
-                    ViewData["message"] = "Your Password Reseted successfully!";
+                    _toastNotification.AddSuccessToastMessage("Your Password Reseted successfully!");
                     return RedirectToAction("Login", "Authentication");
                 }
             }

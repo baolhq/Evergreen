@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.AspNetCore.Http;
+using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
@@ -20,8 +21,9 @@ namespace EvergreenView.Controllers
         private string TreatmentApiUrl = "";
         private string DiseaseApiUrl = "";
         private readonly HttpClient client = null;
+        private readonly IToastNotification _toastNotification;
 
-        public TreatmentController()
+        public TreatmentController(IToastNotification toastNotification)
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -29,6 +31,7 @@ namespace EvergreenView.Controllers
             TreatmentApiUrl = "https://localhost:44334/api/Treatment";
             DiseaseApiUrl = "https://localhost:44334/api/Disease";
             ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -98,6 +101,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(TreatmentApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Create Treatment Success!");
                 return RedirectToAction("AdminIndex");
             }
             HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
@@ -175,6 +179,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(TreatmentApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Update Treatment Success!");
                 return RedirectToAction("AdminIndex");
             }
 
@@ -229,6 +234,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(TreatmentApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Delete Treatment Success!");
                 return RedirectToAction("AdminIndex");
             }
             return View(treatment);

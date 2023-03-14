@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.AspNetCore.Http;
+using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
@@ -18,13 +19,15 @@ namespace EvergreenView.Controllers
         
         private string MedicineCategoryApiUrl = "";
         private readonly HttpClient client = null;
+        private readonly IToastNotification _toastNotification;
 
-        public MedicineCategoryController()
+        public MedicineCategoryController(IToastNotification toastNotification)
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             MedicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory";
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -43,7 +46,7 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             var medicine = await GetMedicineCategoryById(id);
             if (medicine == null)
@@ -55,7 +58,7 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             return View();
         }
@@ -66,7 +69,7 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
@@ -77,6 +80,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(MedicineCategoryApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Create Medicine Category Success!");
                 return RedirectToAction("Index");
             }
             return View();
@@ -86,7 +90,7 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             HttpResponseMessage response = await client.GetAsync(MedicineCategoryApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
@@ -105,7 +109,7 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
@@ -116,6 +120,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(MedicineCategoryApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Update Medicine Category Success!");
                 return RedirectToAction("Index");
             }
             return View();
@@ -139,7 +144,7 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             var medicine = await GetMedicineCategoryById(id);
             if (medicine == null)
@@ -153,7 +158,7 @@ namespace EvergreenView.Controllers
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
@@ -163,6 +168,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(MedicineCategoryApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Delete Medicine Category Success!");
                 return RedirectToAction("Index");
             }
             return View(medicine);

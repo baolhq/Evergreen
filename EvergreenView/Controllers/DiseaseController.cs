@@ -10,6 +10,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+using NToastNotify;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace EvergreenView.Controllers
 {
@@ -19,9 +22,10 @@ namespace EvergreenView.Controllers
         private string DiseaseApiUrl = "";
         private string DiseaseCategoryApiUrl = "";
         private string ThumbnailApiUrl = "";
+        private readonly IToastNotification _toastNotification;
         private readonly HttpClient client = null;
 
-        public DiseaseController()
+        public DiseaseController(IToastNotification toastNotification)
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -29,6 +33,7 @@ namespace EvergreenView.Controllers
             DiseaseApiUrl = "https://localhost:44334/api/Disease";
             DiseaseCategoryApiUrl = "https://localhost:44334/api/DiseaseCategory";
             ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -100,6 +105,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(DiseaseApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Create Disease Success!");
                 return RedirectToAction("AdminIndex");
             }
             HttpResponseMessage responeDiseaseCategory = await client.GetAsync(DiseaseCategoryApiUrl);
@@ -180,6 +186,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(DiseaseApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Update Disease Success!");
                 return RedirectToAction("AdminIndex");
             }
 
@@ -197,6 +204,7 @@ namespace EvergreenView.Controllers
             string strData2 = await responeImage.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
+
                 PropertyNameCaseInsensitive = true
             };
 
@@ -247,10 +255,12 @@ namespace EvergreenView.Controllers
 
             var disease = await GetDiseaseById(id);
             HttpResponseMessage response = await client.DeleteAsync(DiseaseApiUrl + "/" + id);
-            
+
             if (response.IsSuccessStatusCode)
             {
+                _toastNotification.AddSuccessToastMessage("Delete Disease Success!");
                 return RedirectToAction("AdminIndex");
+                
             }
             return View(disease);
         }

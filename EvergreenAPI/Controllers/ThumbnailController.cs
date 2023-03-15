@@ -3,24 +3,34 @@ using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize (Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ThumbnailController : ControllerBase
     {
         private readonly IThumbnailRepository _thumbnailRepository;
         private readonly IMapper _mapper;
+        private readonly AppDbContext _context;
+        private IHostingEnvironment _environment;
 
-        public ThumbnailController(IThumbnailRepository thumbnailRepository, IMapper mapper)
+        public ThumbnailController(IThumbnailRepository thumbnailRepository, IMapper mapper,
+            IHostingEnvironment environment, AppDbContext context)
         {
             _thumbnailRepository = thumbnailRepository;
             _mapper = mapper;
+            _environment = environment;
+            _context = context;
         }
 
         [HttpGet]
@@ -51,59 +61,101 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateThumbnail([FromBody] ThumbnailDTO thumbnailCreate)
+        public async Task<ActionResult> CreateThumbnail()
         {
-            if (thumbnailCreate == null)
-                return BadRequest(ModelState);
+            var postedFile = Request.Form.Files.FirstOrDefault();
+            var altText = Request.Form["alt"].FirstOrDefault();
 
-            var thumbnail = _thumbnailRepository.GetThumbnails()
-                .Where(c => c.AltText.Trim().ToUpper() == thumbnailCreate.AltText.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            if (postedFile == null)
+                return BadRequest("File is null or empty");
 
-            if (thumbnail != null)
+            string[] permittedExtensions = { ".jpg", ".png", ".jpeg" };
+            var ext = Path.GetExtension(postedFile.FileName).ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+                return BadRequest("We only accept JPEG and PNG file");
+
+            string path = Path.Combine(_environment.ContentRootPath, "Uploads");
+            if (!Directory.Exists(path))
             {
-                ModelState.AddModelError("", "It is already exists");
-                return StatusCode(422, ModelState);
+                Directory.CreateDirectory(path);
             }
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var thumbnailMap = _mapper.Map<Thumbnail>(thumbnailCreate);
-
-            if (!_thumbnailRepository.CreateThumbnail(thumbnailMap))
+            string fileName = Path.GetFileName(postedFile.FileName);
+            string uniqueFilePath = Path.Combine(path, fileName);
+            string uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
+            // Check if file name exist, use Windows style rename
+            if (System.IO.File.Exists(uniqueFilePath))
             {
-                ModelState.AddModelError("", "Something was wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+                int count = 1;
 
-            return Ok("Create Success");
+                string extension = Path.GetExtension(uniqueFilePath);
+                string newFullPath = uniqueFilePath;
+
+                while (System.IO.File.Exists(Path.Combine(path, newFullPath)))
+                {
+                    string tempFileName = string.Format("{0} ({1})", uniqueFileName, count++);
+                    newFullPath = Path.Combine(path, tempFileName + extension);
+                }
+                uniqueFilePath = newFullPath;
+            }
+            var splitted = uniqueFilePath.Split('\\');
+            uniqueFilePath = splitted[^2] + "/" + splitted[^1];
+
+            using var stream = System.IO.File.Create(uniqueFilePath);
+            await postedFile.CopyToAsync(stream);
+
+            // Save thumbnail location to database
+            _context.Thumbnails.Add(new Thumbnail { AltText = altText, Url = uniqueFilePath });
+            await _context.SaveChangesAsync();
+
+            string responseMessage = $"{fileName} uploaded successfully";
+            return Ok(responseMessage);
         }
 
-        [HttpPut("{ThumbnailId}")]
-        public IActionResult UpdateThumbnail(int ThumbnailId, [FromBody] ThumbnailDTO updatedThumbnail)
+        [HttpPut]
+        public async Task<ActionResult> UpdateThumbnail()
         {
-            if (updatedThumbnail == null)
-                return BadRequest(ModelState);
+            var postedFile = Request.Form.Files.FirstOrDefault();
+            var altText = Request.Form["alt"].FirstOrDefault();
+            var thumbnailId = Request.Form["id"].FirstOrDefault();
+            var oldUrl = Request.Form["old"].FirstOrDefault();
 
-            if (ThumbnailId != updatedThumbnail.ThumbnailId)
-                return BadRequest(ModelState);
+            if (postedFile == null)
+                return BadRequest("File is null or empty");
 
-            if (!_thumbnailRepository.ThumbnailExist(ThumbnailId))
-                return NotFound();
+            string[] permittedExtensions = { ".jpg", ".png", ".jpeg" };
+            var ext = Path.GetExtension(postedFile.FileName).ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+                return BadRequest("We only accept JPEG and PNG file");
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            string path = Path.Combine(_environment.ContentRootPath, "Uploads");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
 
-            var thumbnailMap = _mapper.Map<Thumbnail>(updatedThumbnail);
+            string fileName = Path.GetFileName(postedFile.FileName);
+            string uniqueFilePath = Path.Combine(path, fileName);
+            var oldFile = Path.Combine(_environment.ContentRootPath, oldUrl);
+            // Delete old file
+            if (System.IO.File.Exists(oldFile))
+                System.IO.File.Delete(oldFile);
 
-            if (!_thumbnailRepository.UpdateThumbnail(thumbnailMap))
+            var splitted = uniqueFilePath.Split('\\');
+            uniqueFilePath = splitted[^2] + "/" + splitted[^1];
+
+            using var stream = System.IO.File.Create(uniqueFilePath);
+            await postedFile.CopyToAsync(stream);
+
+            // Save thumbnail location to database
+            _context.Thumbnails.Update(new Thumbnail
             {
-                ModelState.AddModelError("", "Something was wrong when saving");
-                return StatusCode(500, ModelState);
-            }
+                ThumbnailId = int.Parse(thumbnailId),
+                AltText = altText,
+                Url = uniqueFilePath
+            });
+            await _context.SaveChangesAsync();
 
-            return Ok("Updated Success");
+            string responseMessage = $"{fileName} updated successfully";
+            return Ok(responseMessage);
         }
 
         [HttpDelete("{ThumbnailId}")]
@@ -113,6 +165,10 @@ namespace EvergreenAPI.Controllers
                 return NotFound();
 
             var thumbnailToDelete = _thumbnailRepository.GetThumbnail(ThumbnailId);
+            var uploadPath = @"C:\Users\ASUS\dev\web\Evergreen\EvergreenAPI";
+            var thumbnailUrl = Path.Combine(uploadPath, thumbnailToDelete.Url);
+            if (System.IO.File.Exists(thumbnailUrl))
+                System.IO.File.Delete(thumbnailUrl);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -197,7 +197,7 @@ namespace EvergreenView.Controllers
 
                 return View(user);
             }
-            _toastNotification.AddSuccessToastMessage("Create User Success!");
+            TempData["message"] = "Update Successfully";
             return RedirectToAction("Details", "User", new { Id = user.AccountId });
         }
 
@@ -267,6 +267,7 @@ namespace EvergreenView.Controllers
             {
                 return View(user);
             }
+            TempData["message"] = "Update Successfully";
             return RedirectToAction("Details", "User", new { Id = id });
         }
 
@@ -278,7 +279,7 @@ namespace EvergreenView.Controllers
         }
 
 
-        public async Task<ActionResult> AdminDelete(int id)
+       /* public async Task<ActionResult> AdminDelete(int id)
         {
 
             if (HttpContext.Session.GetString("r") != "Admin")
@@ -327,11 +328,16 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(UserApiUrl + "/" + user.AccountId);
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Delete User Success!");
+                TempData["message"] = "Delete Successfully";
                 return RedirectToAction("AdminIndex");
             }
             return View();
         }
+*/
+
+
+
+
 
         public async Task<IActionResult> AdminIndex(string searchString)
 
@@ -408,7 +414,7 @@ namespace EvergreenView.Controllers
             {
                 return View(account);
             }
-            _toastNotification.AddSuccessToastMessage("Create User Success!");
+            TempData["message"] = "Create Successfully";
             return RedirectToAction("AdminIndex");
         }
 
@@ -433,7 +439,37 @@ namespace EvergreenView.Controllers
             };
             List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
 
+            TempData["message"] = "Manage Role Successfully";
             return View(listUsers);
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> ManageBlocked()
+        {
+            var token = HttpContext.Session.GetString("t");
+            if (HttpContext.Session.GetString("r") != "Admin" || string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            token = token.Replace("\"", string.Empty);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            // Get users
+            HttpResponseMessage response = await client.GetAsync(UserApiUrl);
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
+
+            TempData["message"] = "Manage Status Successfully";
+            return View(listUsers);
+
+        }
+
     }
 }

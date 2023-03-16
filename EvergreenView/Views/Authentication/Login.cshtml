@@ -70,6 +70,20 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
 </div>
 <script src="https://kit.fontawesome.com/bdb952e5fa.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+@if (TempData["message"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: '@TempData["message"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+}
 <script>
     const showHid = document.querySelector('.show_hide i')
     const btn2 = document.querySelector('.show_hide input')

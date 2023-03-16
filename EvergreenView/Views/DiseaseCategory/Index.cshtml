@@ -72,6 +72,9 @@
             bottom: 210px;
         }
 </style>
+
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h4 class="m-0 font-weight-bold text-primary">Disease Category Managements</h4>
@@ -103,10 +106,13 @@
                             </td>
                         </tr>
                     }
+                     
                 </tbody>
             </table>
+            
         </div>
     </div>
+    
 </div>
 
 <div class="btn-group-fab" role="group" aria-label="FAB Menu">
@@ -118,6 +124,8 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
 <script>
     $(function () {
         $('.btn-group-fab').on('click', '.btn', function () {
@@ -125,4 +133,21 @@
         });
         $('has-tooltip').tooltip();
     });
+     
 </script>
+
+
+@if (TempData["message"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: '@TempData["message"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+}

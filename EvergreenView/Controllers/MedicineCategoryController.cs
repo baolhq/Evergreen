@@ -80,7 +80,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(MedicineCategoryApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Create Medicine Category Success!");
+                TempData["message"] = "Create Successfully";
                 return RedirectToAction("Index");
             }
             return View();
@@ -120,7 +120,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(MedicineCategoryApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Update Medicine Category Success!");
+                TempData["message"] = "Update Successfully";
                 return RedirectToAction("Index");
             }
             return View();
@@ -168,7 +168,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(MedicineCategoryApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Delete Medicine Category Success!");
+                TempData["message"] = "Delete Successfully";
                 return RedirectToAction("Index");
             }
             return View(medicine);

@@ -14,7 +14,7 @@ namespace EvergreenAPI.DTO
         [Required]
         public int MedicineCategoryId { get; set; }
         [Required]
-        public int ImageId { get; set; }
+        public int ThumbnailId { get; set; }
         [Required]
         public int DiseaseId { get; set; }
     }

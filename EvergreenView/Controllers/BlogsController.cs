@@ -114,7 +114,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(BlogApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Create Blog Success!");
+                TempData["message"] = "Create Successfully";
                 return RedirectToAction("AdminIndex");
             }
 
@@ -181,7 +181,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.PutAsync(BlogApiUrl + "/" + id, content);
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Update Blog Success!");
+                TempData["message"] = "Update Successfully";
                 return RedirectToAction("AdminIndex");
             }
             var options = new JsonSerializerOptions
@@ -234,7 +234,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(BlogApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Delete Blog Success!");
+                TempData["message"] = "Delete Successfully";
                 return RedirectToAction("AdminIndex");
             }
             return View(blog);

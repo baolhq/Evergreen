@@ -3,6 +3,8 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Create";
 }
+
+
 <h1 class="text-dark">Create Disease Category</h1>
 <hr />
 <div class="row">
@@ -19,8 +21,13 @@
                 <a asp-action="Index" class="btn btn-success">Back to List</a>
             </div>
         </form>
+        <h2>@ViewBag.message</h2>
     </div>
 </div>
+
+
+
+
 
 @section Scripts {
     @{

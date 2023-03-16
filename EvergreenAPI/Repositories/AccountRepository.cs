@@ -45,7 +45,7 @@ namespace EvergreenAPI.Repositories
 
         public Account Login(LoginDTO account)
         {
-            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email);
+            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && account.Status);
             if (user == null)
             {
                 return null;
@@ -66,8 +66,9 @@ namespace EvergreenAPI.Repositories
                 .Where(x => x.Password == account.Password && x.Email == account.Email)
                 .FirstOrDefault();
 
-            if (validUser != null)
+            if (validUser != null && validUser.Status)
             {
+                
                 validUser.Token = GenerateToken(validUser.Email, validUser.Role);
                 _context.Accounts.Update(validUser);
                 _context.SaveChanges();

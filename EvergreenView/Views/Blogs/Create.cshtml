@@ -9,6 +9,8 @@
 }
 <h1 class="text-dark">Create Blog</h1>
 <hr />
+<div class="row">
+    <div class="col-md-4">
             <form asp-action="Create" method="post" class="text-dark">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input asp-for="ViewCount" type="hidden" />
@@ -39,6 +41,8 @@
                     <a asp-action="AdminIndex" class="btn btn-success btn-lg">Back to List</a>
                 </div>
             </form>
+    </div>
+</div>
 @section Scripts {
     <script src="~/AdminAssets/lib/summernote-bs4.min.js"></script>
     <link rel="stylesheet" href="~/AdminAssets/lib/summernote-bs4.min.css" />

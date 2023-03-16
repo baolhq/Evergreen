@@ -18,5 +18,6 @@ namespace EvergreenAPI.DTO
         [RegularExpression(@"^(?=.*[a-z])(?=.*\d).{8,32}$", ErrorMessage = "Use more than 7 characters include letters and numbers")]
         [Display(Name = "Password")]
         public string Password { get; set; } = string.Empty;
+        public bool Status { get; set; } = true;
     }
 }

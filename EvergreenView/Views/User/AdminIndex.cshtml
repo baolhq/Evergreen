@@ -9,12 +9,16 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Index";
 }
+
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h4 class="m-0 font-weight-bold text-primary">User Managements</h4>
         <div class="d-flex justify-content-between align-items-center">
             <a class="btn btn-success text-white" asp-action="AdminCreate">Create Account</a>
             <a class="btn btn-danger text-white ml-2" asp-action="ManageRole">Manage Role</a>
+            <a class="btn btn-warning text-white ml-2" asp-action="ManageBlocked">Manage Status</a>
             <form method="get" class="ml-2">
                 <div class="input-group">
                     <div class="form-outline">
@@ -47,6 +51,9 @@
                         <th>
                             @Html.DisplayNameFor(model => model.Role)
                         </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Status)
+                        </th>
                         <th></th>
                     </tr>
                 </thead>
@@ -70,6 +77,9 @@
                                 @Html.DisplayFor(modelItem => item.Role)
                             </td>
                             <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
                                 <a asp-action="AdminDetails" asp-route-id="@item.AccountId" class="btn btn-info">View <i class="fa fa-eye"></i></a>
                             </td>
                         </tr>
@@ -79,3 +89,20 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+@if (TempData["message"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: '@TempData["message"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+}

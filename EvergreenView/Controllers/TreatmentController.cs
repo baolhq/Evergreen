@@ -101,7 +101,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(TreatmentApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Create Treatment Success!");
+                TempData["message"] = "Create Successfully";
                 return RedirectToAction("AdminIndex");
             }
             HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
@@ -179,7 +179,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(TreatmentApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Update Treatment Success!");
+                TempData["message"] = "Update Successfully";
                 return RedirectToAction("AdminIndex");
             }
 
@@ -234,7 +234,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(TreatmentApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
-                _toastNotification.AddSuccessToastMessage("Delete Treatment Success!");
+                TempData["message"] = "Delete Successfully";
                 return RedirectToAction("AdminIndex");
             }
             return View(treatment);

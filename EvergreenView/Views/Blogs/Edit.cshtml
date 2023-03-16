@@ -5,6 +5,10 @@
     var listImages = ViewData["Thumbnails"] as SelectList;
     
 }
+<h1 class="text-dark">Update Blog</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
         <form asp-action="Edit" class="text-dark" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BlogId" />
@@ -36,7 +40,8 @@
                 <a asp-action="AdminIndex" class="btn btn-success">Back to List</a>
             </div>
         </form>
-
+    </div>
+</div>
 @section Scripts {
     <script src="~/AdminAssets/lib/summernote-bs4.min.js"></script>
     <link rel="stylesheet" href="~/AdminAssets/lib/summernote-bs4.min.css" />

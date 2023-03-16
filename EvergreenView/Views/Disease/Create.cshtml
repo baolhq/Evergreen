@@ -11,6 +11,8 @@
     var listImages = ViewData["Thumbnails"] as SelectList;
 }
 
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+
 <h1 class="text-dark">Create Disease</h1>
 <hr />
     <div class="row">
@@ -47,6 +49,21 @@
             </form>
         </div>
     </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+@if(ViewBag.Message != null)
+{
+    <script>
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            alert("@ViewBag.Message"),
+            showConfirmButton: false,
+            timer: 1500
+        })
+    </script>
+}
+
 
 
 @section Scripts {

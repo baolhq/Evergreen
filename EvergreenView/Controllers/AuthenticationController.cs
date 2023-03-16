@@ -63,9 +63,7 @@ namespace EvergreenView.Controllers
             string strData = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
-                    var message = await response.Content.ReadAsStringAsync();
-                    ViewData["message"] = message.Substring(1, message.Length - 2);
-                    _toastNotification.AddErrorToastMessage(message);
+                    TempData["message"] = "Cannot Log-In!";
                     return RedirectToAction("Login", "Authentication");
                 }
                 else
@@ -88,8 +86,7 @@ namespace EvergreenView.Controllers
                     }
                 }
             }
-
-            _toastNotification.AddErrorToastMessage("Your Email or Password is wrong!!");
+            TempData["message"] = "Your Email or Password is wrong!";
             return View("Login", account);
         }
 
@@ -125,14 +122,12 @@ namespace EvergreenView.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
 
-                    var message = await response.Content.ReadAsStringAsync();
-                    _toastNotification.AddErrorToastMessage($"{message}");
-                    ViewData["message"] = message;
+                    TempData["message"] = "Cannot Register!";
 
                 }
                 else 
                 {
-                    _toastNotification.AddSuccessToastMessage("Register success, please visit your email to verify your account!!");
+                    TempData["message"] = "Register success, please visit your email to verify your account!!";
                     return RedirectToAction("VerifyAccount", "Authentication", new {email = account.Email});
                 }
 
@@ -162,13 +157,12 @@ namespace EvergreenView.Controllers
                 var response = await client.PostAsync($"{AuthApiUrl}/verify?token={token}", data);
                 if (!response.IsSuccessStatusCode)
                 {
-                    return BadRequest("Something is wrong when trying to send request!");
-
+                    TempData["message"] = "Cannot Send Request!";
 
                 }
                 else
                 {
-                    _toastNotification.AddSuccessToastMessage("Your Account Is Ready To Use!");
+                    TempData["message"] = "Your account is ready to use";
                     return RedirectToAction("Login", "Authentication");
                 }
             }
@@ -194,9 +188,7 @@ namespace EvergreenView.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
 
-                    var message = await response.Content.ReadAsStringAsync();
-                    _toastNotification.AddErrorToastMessage(message);
-                    ViewData["message"] = message.Substring(1, message.Length - 2);
+                    TempData["message"] = "Cannot Send Request!";
 
                 }
                 else
@@ -208,9 +200,7 @@ namespace EvergreenView.Controllers
                     };
                     string TokenToResetPassword = System.Text.Json.JsonSerializer.Deserialize<string>(strData, options);
 
-                    var message = "Please visit your mail to reset your password!";
-                    _toastNotification.AddSuccessToastMessage(message);
-                    ViewData["message"] = message.Substring(1, message.Length - 2);
+                    TempData["message"] = "Please visit your email to reset password!";
                     return RedirectToAction("ResetPassword", "Authentication");
                 }
             }
@@ -246,14 +236,12 @@ namespace EvergreenView.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
 
-                    var message = await response.Content.ReadAsStringAsync();
-                    _toastNotification.AddErrorToastMessage(message);
-                    ViewData["message"] = message.Substring(1, message.Length - 2);
+                    TempData["message"] = "Cannot Reset Password!";
 
                 }
                 else
                 {
-                    _toastNotification.AddSuccessToastMessage("Your Password Reseted successfully!");
+                    TempData["message"] = "Your Password Reseted Successfully!";
                     return RedirectToAction("Login", "Authentication");
                 }
             }

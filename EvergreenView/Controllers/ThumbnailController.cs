@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
+using System.IO;
 
 namespace EvergreenView.Controllers
 {
@@ -56,24 +57,8 @@ namespace EvergreenView.Controllers
 
         public IActionResult Create()
         {
+            ViewData["t"] = HttpContext.Session.GetString("t");
             return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Thumbnail thumbnail)
-        {
-            if (HttpContext.Session.GetString("r") != "Admin")
-                return RedirectToAction("Index");
-
-            var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var data = JsonSerializer.Serialize(thumbnail);
-            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(ThumbnailApiUrl, content);
-            if (response.IsSuccessStatusCode)
-                return RedirectToAction("Index");
-            return View(thumbnail);
         }
 
         public async Task<ActionResult> Update(int id)
@@ -83,24 +68,8 @@ namespace EvergreenView.Controllers
 
             var thumbnail = await GetThumbnailAsync(id);
             if (thumbnail == null) return NotFound();
-            return View(thumbnail);
-        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Update(int id, Thumbnail thumbnail)
-        {
-            if (HttpContext.Session.GetString("r") != "Admin")
-                return RedirectToAction("Index");
-
-            var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var data = JsonSerializer.Serialize(thumbnail);
-            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PutAsync(ThumbnailApiUrl + "/" + id, content);
-            if (response.IsSuccessStatusCode)
-                return RedirectToAction("Index");
+            ViewData["t"] = HttpContext.Session.GetString("t");
             return View(thumbnail);
         }
 
@@ -125,6 +94,7 @@ namespace EvergreenView.Controllers
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             if (thumbnail == null) return NotFound();
+
             var data = JsonSerializer.Serialize(thumbnail);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.DeleteAsync(ThumbnailApiUrl + "/" + thumbnail.ThumbnailId);

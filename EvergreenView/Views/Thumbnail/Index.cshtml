@@ -86,12 +86,12 @@
     </style>
 }
 
-    <a asp-action="Create" class="btn btn-primary mb-2"><i class="fa fa-plus fa-fw"></i> Create new thumbnail</a>
+<a asp-action="Create" class="btn btn-primary mb-2"><i class="fa fa-plus fa-fw"></i> Create new thumbnail</a>
 <div id="grid-container">
     @foreach (var item in Model)
     {
         <figure>
-            <img src="@item.Url" alt="@item.AltText" onerror="this.onerror=null;this.src='https://i.imgur.com/MP8rmmN.png';" />
+            <img src="@Url.Content(item.Url)" alt="@item.AltText" onerror="this.onerror=null;this.src='https://i.imgur.com/MP8rmmN.png';" />
             <div class="inner">
                 <p class="text-ellipsis">@item.AltText</p>
                 <div class="d-flex align-items-center">

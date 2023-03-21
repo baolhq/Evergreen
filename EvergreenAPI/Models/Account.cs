@@ -11,7 +11,6 @@ namespace EvergreenAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AccountId { get; set; }
         [Required(ErrorMessage = "Cannot be blank")]
-        [Column(TypeName = "nvarchar(255)")]
         public string Username { get; set; }
 
 
@@ -27,7 +26,6 @@ namespace EvergreenAPI.Models
 
 
         [Required(ErrorMessage = "Cannot be blank")]
-        [Column(TypeName = "nvarchar(255)")]
         public string FullName { get; set; }
 
 

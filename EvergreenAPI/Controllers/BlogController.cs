@@ -27,8 +27,13 @@ namespace EvergreenAPI.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("health")]
+        public IActionResult HealthCheck()
+        {
+            return Ok();
+        }
+
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult GetBlogs()
         {
             var blogs = _mapper.Map<List<Blog>>(_BlogRepository.GetBlogs());

@@ -55,7 +55,7 @@ namespace EvergreenAPI
 
 
             services.AddDbContext<AppDbContext>(opitons =>
-                opitons.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                opitons.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

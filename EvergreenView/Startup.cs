@@ -70,7 +70,7 @@ namespace EvergreenView
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                Path.Combine(@"C:\Users\Admin\Evergreen\EvergreenAPI", "Uploads")),
+                Path.Combine(@"C:\Users\ASUS\dev\web\Evergreen\EvergreenAPI", "Uploads")),
                 RequestPath = "/Uploads"
             });
 

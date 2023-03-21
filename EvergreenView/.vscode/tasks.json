@@ -1,5 +1,4 @@
 {
-
   "version": "2.0.0",
   "tasks": [
     {
@@ -8,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/EvergreenAPI.csproj",
+        "${workspaceFolder}/EvergreenView.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -20,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/EvergreenAPI.csproj",
+        "${workspaceFolder}/EvergreenView.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -34,7 +33,7 @@
         "watch",
         "run",
         "--project",
-        "${workspaceFolder}/EvergreenAPI.csproj"
+        "${workspaceFolder}/EvergreenView.csproj"
       ],
       "problemMatcher": "$msCompile"
     },
@@ -43,14 +42,14 @@
       "label": "docker-build: debug",
       "dependsOn": ["build"],
       "dockerBuild": {
-        "tag": "evergreenapi:dev",
+        "tag": "evergreenview:dev",
         "target": "base",
         "dockerfile": "${workspaceFolder}/Dockerfile",
         "context": "${workspaceFolder}",
         "pull": true
       },
       "netCore": {
-        "appProject": "${workspaceFolder}/EvergreenAPI.csproj"
+        "appProject": "${workspaceFolder}/EvergreenView.csproj"
       }
     },
     {
@@ -58,13 +57,13 @@
       "label": "docker-build: release",
       "dependsOn": ["build"],
       "dockerBuild": {
-        "tag": "evergreenapi:latest",
+        "tag": "evergreenview:latest",
         "dockerfile": "${workspaceFolder}/Dockerfile",
         "context": "${workspaceFolder}",
         "pull": true
       },
       "netCore": {
-        "appProject": "${workspaceFolder}/EvergreenAPI.csproj"
+        "appProject": "${workspaceFolder}/EvergreenView.csproj"
       }
     },
     {
@@ -73,7 +72,7 @@
       "dependsOn": ["docker-build: debug"],
       "dockerRun": {},
       "netCore": {
-        "appProject": "${workspaceFolder}/EvergreenAPI.csproj",
+        "appProject": "${workspaceFolder}/EvergreenView.csproj",
         "enableDebugging": true
       }
     },
@@ -83,9 +82,8 @@
       "dependsOn": ["docker-build: release"],
       "dockerRun": {},
       "netCore": {
-        "appProject": "${workspaceFolder}/EvergreenAPI.csproj"
+        "appProject": "${workspaceFolder}/EvergreenView.csproj"
       }
     }
   ]
 }
-

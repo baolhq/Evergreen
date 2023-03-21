@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
-EXPOSE 5000
+EXPOSE 3000
 
-ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_URLS=http://+:3000
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
@@ -11,16 +11,16 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["EvergreenAPI.csproj", "./"]
-RUN dotnet restore "EvergreenAPI.csproj"
+COPY ["EvergreenView.csproj", "./"]
+RUN dotnet restore "EvergreenView.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "EvergreenAPI.csproj" -c Release -o /app/build
+RUN dotnet build "EvergreenView.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "EvergreenAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "EvergreenView.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet EvergreenAPI.dll
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet EvergreenView.dll

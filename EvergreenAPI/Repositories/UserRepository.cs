@@ -1,8 +1,14 @@
-﻿using EvergreenAPI.DTO;
+﻿using AutoMapper;
+using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,54 +18,172 @@ namespace EvergreenAPI.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
 
-        public UserRepository(AppDbContext context)
+
+        public UserRepository(AppDbContext context, IMapper mapper, IConfiguration config)
         {
             _context = context;
+            _mapper = mapper;
+            _config = config;
         }
 
-        public bool DeleteUser(Account b)
+        public bool DeleteUser(int id)
         {
-            _context.Remove(b);
-            return Save();
+            var user = _context.Accounts.SingleOrDefault(u => u.AccountId == id);
+            if (user == null)
+            {
+                return false;
+            }
+            user.Status = false;
+            _context.Remove(user);
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new Exception("Something is wrong when trying to remove user!");
+            }
+
+            return true;
         }
 
-        public Account GetUserByEmail(string email)
+        public Account GetUser(int Id)
         {
-            return _context.Accounts.Where(a => a.Email == email).FirstOrDefault();
-        }
+            var user = _context.Accounts.FirstOrDefault(u => u.AccountId == Id);
+            if (user == null) return null;
 
-        public Account GetUser(string username)
-        {
-            return _context.Accounts.Where(s => s.Username == username).FirstOrDefault();
+            return user;
         }
 
         public ICollection<Account> GetUsers()
         {
-            return _context.Accounts.ToList();
+            var users = _context.Accounts.ToList();
+            return users;
         }
 
-        public bool Save()
+        public bool CreateUser(UserDTO user)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            if (_context.Accounts.Any(u => u.Email == user.Email))
+            {
+                return false;
+            }
+            var password = user.Password;
+            var confirmPassword = user.ConfirmPassword;
+            if (password != confirmPassword)
+            {
+                return false;
+            }
+            if (password.Length < 6)
+            {
+                return false;
+            }
+
+            CreatePasswordHash(user.Password,
+                out byte[] passwordHash,
+                out byte[] passwordSalt);
+
+            var member = new Account
+            {
+                Username = user.Username,
+                FullName = user.FullName,
+                Password = password,
+                ConfirmPassword = user.ConfirmPassword,
+                Email = user.Email,
+                Professions = user.Professions,
+                PhoneNumber = user.PhoneNumber,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Role = user.Role != string.Empty ? user.Role : "User",
+                Token = GenerateToken(user.Email, user.Role),
+                VerifiedAt = DateTime.Now
+            };
+
+            _context.Accounts.Add(member);
+            _context.SaveChanges();
+
+            return true;
         }
 
-        public bool SaveUser(Account b)
+        public bool UpdateUser(AccountUpdateDTO userDTO, int id)
         {
-            _context.Add(b);
-            return Save();
+            var user = _context.Accounts.SingleOrDefault(f => f.AccountId == id);
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.Username = userDTO.Username;
+            user.FullName = userDTO.FullName;
+            user.Bio = userDTO.Bio;
+            user.Professions = userDTO.Professions;
+            user.PhoneNumber = userDTO.PhoneNumber;
+            user.AvatarUrl = userDTO.AvatarUrl;
+            _context.Update(user);
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+            return true;
         }
 
-        public bool UpdateUser(Account b)
+        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            _context.Update(b);
-            return Save();
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac
+                    .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
         }
 
-        public bool UserExist(string username)
+        private string GenerateToken(string email, string role)
         {
-            return _context.Accounts.Any(f => f.Username == username);
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var now = DateTime.Now;
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.Role, role)
+        }),
+
+                Expires = now.AddDays(Convert.ToInt32(1)),
+                Issuer = _config["Jwt:Issuer"],
+                Audience = _config["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"])),
+                    SecurityAlgorithms.HmacSha256)
+            };
+
+            var stoken = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.WriteToken(stoken);
+
+            return token;
+        }
+
+
+        public List<Account> Search(string search)
+        {
+            List<Account> d = new List<Account>();
+            try
+            {
+                d = _context.Accounts.Where(d => d.Username.Contains(search.ToLower()) || d.Email.Contains(search.ToLower()) || d.FullName.Contains(search.ToLower())).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return d;
         }
     }
 }

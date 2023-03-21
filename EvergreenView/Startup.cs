@@ -4,9 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using NToastNotify;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,9 +27,18 @@ namespace EvergreenView
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
+            {
+                ProgressBar = true,
+                CloseButton = true,
+                PreventDuplicates = true,
+                PositionClass = ToastPositions.TopRight
+
+            });
+
             services.AddHttpContextAccessor();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-           
+
             services.AddControllersWithViews();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));
             services.AddMvc().AddSessionStateTempDataProvider();
@@ -48,11 +60,19 @@ namespace EvergreenView
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            
+
             app.UseRouting();
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(@"C:\Users\ASUS\dev\web\Evergreen\EvergreenAPI", "Uploads")),
+                RequestPath = "/Uploads"
+            });
 
             app.UseEndpoints(endpoints =>
             {

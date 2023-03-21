@@ -15,7 +15,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    
     public class BlogController : ControllerBase
     {
         private readonly IBlogRepository _BlogRepository;
@@ -31,12 +31,12 @@ namespace EvergreenAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetBlogs()
         {
-            var Blogs = _mapper.Map<List<BlogDTO>>(_BlogRepository.GetBlogs());
+            var blogs = _mapper.Map<List<Blog>>(_BlogRepository.GetBlogs());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Blogs);
+            return Ok(blogs);
         }
 
 
@@ -48,7 +48,7 @@ namespace EvergreenAPI.Controllers
             if (!_BlogRepository.BlogExist(BlogId))
                 return NotFound($"Blog Category '{BlogId}' is not exists!!");
 
-            var Blogs = _mapper.Map<BlogDTO>(_BlogRepository.GetBlogById(BlogId));
+            var Blogs = _mapper.Map<Blog>(_BlogRepository.GetBlog(BlogId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -80,7 +80,7 @@ namespace EvergreenAPI.Controllers
 
             var BlogMap = _mapper.Map<Blog>(BlogCreate);
 
-            if (!_BlogRepository.SaveBlog(BlogMap))
+            if (!_BlogRepository.CreateBlog(BlogMap))
             {
                 ModelState.AddModelError("", "Something was wrong while saving");
                 return StatusCode(500, ModelState);
@@ -125,7 +125,7 @@ namespace EvergreenAPI.Controllers
             if (!_BlogRepository.BlogExist(BlogId))
                 return NotFound();
 
-            var BlogToDelete = _BlogRepository.GetBlogById(BlogId);
+            var BlogToDelete = _BlogRepository.GetBlog(BlogId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -138,5 +138,13 @@ namespace EvergreenAPI.Controllers
             return Ok("Delete Success");
         }
 
+
+        [HttpGet("Search")]
+        public ActionResult<List<Blog>> Search(string search)
+        {
+            var list = _BlogRepository.Search(search);
+
+            return Ok(list);
+        }
     }
 }

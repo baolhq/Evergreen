@@ -11,7 +11,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize (Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ImageController : ControllerBase
     {
         private readonly IImageRepository _imageRepository;
@@ -40,7 +40,7 @@ namespace EvergreenAPI.Controllers
         public IActionResult GetImage(int ImageId)
         {
             if (!_imageRepository.ImageExist(ImageId))
-                return NotFound($"Image '{ImageId}' is not exists!!");
+                return NotFound($"ImageId '{ImageId}' is not exists!!");
 
             var image = _mapper.Map<ImageDTO>(_imageRepository.GetImage(ImageId));
 

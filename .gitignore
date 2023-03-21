@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /EvergreenAPI/Migrations
+/EvergreenView/Properties/launchSettings.json
+/EvergreenAPI/appsettings.json
+/EvergreenView/appsettings.json
+/EvergreenAPI/Uploads

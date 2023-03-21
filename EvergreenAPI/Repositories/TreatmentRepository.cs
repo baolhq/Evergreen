@@ -1,5 +1,6 @@
 ﻿using EvergreenAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,12 +34,22 @@ namespace EvergreenAPI.Repositories
 
         public Treatment GetTreatment(int id)
         {
-            return _context.Treatments.Include(d => d.Disease).Where(s => s.TreatmentId == id).FirstOrDefault();
+            return _context.Treatments.Include(d => d.Disease).Include(d => d.Thumbnail).Where(s => s.TreatmentId == id).FirstOrDefault(); ;
+        }
+
+
+        public ICollection<Thumbnail> GetThumbnails()
+        {
+            return _context.Thumbnails.ToList();
         }
 
         public ICollection<Treatment> GetTreatments()
         {
-            return _context.Treatments.Include(d => d.Disease).ToList();
+            return _context.Treatments.Include(d => d.Disease).Include(d => d.Thumbnail).ToList();
+        }
+        public ICollection<Disease> GetDiseases()
+        {
+            return _context.Diseases.ToList();
         }
 
         public bool Save()
@@ -51,6 +62,21 @@ namespace EvergreenAPI.Repositories
         {
             _context.Update(treatment);
             return Save();
+        }
+
+
+        public List<Treatment> Search(string search)
+        {
+            List<Treatment> d = new List<Treatment>();
+            try
+            {
+                d = _context.Treatments.Where(d => string.IsNullOrEmpty(d.Method) || d.Method.Contains(search.ToLower())).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return d;
         }
     }
 }

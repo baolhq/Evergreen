@@ -1,13 +1,13 @@
 ﻿@model EvergreenAPI.Models.MedicineCategory
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Edit";
 }
-<h1>Edit</h1>
-<h4>Medicine Category</h4>
+<h1 class="text-dark">Update Medicine Category</h1>
 <hr />
-<div class="row">
+<div class="row text-dark">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MedicineCategoryId" />
             <div class="form-group py-2">
@@ -16,8 +16,8 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group py-2">
-                <input type="submit" value="Save" class="btn btn-primary" /> |
-                <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-success">Back to List</a>
             </div>
         </form>
     </div>

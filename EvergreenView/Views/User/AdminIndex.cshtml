@@ -1,0 +1,108 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+@model IEnumerable<EvergreenAPI.Models.Account>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h4 class="m-0 font-weight-bold text-primary">User Managements</h4>
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="btn btn-success text-white" asp-action="AdminCreate">Create Account</a>
+            <a class="btn btn-danger text-white ml-2" asp-action="ManageRole">Manage Role</a>
+            <a class="btn btn-warning text-white ml-2" asp-action="ManageBlocked">Manage Status</a>
+            <form method="get" class="ml-2">
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" name="searchString" placeholder="Search for.." class="form-control" />
+                    </div>
+                        <button type="submit" value="Search" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered text-dark" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AccountId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Username)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FullName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Email)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Role)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Status)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AccountId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Username)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Role)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                <a asp-action="AdminDetails" asp-route-id="@item.AccountId" class="btn btn-info">View <i class="fa fa-eye"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+@if (TempData["message"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: '@TempData["message"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+}

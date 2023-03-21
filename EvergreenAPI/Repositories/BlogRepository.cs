@@ -14,9 +14,9 @@ namespace EvergreenAPI.Repositories
         public BlogRepository(AppDbContext context)
         {
             _context = context;
-        }
+        } 
 
-        public bool SaveBlog(Blog Blog)
+        public bool CreateBlog(Blog Blog)
         {
             _context.Add(Blog);
             return Save();
@@ -33,14 +33,19 @@ namespace EvergreenAPI.Repositories
             return _context.Blogs.Any(f => f.BlogId == id);
         }
 
-        public Blog GetBlogById(int id)
+        public Blog GetBlog(int id)
         {
-            return _context.Blogs.Where(s => s.BlogId == id).FirstOrDefault();
+            return _context.Blogs.Include(d => d.Thumbnail).Where(s => s.BlogId == id).FirstOrDefault(); ;
+        }
+
+        public ICollection<Thumbnail> GetThumbnails()
+        {
+            return _context.Thumbnails.ToList();
         }
 
         public ICollection<Blog> GetBlogs()
         {
-            return _context.Blogs.ToList();
+            return _context.Blogs.Include(d => d.Thumbnail).ToList();
         }
 
         public bool Save()
@@ -55,6 +60,20 @@ namespace EvergreenAPI.Repositories
             return Save();
         }
 
-        
+
+        public List<Blog> Search(string search)
+        {
+            List<Blog> d = new List<Blog>();
+            try
+            {
+                d = _context.Blogs.Where(d => string.IsNullOrEmpty(d.Title) || d.Title.Contains(search.ToLower())).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return d;
+        }
+
     }
 }

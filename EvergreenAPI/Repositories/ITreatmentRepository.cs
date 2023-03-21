@@ -5,12 +5,15 @@ namespace EvergreenAPI.Repositories
 {
     public interface ITreatmentRepository
     {
+        ICollection<Thumbnail> GetThumbnails();
         ICollection<Treatment> GetTreatments();
+        ICollection<Disease> GetDiseases();
         Treatment GetTreatment(int id);
         bool TreatmentExist(int id);
         bool CreateTreatment(Treatment treatment);
         bool UpdateTreatment(Treatment treatment);
         bool DeleteTreatment(Treatment treatment);
         bool Save();
+        List<Treatment> Search(string search);
     }
 }

@@ -10,7 +10,7 @@ namespace EvergreenAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ImageId { get; set; }
         [Required]
-        [DisplayName("Image Description")]
+        [DisplayName("Description")]
         public string AltText { get; set; }
         [Required]
         public string Url { get; set; }

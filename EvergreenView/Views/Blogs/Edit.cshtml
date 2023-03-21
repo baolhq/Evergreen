@@ -1,51 +1,68 @@
 ﻿@model EvergreenAPI.Models.Blog
 @{
     ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var listImages = ViewData["Thumbnails"] as SelectList;
     
 }
-<h1>Edit</h1>
-<h4>Blog</h4>
-<br />
+<h1 class="text-dark">Update Blog</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" class="text-dark" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BlogId" />
-            <div class="form-group py-2">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <input asp-for="ViewCount" type="hidden" />
+            <input asp-for="LastModifiedDate" type="hidden" />
+            <div class="form-group row">
+                <div class="col">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group py-2">
                 <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
+                <textarea asp-for="Content" class="form-control" id="summernoteEdit"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group py-2">
-                <label asp-for="LastModifiedDate" class="control-label"></label>
-                <input asp-for="LastModifiedDate" class="form-control" />
-                <span asp-validation-for="LastModifiedDate" class="text-danger"></span>
+                <label asp-for="ThumbnailId" class="control-label"></label>
+                <select asp-for="ThumbnailId" class="form-control" asp-items="listImages"></select>
             </div>
             <div class="form-group py-2">
-                <label asp-for="ViewCount" class="control-label"></label>
-                <input asp-for="ViewCount" class="form-control" />
-                <span asp-validation-for="ViewCount" class="text-danger"></span>
-            </div>
-            <div class="form-group py-2">
-                <input type="submit" value="Save" class="btn btn-primary" /> |
-                <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                <input type="submit" value="Save" class="btn btn-primary" /> 
+                <a asp-action="AdminIndex" class="btn btn-success">Back to List</a>
             </div>
         </form>
     </div>
 </div>
-
 @section Scripts {
+    <script src="~/AdminAssets/lib/summernote-bs4.min.js"></script>
+    <link rel="stylesheet" href="~/AdminAssets/lib/summernote-bs4.min.css" />
+
+    <script>
+        $(document).ready(function () {
+            $('#summernoteEdit').summernote({
+                tabsize: 2,
+                height: 360,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        });
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

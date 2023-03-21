@@ -1,5 +1,6 @@
 ﻿using EvergreenAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,17 +34,20 @@ namespace EvergreenAPI.Repositories
 
         public Disease GetDisease(int id)
         {   
-            return _context.Diseases.Include(d => d.DiseaseCategory).Include(d => d.Image).Where(s => s.DiseaseId == id).FirstOrDefault(); ;
+            return _context.Diseases
+                .Include(d => d.DiseaseCategory)
+                .Include(d => d.Thumbnail)
+                .Where(s => s.DiseaseId == id).FirstOrDefault(); ;
         }
 
         public ICollection<Disease> GetDiseases()
         {
-            return _context.Diseases.Include(d => d.DiseaseCategory).Include(d => d.Image).ToList();
+            return _context.Diseases.Include(d => d.DiseaseCategory).Include(d => d.Thumbnail).ToList();
         }
 
-        public ICollection<Image> GetImages()
+        public ICollection<Thumbnail> GetThumbnails()
         {
-            return _context.Images.ToList();
+            return _context.Thumbnails.ToList();
         }
 
         public ICollection<DiseaseCategory> GetDiseaseCategories()
@@ -61,6 +65,22 @@ namespace EvergreenAPI.Repositories
         {
             _context.Update(disease);
             return Save();
+        }
+
+
+
+
+        public List<Disease> Search(string search)
+        {
+            List<Disease> d = new List<Disease>();
+            try
+            {
+                d = _context.Diseases.Where(d => string.IsNullOrEmpty(d.Name) || d.Name.Contains(search.ToLower())).ToList();
+            } catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return d;
         }
     }
 }

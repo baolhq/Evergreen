@@ -12,7 +12,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize (Roles = "Admin")]
+    
     public class MedicineController : ControllerBase
     {
         private readonly IMedicineRepository _medicineRepository;
@@ -124,6 +124,15 @@ namespace EvergreenAPI.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("Delete Success");
+        }
+
+
+        [HttpGet("Search")]
+        public ActionResult<List<Medicine>> Search(string search)
+        {
+            var list = _medicineRepository.Search(search);
+
+            return Ok(list);
         }
     }
 }

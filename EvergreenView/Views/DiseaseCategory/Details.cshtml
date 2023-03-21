@@ -1,14 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model EvergreenAPI.Models.DiseaseCategory
+﻿@model EvergreenAPI.Models.DiseaseCategory
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<h1>Details</h1>
-<h4>Disease Category</h4>
+<h1 class="text-dark">Disease Category Name: @Model.Name</h1>
 <hr />
-<div>
+<div class="text-dark">
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -19,6 +15,7 @@
     </dl>
 </div>
 <div>
-        <a asp-action="Edit" asp-route-id="@Model.DiseaseCategoryId" class="btn btn-warning">Edit</a>|
-        <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+        <a asp-action="Delete" asp-route-id="@Model.DiseaseCategoryId" class="btn btn-danger">Delete</a>
+        <a asp-action="Edit" asp-route-id="@Model.DiseaseCategoryId" class="btn btn-warning">Update</a>
+        <a asp-action="Index" class="btn btn-success">Back to List</a>
 </div>

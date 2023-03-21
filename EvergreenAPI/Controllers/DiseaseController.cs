@@ -12,7 +12,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    
     public class DiseaseController : ControllerBase
     {
         private readonly IDiseaseRepository _diseaseRepository;
@@ -125,5 +125,19 @@ namespace EvergreenAPI.Controllers
             }
             return Ok("Delete Success");
         }
+
+
+
+
+        [HttpGet("Search")]
+        public ActionResult<List<Disease>> Search(string search)
+        {
+            var list = _diseaseRepository.Search(search);
+            
+            return Ok(list);
+        }
+
+
+
     }
 }

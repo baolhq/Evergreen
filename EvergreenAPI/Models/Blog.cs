@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,5 +18,10 @@ namespace EvergreenAPI.Models
         [Required]
         public DateTime LastModifiedDate { get; set; }
         public int ViewCount { get; set; } = 0;
+
+        [ForeignKey("Thumbnails")]
+        [DisplayName("Image Description")]
+        public int ThumbnailId { get; set; }
+        public virtual Thumbnail Thumbnail { get; set; }
     }
 }

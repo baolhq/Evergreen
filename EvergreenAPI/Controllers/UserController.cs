@@ -18,49 +18,78 @@ namespace EvergreenAPI.Controllers
     {
         private readonly IUserRepository _UserRepository;
         private readonly IMapper _mapper;
+        private readonly AppDbContext _context;
 
-        public UserController(IUserRepository UserRepository, IMapper mapper)
+        public UserController(IUserRepository UserRepository, IMapper mapper, AppDbContext context)
         {
             _UserRepository = UserRepository;
             _mapper = mapper;
+            _context = context;
         }
 
         [HttpGet]
-        [Authorize(Roles = "User,Admin")]
+
         public IActionResult GetUsers()
         {
-            var Users = _mapper.Map<List<Account>>(_UserRepository.GetUsers());
+            var users = _UserRepository.GetUsers();
+            return Ok(_mapper.Map<List<Account>>(users));
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
-            return Ok(Users);
         }
 
-        [HttpGet("{username}")]
-        [Authorize (Roles = "User,Admin")]
-        public IActionResult GetUser(string username)
+        [HttpGet("{id}")]
+
+        public IActionResult GetUser(int id)
         {
-            if (!_UserRepository.UserExist(username))
-                return NotFound($"User '{username}' is not exists!!");
-
-            var Users = _mapper.Map<Account>(_UserRepository.GetUser(username));
+            var user = _UserRepository.GetUser(id);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Users);
+            return Ok(_mapper.Map<Account>(user));
         }
+
+        [HttpPut("ManageRole")]
+        public async Task<IActionResult> SetRole(RoleDTO roleDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var account = _context.Accounts.Where(a => a.AccountId == int.Parse(roleDTO.AccountId)).FirstOrDefault();
+            if (account == null) return NotFound($"Account {roleDTO.AccountId} cannot be found");
+
+            account.Role = roleDTO.Role;
+            await _context.SaveChangesAsync();
+
+            return Ok(account);
+        }
+
+
+        [HttpPut("ManageStatus")]
+        public async Task<IActionResult> SetBlocked(BlockedDTO blockedDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var account = _context.Accounts.Where(a => a.AccountId == int.Parse(blockedDTO.AccountId)).FirstOrDefault();
+            if (account == null) return NotFound($"Account {blockedDTO.AccountId} cannot be found");
+
+            account.Status = blockedDTO.Status;
+            await _context.SaveChangesAsync();
+
+
+            return Ok(account);
+        }
+
+
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult CreateUser([FromBody] Account UserCreate)
+        public IActionResult CreateUser([FromBody] UserDTO user)
+
         {
-            if (UserCreate == null)
+            if (user == null)
                 return BadRequest(ModelState);
 
             var User = _UserRepository.GetUsers()
-                .Where(c => c.Username.Trim().ToUpper() == UserCreate.Username.TrimEnd().ToUpper())
+                .Where(c => c.Email.Trim().ToUpper() == user.Email.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
             if (User != null)
@@ -72,65 +101,67 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<Account>(UserCreate);
+            var UserMap = _mapper.Map<UserDTO>(user);
 
-            if (!_UserRepository.SaveUser(UserMap))
+            if (!_UserRepository.CreateUser(UserMap))
             {
                 ModelState.AddModelError("", "Something was wrong while saving");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Create Success");
+            return Ok("Create User Successfully");
         }
 
-
-            [HttpPut("{username}")]
-        [Authorize(Roles = "User,Admin")]
-        public IActionResult UpdateUser(string username, [FromBody] Account updatedUser)
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, [FromBody] AccountUpdateDTO updatedUser)
         {
-            if (updatedUser == null)
+            var user = _UserRepository.GetUser(id);
+            if (user == null)
                 return BadRequest(ModelState);
 
-            if (username != updatedUser.Username)
+            if (user.AccountId != updatedUser.AccountId)
                 return BadRequest(ModelState);
-
-            if (!_UserRepository.UserExist(username))
-                return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<Account>(updatedUser);
-
-            if (!_UserRepository.UpdateUser(UserMap))
+            if (!_UserRepository.UpdateUser(updatedUser, id))
             {
                 ModelState.AddModelError("", "Something was wrong when saving");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Updated Success");
+            return NoContent();
         }
 
 
 
-        [HttpDelete("{username}")]
-        [Authorize(Roles = "Admin")]
-        public IActionResult DeleteUser(string username)
+        [HttpDelete("{email}")]
+
+        public IActionResult DeleteUser(int id)
         {
-            if (!_UserRepository.UserExist(username))
-                return NotFound();
 
-            var UserToDelete = _UserRepository.GetUser(username);
-
+            var user = _UserRepository.GetUser(id);
+            if (user == null)
+                return BadRequest(ModelState);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_UserRepository.DeleteUser(UserToDelete))
+            if (!_UserRepository.DeleteUser(id))
             {
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);
             }
-            return Ok("Delete Success");
+            return NoContent();
+        }
+
+
+        [HttpGet("Search")]
+        public ActionResult<List<Account>> Search(string search)
+        {
+            var list = _UserRepository.Search(search);
+
+            return Ok(list);
         }
     }
 }

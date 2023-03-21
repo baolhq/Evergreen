@@ -1,0 +1,97 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+@model IEnumerable<EvergreenAPI.Models.Blog>
+
+@{  
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h4 class="m-0 font-weight-bold text-primary">Blogs Managements</h4>
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="btn btn-primary text-white" asp-action="Create"><i class="fa fa-plus fa-fw"></i> Create New</a>
+            <form method="get" class="ml-2">
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" name="searchString" placeholder="Search for.." class="form-control" />
+                    </div>
+                    <button type="submit" value="Search" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered text-dark" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Title)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LastModifiedDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ViewCount)
+                        </th>
+                        <th hidden>
+                            @Html.DisplayNameFor(model => model.ThumbnailId)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody >
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastModifiedDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ViewCount)
+                            </td>
+                            <td hidden>
+                                @Html.DisplayFor(modelItem => item.Thumbnail.Url)
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.BlogId" class="btn btn-info">
+                                    View <i class="fa fa-eye"></i>
+                                    </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+@if (TempData["message"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: '@TempData["message"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+}
+

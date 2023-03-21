@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.AspNetCore.Http;
+using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
@@ -18,13 +19,15 @@ namespace EvergreenView.Controllers
         
         private string MedicineCategoryApiUrl = "";
         private readonly HttpClient client = null;
+        private readonly IToastNotification _toastNotification;
 
-        public MedicineCategoryController()
+        public MedicineCategoryController(IToastNotification toastNotification)
         {
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             MedicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory";
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -41,9 +44,9 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             var medicine = await GetMedicineCategoryById(id);
             if (medicine == null)
@@ -53,20 +56,20 @@ namespace EvergreenView.Controllers
 
         public ActionResult Create()
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DiseaseCategory diseaseCategory)
+        public IActionResult Create(DiseaseCategory diseaseCategory)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
@@ -77,6 +80,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PostAsync(MedicineCategoryApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                TempData["message"] = "Create Successfully";
                 return RedirectToAction("Index");
             }
             return View();
@@ -84,9 +88,9 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             HttpResponseMessage response = await client.GetAsync(MedicineCategoryApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
@@ -101,11 +105,11 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, MedicineCategory medicineCategory)
+        public ActionResult Edit(int id, MedicineCategory medicineCategory)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
@@ -116,6 +120,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = client.PutAsync(MedicineCategoryApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                TempData["message"] = "Update Successfully";
                 return RedirectToAction("Index");
             }
             return View();
@@ -137,9 +142,9 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             var medicine = await GetMedicineCategoryById(id);
             if (medicine == null)
@@ -151,9 +156,9 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
@@ -163,9 +168,10 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(MedicineCategoryApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
+                TempData["message"] = "Delete Successfully";
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(medicine);
         }
     }
 }

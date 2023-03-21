@@ -10,16 +10,12 @@ namespace EvergreenAPI.DTO
     {
         public int BlogId { get; set; }
         [Required]
-        [MinLength(5)]
-        [MaxLength(50)]
+        [StringLength(190)]
         public string Title { get; set; }
         [Required]
-        [MinLength(5)]
-        [MaxLength(200)]
         public string Description { get; set; }
         [Required]
-        [MinLength(5)]
-        [MaxLength(500)]
+        [StringLength(10000)]
         public string Content { get; set; }
         public DateTime LastModifiedDate { get; set; } = DateTime.Now;
         public int ViewCount { get; set; } = 0;

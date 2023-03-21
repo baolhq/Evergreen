@@ -156,7 +156,7 @@ namespace EvergreenAPI.Repositories
             #endregion
 
             _context.Accounts.Add(account);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -188,9 +188,10 @@ namespace EvergreenAPI.Repositories
             {
                 return null;
             }
+            
             user.PasswordResetToken = GenerateToken(email, "User");
             user.ResetTokenExpires = DateTime.Now.AddDays(1);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             #region Add Email Template
             try
@@ -242,7 +243,7 @@ namespace EvergreenAPI.Repositories
                 return false;
             }
 
-            if (password.Length < 6)
+            if (password.Length < 7)
             {
                 return false;
             }

@@ -50,7 +50,7 @@ namespace EvergreenAPI.Services.EmailService
             builder.HtmlBody = mailContent.Body;
             email.Body = builder.ToMessageBody();
 
-
+            // dùng SmtpClient của MailKit
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
 
             try
@@ -61,6 +61,7 @@ namespace EvergreenAPI.Services.EmailService
             }
             catch (Exception ex)
             {
+                // Gửi mail thất bại, nội dung email sẽ lưu vào thư mục mailssave
                 System.IO.Directory.CreateDirectory("mailssave");
                 var emailsavefile = string.Format(@"mailssave/{0}.eml", Guid.NewGuid());
                 await email.WriteToAsync(emailsavefile);

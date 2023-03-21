@@ -133,7 +133,7 @@ namespace EvergreenAPI.Repositories
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "kirk.pfannerstill2@ethereal.email"; //temp email
+                    mailContent1.To = account.Email; //temp email
                     mailContent1.Subject = "Welcome To Evergreen!";
                     mailContent1.Body = account.Token.ToString();
                     await _emailService.SendMail(mailContent1);
@@ -156,7 +156,7 @@ namespace EvergreenAPI.Repositories
             #endregion
 
             _context.Accounts.Add(account);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -188,9 +188,10 @@ namespace EvergreenAPI.Repositories
             {
                 return null;
             }
+            
             user.PasswordResetToken = GenerateToken(email, "User");
             user.ResetTokenExpires = DateTime.Now.AddDays(1);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             #region Add Email Template
             try
@@ -201,7 +202,7 @@ namespace EvergreenAPI.Repositories
                 try
                 {
                     var mailContent1 = new MailContent();
-                    mailContent1.To = "kirk.pfannerstill2@ethereal.email"; //temp email
+                    mailContent1.To = user.Email; //temp email
                     mailContent1.Subject = "Reset Password!";
                     mailContent1.Body = user.PasswordResetToken.ToString();
                     await _emailService.SendMail(mailContent1);
@@ -242,7 +243,7 @@ namespace EvergreenAPI.Repositories
                 return false;
             }
 
-            if (password.Length < 6)
+            if (password.Length < 7)
             {
                 return false;
             }

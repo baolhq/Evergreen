@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /EvergreenAPI/appsettings.json
 /EvergreenView/appsettings.json
 /EvergreenAPI/Uploads
+/EvergreenAPI/Properties/launchSettings.json

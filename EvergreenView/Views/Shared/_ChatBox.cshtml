@@ -38,12 +38,11 @@
 
 <script>
     let isGenerating = false;
-    let apiUrl = "https://evergreen-api.onrender.com/api/Chat";
+    let apiUrl = "https://localhost:44334/api/Chat";
     let uid = $("#uid").val();
     let avatar = $("#avatar").val();
 
     $(document).ready(() => {
-        console.log(uid)
         if (uid) {
             $.ajax({
                 contentType: false,
@@ -53,17 +52,34 @@
                 error: function (xhr, status, error) {
                     console.log(error)
                 }, success: function (res) {
-                    $(
-                        '<li class="sent"><img src=`${avatar}` alt="User avatar" /><p>' +
-                        res.message +
-                        "</p></li>"
-                    ).appendTo($(".messages ul"));
+                    let arr = res.split("/eol/")
+                    for (let i = 0; i < arr.length; i++) {
+                        let msg
+                        if (i % 2 == 0) {
+                            // AI response
+                            msg = arr[i].slice(4)
+
+                            $(
+                                `<li class="replies"><img src="images/doctor.jpg" alt="Doctor avatar" /><p>` +
+                                msg +
+                                "</p></li>"
+                            ).appendTo($(".messages ul"));
+                        } else {
+                            // Human response
+                            msg = arr[i].slice(7)
+
+                            $(
+                                `<li class="sent"><img src=${avatar} alt="User avatar" /><p>` +
+                                msg +
+                                "</p></li>"
+                            ).appendTo($(".messages ul"));
+                        }
+                    }
                 }
             });
+            $("#msg-container").animate({ scrollTop: $('#msg-container').prop("scrollHeight") }, 1000);
         }
     })
-
-    $("#msg-container").animate({ scrollTop: $('#msg-container').prop("scrollHeight") }, 1000);
 
     $(".expand-button").click(function () {
         $("#profile").toggleClass("expanded");
@@ -76,33 +92,35 @@
             return false;
         }
         $(
-            '<li class="sent"><img src=`${avatar}` alt="User avatar" /><p>' +
+            `<li class="sent"><img src=${avatar} alt="User avatar" /><p>` +
             message +
             "</p></li>"
         ).appendTo($(".messages ul"));
         $(".message-input input").val(null);
 
         if (uid) {
+            console.log(uid)
             $.ajax({
                 contentType: "application/json",
                 processData: false,
                 type: 'POST',
-                async: false,
                 url: apiUrl + "/" + uid,
-                data: message,
+                data: JSON.stringify(message),
                 error: function (xhr, status, error) {
                     console.log(error)
                 }, success: function (res) {
                     $(
-                        '<li class="sent"><img src=`${avatar}` alt="User avatar" /><p>' +
-                        res.message +
+                        '<li class="replies"><img src="images/doctor.jpg" alt="Doctor avatar" /><p>' +
+                        res +
                         "</p></li>"
                     ).appendTo($(".messages ul"));
+                }, complete: function() {
+                    isGenerating = false;
                 }
             });
         } else {
             $(
-                '<li class="replies"><img src="~/images/doctor.jpg" alt="Doctor avatar" /><p>' +
+                '<li class="replies"><img src="images/doctor.jpg" alt="Doctor avatar" /><p>' +
                 "Please login first!" +
                 "</p></li>"
             ).appendTo($(".messages ul"));
@@ -113,6 +131,8 @@
     }
 
     $(".submit").click(function () {
+        if (isGenerating) return;
+
         isGenerating = true;
         newMessage();
     });

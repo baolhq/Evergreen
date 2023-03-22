@@ -50,9 +50,26 @@ namespace EvergreenAPI.Controllers
                 {
                     answer = item.Text;
                 }
+                
+                // Remove new line at the start of answer
+                while (true)
+                {
+                    if (answer.StartsWith("\\n")) answer = answer.Substring(1);
+                    else break;
+                }
+
+                // Remove the "AI: " at the start of answer
+                while (true)
+                {
+                    var index = answer.IndexOf("AI: ");
+                    if (index != -1)
+                        answer = answer.Substring(index + 3);
+                    else break;
+                }
 
                 // Save answer to history
-                account.Chat = account.Chat + "\\nHuman: " + prompt + "\\nAI: " + answer;
+                answer = answer.Trim();
+                account.Chat = account.Chat + "/eol/Human: " + prompt + "/eol/AI: " + answer;
                 await _context.SaveChangesAsync();
 
                 return Ok(answer);

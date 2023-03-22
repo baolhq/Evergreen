@@ -100,7 +100,7 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await client.DeleteAsync(ThumbnailApiUrl + "/" + thumbnail.ThumbnailId);
             if (response.IsSuccessStatusCode)
                 return RedirectToAction("Index");
-            return View(thumbnail);
+            return RedirectToAction("Delete", thumbnail.ThumbnailId);
         }
 
         private async Task<Thumbnail> GetThumbnailAsync(int id)

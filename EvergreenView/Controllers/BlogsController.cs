@@ -27,7 +27,6 @@ namespace EvergreenView.Controllers
 
         public BlogsController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IToastNotification toastNotification)
         {
-
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
@@ -38,9 +37,6 @@ namespace EvergreenView.Controllers
 
         public async Task<IActionResult> Index()
         {
-
-
-
             HttpResponseMessage response = await client.GetAsync(BlogApiUrl);
 
             string strData = await response.Content.ReadAsStringAsync();

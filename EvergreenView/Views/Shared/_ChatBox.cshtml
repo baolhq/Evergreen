@@ -1,0 +1,126 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+    string avatar;
+    if (session.GetString("a") != null)
+        avatar = session.GetString("a");
+    else avatar = "https://i.imgur.com/n1rrde0.png";
+}
+
+<div id="frame">
+    <div class="content">
+        <div class="contact-profile">
+            <img src="~/images/doctor.jpg" alt="Doctor avatar" />
+            <p>Doctor</p>
+            <div class="close-container">
+                <i class="fa fa-minus"></i>
+            </div>
+        </div>
+        <div class="messages" id="msg-container">
+            <ul>
+            </ul>
+        </div>
+        <div class="message-input">
+            <div class="wrap">
+                <input type="text" placeholder="Write your message..." />
+                <button class="submit">
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="uid" value="@session.GetString("i")" />
+<input type="hidden" id="avatar" value="@avatar" />
+
+<script>
+    let isGenerating = false;
+    let apiUrl = "https://evergreen-api.onrender.com/api/Chat";
+    let uid = $("#uid").val();
+    let avatar = $("#avatar").val();
+
+    $(document).ready(() => {
+        console.log(uid)
+        if (uid) {
+            $.ajax({
+                contentType: false,
+                processData: false,
+                type: 'GET',
+                url: apiUrl + "/" + uid,
+                error: function (xhr, status, error) {
+                    console.log(error)
+                }, success: function (res) {
+                    $(
+                        '<li class="sent"><img src=`${avatar}` alt="User avatar" /><p>' +
+                        res.message +
+                        "</p></li>"
+                    ).appendTo($(".messages ul"));
+                }
+            });
+        }
+    })
+
+    $("#msg-container").animate({ scrollTop: $('#msg-container').prop("scrollHeight") }, 1000);
+
+    $(".expand-button").click(function () {
+        $("#profile").toggleClass("expanded");
+        $("#contacts").toggleClass("expanded");
+    });
+
+    function newMessage() {
+        message = $(".message-input input").val();
+        if ($.trim(message) == "") {
+            return false;
+        }
+        $(
+            '<li class="sent"><img src=`${avatar}` alt="User avatar" /><p>' +
+            message +
+            "</p></li>"
+        ).appendTo($(".messages ul"));
+        $(".message-input input").val(null);
+
+        if (uid) {
+            $.ajax({
+                contentType: "application/json",
+                processData: false,
+                type: 'POST',
+                async: false,
+                url: apiUrl + "/" + uid,
+                data: message,
+                error: function (xhr, status, error) {
+                    console.log(error)
+                }, success: function (res) {
+                    $(
+                        '<li class="sent"><img src=`${avatar}` alt="User avatar" /><p>' +
+                        res.message +
+                        "</p></li>"
+                    ).appendTo($(".messages ul"));
+                }
+            });
+        } else {
+            $(
+                '<li class="replies"><img src="~/images/doctor.jpg" alt="Doctor avatar" /><p>' +
+                "Please login first!" +
+                "</p></li>"
+            ).appendTo($(".messages ul"));
+        }
+
+        $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+        isGenerating = false;
+    }
+
+    $(".submit").click(function () {
+        isGenerating = true;
+        newMessage();
+    });
+
+    $(window).on("keydown", function (e) {
+        if (e.which == 13) {
+            newMessage();
+            return false;
+        }
+    });
+</script>

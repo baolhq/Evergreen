@@ -61,8 +61,6 @@ namespace EvergreenAPI.Models
 
         public string AvatarUrl { get; set; } = "https://i.imgur.com/n1rrde0.png";
         public string Bio { get; set; }
+        public string Chat { get; set; }
     }
-
-
-
 }

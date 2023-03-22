@@ -32,4 +32,10 @@
     <Folder Include="wwwroot\js\vendor\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\css\chatbox.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   
+
 
     <title>@ViewData["Title"] - EvergreenView</title>
     <meta charset="utf-8">
@@ -15,6 +15,9 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css"
+          rel="stylesheet" type='text/css'>
 
     <link rel="stylesheet" href="~/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="~/css/animate.css">
@@ -36,6 +39,7 @@
     <link rel="stylesheet" href="~/css/style.css">
 
     <link rel="stylesheet" href="~/css/pagination.css">
+    <link rel="stylesheet" href="~/css/chatbox.css" />
 
     @RenderSection("Styles", required: false)
 
@@ -140,7 +144,7 @@
         @RenderBody()
     </main>
 
-    <footer class="ftco-footer ftco-section">
+    <footer class="ftco-footer ftco-section" style="z-index: -99;">
         <div class="container">
             <div class="row">
                 <div class="col-md">
@@ -218,7 +222,7 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 
-    
-    
+
+    <partial name="_ChatBox.cshtml" />
 </body>
 </html>

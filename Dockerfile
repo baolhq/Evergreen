@@ -11,10 +11,12 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["EvergreenView.csproj", "./"]
-RUN dotnet restore "EvergreenView.csproj"
+COPY ./*.sln .
+COPY ["./EvergreenView/EvergreenView.csproj", "./EvergreenView/"]
+COPY ["./EvergreenAPI/EvergreenAPI.csproj", "./EvergreenAPI/"]
+RUN dotnet restore
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/EvergreenView"
 RUN dotnet build "EvergreenView.csproj" -c Release -o /app/build
 
 FROM build AS publish

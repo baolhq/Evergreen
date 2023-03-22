@@ -30,9 +30,9 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            DiseaseApiUrl = "https://localhost:44334/api/Disease";
-            DiseaseCategoryApiUrl = "https://localhost:44334/api/DiseaseCategory";
-            ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
+            DiseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease";
+            DiseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
+            ThumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
             _toastNotification = toastNotification;
         }
 

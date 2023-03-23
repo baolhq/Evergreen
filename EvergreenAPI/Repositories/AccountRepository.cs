@@ -28,7 +28,6 @@ namespace EvergreenAPI.Repositories
         private readonly AppDbContext _context;
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _config;
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailService _emailService;
 
         public AccountRepository(ITokenService tokenService, IConfiguration config, AppDbContext context, IEmailService emailService)
@@ -121,7 +120,8 @@ namespace EvergreenAPI.Repositories
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Role = "User",
-                Token = GenerateToken(accountDto.Email.ToString(), userRole.ToString())
+                Token = GenerateToken(accountDto.Email.ToString(), userRole.ToString()),
+                Chat = "AI: Hello, how can I help you today?",
             };
 
 

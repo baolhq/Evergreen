@@ -26,7 +26,7 @@ namespace EvergreenView.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
 
-            DetectionApiUrl = "https://localhost:44334/api/DetectionHistory";
+            DetectionApiUrl = "https://evergreen-api.onrender.com/api/DetectionHistory";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;
         }

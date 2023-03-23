@@ -98,7 +98,8 @@ namespace EvergreenAPI.Repositories
                 PasswordSalt = passwordSalt,
                 Role = user.Role != string.Empty ? user.Role : "User",
                 Token = GenerateToken(user.Email, user.Role),
-                VerifiedAt = DateTime.Now
+                VerifiedAt = DateTime.Now,
+                Chat = "AI: Hello, how can I help you today?",
             };
 
             _context.Accounts.Add(member);

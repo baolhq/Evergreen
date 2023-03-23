@@ -67,12 +67,12 @@ namespace EvergreenView
             app.UseAuthorization();
 
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(@"C:\Users\Admin\Evergreen\EvergreenAPI", "Uploads")),
-                RequestPath = "/Uploads"
-            });
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //    Path.Combine(@"C:\Users\ASUS\dev\web\Evergreen\EvergreenAPI", "Uploads")),
+            //    RequestPath = "/Uploads"
+            //});
 
             app.UseEndpoints(endpoints =>
             {

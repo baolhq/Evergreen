@@ -48,14 +48,11 @@ namespace EvergreenAPI
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
-
             services.AddScoped<IEmailService, EmailService>();
-
             services.AddScoped<IDetectionHistoryRepository, DetectionHistoryRepository>();
 
-
             services.AddDbContext<AppDbContext>(opitons =>
-                opitons.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                opitons.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

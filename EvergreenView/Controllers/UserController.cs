@@ -31,7 +31,7 @@ namespace EvergreenView.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
 
-            UserApiUrl = "https://localhost:44334/api/User";
+            UserApiUrl = "https://evergreen-api.onrender.com/api/User";
             _toastNotification = toastNotification;
 
         }

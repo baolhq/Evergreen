@@ -3,6 +3,7 @@ using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace EvergreenAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
+    [EnableCors("AllowAllOrigins")]
     public class ThumbnailController : ControllerBase
     {
         private readonly IThumbnailRepository _thumbnailRepository;

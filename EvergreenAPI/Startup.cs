@@ -36,6 +36,17 @@ namespace EvergreenAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //Auto mapper DTO
             services.AddScoped<IDiseaseCategoryRepository, DiseaseCategoryRepository>();
             services.AddScoped<IDiseaseRepository, DiseaseRepository>();
@@ -80,9 +91,6 @@ namespace EvergreenAPI
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //Auto mapper DTO
 
-            services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()));
-
-            services.AddCors();
             services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores())).SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             services.AddSwaggerGen(c =>
@@ -101,18 +109,14 @@ namespace EvergreenAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("AllowAllOrigins");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EvergreenAPI v1"));
             }
-
-            // Enabling CORS
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
 
             // JWT Auth
             app.UseHttpsRedirection();
@@ -124,8 +128,6 @@ namespace EvergreenAPI
             {
                 endpoints.MapControllers();
             });
-
-
         }
     }
 }

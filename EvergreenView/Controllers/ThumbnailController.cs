@@ -95,8 +95,6 @@ namespace EvergreenView.Controllers
 
             if (thumbnail == null) return NotFound();
 
-            var data = JsonSerializer.Serialize(thumbnail);
-            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.DeleteAsync(ThumbnailApiUrl + "/" + thumbnail.ThumbnailId);
             if (response.IsSuccessStatusCode)
                 return RedirectToAction("Index");

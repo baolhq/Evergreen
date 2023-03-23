@@ -278,67 +278,6 @@ namespace EvergreenView.Controllers
             return true;
         }
 
-
-       /* public async Task<ActionResult> AdminDelete(int id)
-        {
-
-            if (HttpContext.Session.GetString("r") != "Admin")
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            var model = new Account();
-            HttpResponseMessage responseUser = await client.GetAsync(UserApiUrl + "/" + id);
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            if (responseUser.IsSuccessStatusCode)
-            {
-                string userData = await responseUser.Content.ReadAsStringAsync();
-                model = JsonSerializer.Deserialize<Account>(userData, options);
-            }
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AdminDeleteConfirmed(int id)
-        {
-            if (HttpContext.Session.GetString("r") != "Admin")
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            HttpResponseMessage getUser = await client.GetAsync(UserApiUrl + "/" + id);
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            string strData = await getUser.Content.ReadAsStringAsync();
-
-            var user = JsonSerializer.Deserialize<Account>(strData, options);
-
-            HttpResponseMessage response = await client.DeleteAsync(UserApiUrl + "/" + user.AccountId);
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["message"] = "Delete Successfully";
-                return RedirectToAction("AdminIndex");
-            }
-            return View();
-        }
-*/
-
-
-
-
-
         public async Task<IActionResult> AdminIndex(string searchString)
 
         {
@@ -442,8 +381,6 @@ namespace EvergreenView.Controllers
             TempData["message"] = "Manage Role Successfully";
             return View(listUsers);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> ManageBlocked()

@@ -41,8 +41,9 @@ namespace EvergreenView
 
             services.AddControllersWithViews();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));
-            services.AddMvc().AddSessionStateTempDataProvider();
 
+            services.AddCors();
+            services.AddMvc().AddSessionStateTempDataProvider();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

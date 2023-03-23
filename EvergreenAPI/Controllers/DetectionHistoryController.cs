@@ -18,7 +18,7 @@ using static System.Net.WebRequestMethods;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Diagnostics;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 
 namespace EvergreenAPI.Controllers
@@ -117,6 +117,7 @@ namespace EvergreenAPI.Controllers
             var accList = new List<DetectionAccuracy>();
             var ApiBaseUrl = "http://127.0.0.1:8000/predict";
             var detectingDiseases = new List<Disease>();
+            var data = new List<PredictionDTO>();
 
             using (var multipartFormContent = new MultipartFormDataContent())
             {
@@ -149,7 +150,7 @@ namespace EvergreenAPI.Controllers
                 var result = response.Content.ReadAsStringAsync().Result;
 
 
-                var data = JsonSerializer.Deserialize<List<PredictionDTO>>(result);
+                data = JsonConvert.DeserializeObject<List<PredictionDTO>>(result);
                 
 
 
@@ -165,13 +166,12 @@ namespace EvergreenAPI.Controllers
                 }
             }
 
-
-
-            foreach (var disease in detectingDiseases)
+            for (var i = 0; i < detectingDiseases.Count; i++)
             {
+
                 var acc = new DetectionAccuracy();
-                acc.Accuracy = (float)random.NextDouble();
-                acc.DiseaseId = disease.DiseaseId;
+                acc.Accuracy = data[i].Probability * 100;
+                acc.DiseaseId = detectingDiseases[i].DiseaseId;
                 acc.DetectionHistoryId = history.DetectionHistoryId;
                 _context.DetectionAccuracies.Add(acc);
             }
@@ -214,7 +214,7 @@ namespace EvergreenAPI.Controllers
                 {
                     ImageName = detection.ImageName,
                     DetectedDisease = detectedDisease.Disease.Name,
-                    Accuracy = highestAcc,
+                    Accuracy = (float)highestAcc,
                     ImageUrl = detection.ImageUrl
                 });
             }

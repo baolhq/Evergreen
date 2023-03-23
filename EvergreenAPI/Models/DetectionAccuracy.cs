@@ -9,7 +9,7 @@ namespace EvergreenAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DetectionAccuracyId { get; set; }
         [Required]
-        public float Accuracy { get; set; }
+        public double Accuracy { get; set; }
 
         [ForeignKey(nameof(DetectionHistory))]
         public int DetectionHistoryId { get; set; }

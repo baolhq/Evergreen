@@ -15,17 +15,24 @@
             <img src="~/images/doctor.jpg" alt="Doctor avatar" />
             <p>Doctor</p>
             <div class="close-container">
-                <i class="fa fa-minus"></i>
+                <i class="fa fa-minus" id="toggle-chat-btn"></i>
             </div>
         </div>
         <div class="messages" id="msg-container">
             <ul>
+                @if (string.IsNullOrEmpty(session.GetString("i")))
+                {
+                    <li class="replies">
+                        <img src="images/doctor.jpg" alt="Doctor avatar" />
+                        <p>Please <a asp-action="Login" asp-controller="Authentication">login</a> first!</p>
+                    </li>
+                }
             </ul>
         </div>
         <div class="message-input">
             <div class="wrap">
                 <input type="text" placeholder="Write your message..." />
-                <button class="submit">
+                <button class="submit" id="submit-btn" disabled="@(session.GetString("i") == string.Empty)">
                     <i class="fa fa-paper-plane" aria-hidden="true"></i>
                 </button>
             </div>
@@ -81,9 +88,8 @@
         }
     })
 
-    $(".expand-button").click(function () {
-        $("#profile").toggleClass("expanded");
-        $("#contacts").toggleClass("expanded");
+    $("#toggle-chat-btn").click(function () {
+        $("#frame").toggleClass("expanded")
     });
 
     function newMessage() {
@@ -114,7 +120,7 @@
                         res +
                         "</p></li>"
                     ).appendTo($(".messages ul"));
-                }, complete: function() {
+                }, complete: function () {
                     isGenerating = false;
                 }
             });
@@ -128,12 +134,14 @@
 
         $(".messages").animate({ scrollTop: $(document).height() }, "fast");
         isGenerating = false;
+        $("submit-btn").prop("disabled", "false")
     }
 
     $(".submit").click(function () {
         if (isGenerating) return;
 
         isGenerating = true;
+        $("submit-btn").prop("disabled", "true")
         newMessage();
     });
 

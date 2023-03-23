@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System;
+using static System.Net.WebRequestMethods;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace EvergreenAPI.Controllers
 {
@@ -21,6 +24,7 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class DetectionHistoryController : ControllerBase
     {
+        private readonly HttpClient client = null;
         private readonly IDetectionHistoryRepository _detectionHistoryRepository;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
@@ -28,6 +32,11 @@ namespace EvergreenAPI.Controllers
 
         public DetectionHistoryController(IDetectionHistoryRepository detectionHistoryRepository, IMapper mapper, AppDbContext context, IHostingEnvironment environment)
         {
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+
+
             _detectionHistoryRepository = detectionHistoryRepository;
             _mapper = mapper;
             _context = context;
@@ -91,26 +100,49 @@ namespace EvergreenAPI.Controllers
             });
 
             // Call Python API to detect disease
-            var accuracies = await RetrieveAccuraciesFromApi(history);
+            var accuracies = await RetrieveAccuraciesFromApi(history, uniqueFilePath);
 
             responseMessage = $"{fileName} uploaded successfully";
             return Ok(responseMessage);
         }
 
-        private async Task<List<DetectionAccuracy>> RetrieveAccuraciesFromApi(DetectionHistory history)
+        private async Task<List<DetectionAccuracy>> RetrieveAccuraciesFromApi(DetectionHistory history, string filepath)
         {
             // Simulate Python API
             var random = new Random();
             var accList = new List<DetectionAccuracy>();
+            var ApiBaseUrl = "http://127.0.0.1:8000/docs#/default/predict_predict_post/predict";
 
-            foreach (var disease in _context.Diseases)
+
+            using (var multipartFormContent = new MultipartFormDataContent())
+            {
+                //Load the file and set the file's Content-Type header
+                var fileStreamContent = new StreamContent(System.IO.File.OpenRead(filepath));
+                var ext = Path.GetExtension(filepath);
+                var filename = Path.GetFileName(filepath);
+
+                fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("image/" + ext);
+
+                //Add the file
+                multipartFormContent.Add(fileStreamContent, name: "file", fileName: filename);
+
+                //Send it
+                var response = await client.PostAsync(ApiBaseUrl, multipartFormContent);
+                response.EnsureSuccessStatusCode();
+                var result = response.Content.ReadAsStringAsync().Result;
+
+            }
+
+            /*foreach (var disease in _context.Diseases)
             {
                 var acc = new DetectionAccuracy();
                 acc.Accuracy = (float)random.NextDouble();
                 acc.DiseaseId = disease.DiseaseId;
                 acc.DetectionHistoryId = history.DetectionHistoryId;
                 _context.DetectionAccuracies.Add(acc);
-            }
+            }*/
+
+
 
             await _context.SaveChangesAsync();
             return accList;

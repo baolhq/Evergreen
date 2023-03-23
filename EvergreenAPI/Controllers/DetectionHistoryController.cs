@@ -106,7 +106,7 @@ namespace EvergreenAPI.Controllers
             foreach (var disease in _context.Diseases)
             {
                 var acc = new DetectionAccuracy();
-                acc.Accuracy = (float)random.NextDouble() * 100;
+                acc.Accuracy = (float)random.NextDouble();
                 acc.DiseaseId = disease.DiseaseId;
                 acc.DetectionHistoryId = history.DetectionHistoryId;
                 _context.DetectionAccuracies.Add(acc);

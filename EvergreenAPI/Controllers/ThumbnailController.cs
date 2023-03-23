@@ -165,7 +165,7 @@ namespace EvergreenAPI.Controllers
                 return NotFound();
 
             var thumbnailToDelete = _thumbnailRepository.GetThumbnail(ThumbnailId);
-            var uploadPath = @"C:\Users\ASUS\dev\web\Evergreen\EvergreenAPI";
+            var uploadPath = @"F:\SP23\Evergreen\EvergreenAPI";
             var thumbnailUrl = Path.Combine(uploadPath, thumbnailToDelete.Url);
             if (System.IO.File.Exists(thumbnailUrl))
                 System.IO.File.Delete(thumbnailUrl);

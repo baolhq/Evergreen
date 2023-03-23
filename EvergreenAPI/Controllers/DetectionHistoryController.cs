@@ -17,6 +17,9 @@ using System;
 using static System.Net.WebRequestMethods;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Diagnostics;
+using System.Text.Json;
+
 
 namespace EvergreenAPI.Controllers
 {
@@ -86,6 +89,7 @@ namespace EvergreenAPI.Controllers
 
             using var stream = System.IO.File.Create(uniqueFilePath);
             await postedFile.CopyToAsync(stream);
+            stream.Close();
 
             // Save image location to database
             _context.Images.Add(new Image { AltText = uniqueFileName, Url = uniqueFilePath });
@@ -111,13 +115,24 @@ namespace EvergreenAPI.Controllers
             // Simulate Python API
             var random = new Random();
             var accList = new List<DetectionAccuracy>();
-            var ApiBaseUrl = "http://127.0.0.1:8000/docs#/default/predict_predict_post/predict";
-
+            var ApiBaseUrl = "http://127.0.0.1:8000/predict";
+            var detectingDiseases = new List<Disease>();
 
             using (var multipartFormContent = new MultipartFormDataContent())
             {
                 //Load the file and set the file's Content-Type header
-                var fileStreamContent = new StreamContent(System.IO.File.OpenRead(filepath));
+                FileStream temp = null;
+                try
+                {
+                    List<Process> locks = Win32Proccesses.GetProcessesLockingFile(filepath);
+                    temp = System.IO.File.Open(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                
+                var fileStreamContent = new StreamContent(temp);
                 var ext = Path.GetExtension(filepath);
                 var filename = Path.GetFileName(filepath);
 
@@ -128,19 +143,39 @@ namespace EvergreenAPI.Controllers
 
                 //Send it
                 var response = await client.PostAsync(ApiBaseUrl, multipartFormContent);
-                response.EnsureSuccessStatusCode();
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
                 var result = response.Content.ReadAsStringAsync().Result;
 
+
+                var data = JsonSerializer.Deserialize<List<PredictionDTO>>(result);
+                
+
+
+                foreach (var disease in _context.Diseases)
+                {
+                    if (disease.Name == "Early Blight" 
+                        || disease.Name == "Septoria" 
+                        || disease.Name == "Yellow Curl" 
+                        || disease.Name == "Healthy Leaf")
+                    {
+                        detectingDiseases.Add(disease);
+                    }
+                }
             }
 
-            /*foreach (var disease in _context.Diseases)
+
+
+            foreach (var disease in detectingDiseases)
             {
                 var acc = new DetectionAccuracy();
                 acc.Accuracy = (float)random.NextDouble();
                 acc.DiseaseId = disease.DiseaseId;
                 acc.DetectionHistoryId = history.DetectionHistoryId;
                 _context.DetectionAccuracies.Add(acc);
-            }*/
+            }
 
 
 

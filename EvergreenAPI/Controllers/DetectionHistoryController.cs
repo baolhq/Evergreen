@@ -124,7 +124,6 @@ namespace EvergreenAPI.Controllers
                 FileStream temp = null;
                 try
                 {
-                    List<Process> locks = Win32Proccesses.GetProcessesLockingFile(filepath);
                     temp = System.IO.File.Open(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 }
                 catch(Exception e)

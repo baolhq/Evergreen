@@ -18,7 +18,6 @@ namespace EvergreenAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    [EnableCors("AllowAllOrigins")]
     public class ThumbnailController : ControllerBase
     {
         private readonly IThumbnailRepository _thumbnailRepository;

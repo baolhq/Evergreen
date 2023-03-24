@@ -36,17 +36,6 @@ namespace EvergreenAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAllOrigins",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyHeader()
-                               .AllowAnyMethod();
-                    });
-            });
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //Auto mapper DTO
             services.AddScoped<IDiseaseCategoryRepository, DiseaseCategoryRepository>();
             services.AddScoped<IDiseaseRepository, DiseaseRepository>();
@@ -109,8 +98,6 @@ namespace EvergreenAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors("AllowAllOrigins");
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

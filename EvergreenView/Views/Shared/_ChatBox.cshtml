@@ -9,6 +9,12 @@
     else avatar = "https://i.imgur.com/n1rrde0.png";
 }
 
+<style>
+    #submit-btn:disabled {
+        background: rgba(0, 0, 0, 0.6) !important;
+    }
+</style>
+
 <div id="frame">
     <div class="content">
         <div class="contact-profile">
@@ -23,7 +29,7 @@
                 @if (string.IsNullOrEmpty(session.GetString("i")))
                 {
                     <li class="replies">
-                        <img src="images/doctor.jpg" alt="Doctor avatar" />
+                        <img src="/images/doctor.jpg" alt="Doctor avatar" />
                         <p>Please <a asp-action="Login" asp-controller="Authentication">login</a> to start a chat</p>
                     </li>
                 }
@@ -32,7 +38,7 @@
         <div class="message-input">
             <div class="wrap">
                 <input type="text" placeholder="Write your message..." />
-                <button class="submit" id="submit-btn" disabled="@(session.GetString("i") == string.Empty)">
+                <button class="submit" id="submit-btn" disabled="@(session.GetString("i") != string.Empty)">
                     <i class="fa fa-paper-plane" aria-hidden="true"></i>
                 </button>
             </div>
@@ -45,7 +51,7 @@
 
 <script>
     let isGenerating = false;
-    let apiUrl = "https://localhost:44334/api/Chat";
+    let apiUrl = "https://evergreen-api.onrender.com/api/Chat";
     let uid = $("#uid").val();
     let avatar = $("#avatar").val();
 
@@ -67,7 +73,7 @@
                             msg = arr[i].slice(4)
 
                             $(
-                                `<li class="replies"><img src="images/doctor.jpg" alt="Doctor avatar" /><p>` +
+                                `<li class="replies"><img src="/images/doctor.jpg" alt="Doctor avatar" /><p>` +
                                 msg +
                                 "</p></li>"
                             ).appendTo($(".messages ul"));
@@ -116,7 +122,7 @@
                     console.log(error)
                 }, success: function (res) {
                     $(
-                        '<li class="replies"><img src="images/doctor.jpg" alt="Doctor avatar" /><p>' +
+                        '<li class="replies"><img src="/images/doctor.jpg" alt="Doctor avatar" /><p>' +
                         res +
                         "</p></li>"
                     ).appendTo($(".messages ul"));
@@ -126,7 +132,7 @@
             });
         } else {
             $(
-                '<li class="replies"><img src="images/doctor.jpg" alt="Doctor avatar" /><p>' +
+                '<li class="replies"><img src="/images/doctor.jpg" alt="Doctor avatar" /><p>' +
                 "Please login first!" +
                 "</p></li>"
             ).appendTo($(".messages ul"));

@@ -112,11 +112,13 @@ namespace EvergreenAPI.Controllers
 
         private async Task<List<DetectionAccuracy>> RetrieveAccuraciesFromApi(DetectionHistory history, string filepath)
         {
-            // Simulate Python API
-            var random = new Random();
             var accList = new List<DetectionAccuracy>();
             var ApiBaseUrl = "http://127.0.0.1:8000/predict";
-            var detectingDiseases = new List<Disease>();
+            var detectingDiseases = _context.Diseases.Where(
+                d => d.Name == "Early Blight"
+                || d.Name == "Septoria"
+                || d.Name == "Yellow Curl" ||
+                d.Name == "Healthy Leaf").ToList();
             var data = new List<PredictionDTO>();
 
             using (var multipartFormContent = new MultipartFormDataContent())
@@ -127,16 +129,16 @@ namespace EvergreenAPI.Controllers
                 {
                     temp = System.IO.File.Open(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
-                
+
                 var fileStreamContent = new StreamContent(temp);
                 var ext = Path.GetExtension(filepath);
                 var filename = Path.GetFileName(filepath);
 
-                fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("image/" + ext);
+                fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
 
                 //Add the file
                 multipartFormContent.Add(fileStreamContent, name: "file", fileName: filename);
@@ -148,35 +150,17 @@ namespace EvergreenAPI.Controllers
                     return null;
                 }
                 var result = response.Content.ReadAsStringAsync().Result;
-
-
                 data = JsonConvert.DeserializeObject<List<PredictionDTO>>(result);
-                
-
-
-                foreach (var disease in _context.Diseases)
-                {
-                    if (disease.Name == "Early Blight" 
-                        || disease.Name == "Septoria" 
-                        || disease.Name == "Yellow Curl" 
-                        || disease.Name == "Healthy Leaf")
-                    {
-                        detectingDiseases.Add(disease);
-                    }
-                }
             }
 
             for (var i = 0; i < detectingDiseases.Count; i++)
             {
-
                 var acc = new DetectionAccuracy();
                 acc.Accuracy = data[i].Probability;
                 acc.DiseaseId = detectingDiseases[i].DiseaseId;
                 acc.DetectionHistoryId = history.DetectionHistoryId;
                 _context.DetectionAccuracies.Add(acc);
             }
-
-
 
             await _context.SaveChangesAsync();
             return accList;
@@ -212,6 +196,7 @@ namespace EvergreenAPI.Controllers
 
                 result.Add(new ExtractDetectionHistoriesDTO
                 {
+                    DetectionHistoryId = detection.DetectionHistoryId,
                     ImageName = detection.ImageName,
                     DetectedDisease = detectedDisease.Disease.Name,
                     Accuracy = (float)highestAcc,
@@ -226,7 +211,7 @@ namespace EvergreenAPI.Controllers
         }
 
         // For testing
-        [HttpGet("historyId={detectionHistoryId}")]
+        [HttpGet("Details/{detectionHistoryId}")]
         public IActionResult GetDetectionHistory(int detectionHistoryId)
         {
             if (!_detectionHistoryRepository.Exist(detectionHistoryId))
@@ -235,7 +220,10 @@ namespace EvergreenAPI.Controllers
             var accuracies = GetDetectionAccuracies(detectionHistoryId)
                 .Where(x => x.DetectionHistoryId == detectionHistoryId)
                 .OrderByDescending(x => x.Accuracy)
-                .Include(x => x.Disease);
+                .Include(x => x.Disease)
+                .Include(x => x.Disease.Medicine)
+                .Include(x => x.Disease.Treatment)
+                .ToList();
 
             return Ok(accuracies);
         }

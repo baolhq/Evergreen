@@ -43,20 +43,34 @@ namespace EvergreenView.Controllers
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("r")))
                 return RedirectToAction("Login", "Authentication");
 
-            string query = "/" + session.GetString("i");
-            HttpResponseMessage response = await client.GetAsync(DetectionApiUrl + query);
-            string strData = await response.Content.ReadAsStringAsync();
+            var query = "/" + session.GetString("i");
+            var response = await client.GetAsync(DetectionApiUrl + query);
+            var strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<ExtractDetectionHistoriesDTO> history =
-                JsonSerializer.Deserialize<List<ExtractDetectionHistoriesDTO>>(strData, options);
-
+            var history = JsonSerializer.Deserialize<List<ExtractDetectionHistoriesDTO>>(strData, options);
             var result = JsonSerializer.Serialize(history);
             ViewBag.history = result;
 
             return View();
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            //if (string.IsNullOrEmpty(HttpContext.Session.GetString("r")))
+            //    return RedirectToAction("Login", "Authentication");
+
+            var query = "/Details/" + id;
+            var response = await client.GetAsync(DetectionApiUrl + query);
+            var strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var accuracies = JsonSerializer.Deserialize<List<DetectionAccuracy>>(strData, options);
+            return View(accuracies);
         }
     }
 }

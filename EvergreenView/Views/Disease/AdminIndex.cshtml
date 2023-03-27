@@ -42,6 +42,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.Affect)
                         </th>
+
                         <th>
                             @Html.DisplayNameFor(model => model.DiseaseCategory)
                         </th>
@@ -70,6 +71,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Affect)
                             </td>
+
                             <td>
                                 @Html.DisplayFor(modelItem => item.DiseaseCategory.Name)
                             </td>
@@ -79,6 +81,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Treatment.Method)
                             </td>
+
                             <td hidden>
                                 @Html.DisplayFor(modelItem => item.Thumbnail.Url)
                             </td>

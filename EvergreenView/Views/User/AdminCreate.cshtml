@@ -7,9 +7,8 @@
 
 <h1 class="text-dark">Create Account</h1>
 <hr />
-<div class="row text-dark">
-    <div class="col-md-4">
-        <form method="post" asp-action="AdminCreate">
+<div class="container">
+        <form class="text-dark" method="post" asp-action="AdminCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="AccountId" />
             <input type="hidden" asp-for="Token" />
@@ -64,7 +63,6 @@
             </div>
         </form>
     </div>
-</div>
 
 @section Scripts {
     @{

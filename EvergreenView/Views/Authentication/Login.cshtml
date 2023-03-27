@@ -38,13 +38,13 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="form-group py-2 d-flex align-items-center">
                                         <input asp-for="Email" class="form-control rounded-pill" type="email" placeholder="Email Address" />
-                                        <span asp-validation-for="Email" class="text-danger">@ViewData["error"]</span>
                                     </div>
+                                    <span asp-validation-for="Email" class="text-danger">@ViewData["error"]</span>
                                     <div class="form-group py-2 d-flex align-items-center show_hide">
                                         <input asp-for="Password" class="form-control rounded-pill" type="password" placeholder="Password"/>
-                                        <span asp-validation-for="Password" class="text-danger">@ViewData["error"]</span>
                                         <i class="fa-solid fa-eye"></i>
                                     </div>
+                                    <span asp-validation-for="Password" class="text-danger">@ViewData["error"]</span>
                                     <div class="form-group py-2 mt-3">
                                         <input type="submit" value="Login" class="btn btn-danger btn-block p-3" />
                                     </div>
@@ -84,6 +84,22 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
         }
     </script>
 }
+
+@if (TempData["error"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: '@TempData["error"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+}
+
 <script>
     const showHid = document.querySelector('.show_hide i')
     const btn2 = document.querySelector('.show_hide input')

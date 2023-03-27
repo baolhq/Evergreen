@@ -170,7 +170,7 @@ namespace EvergreenAPI.Controllers
             {
 
                 var acc = new DetectionAccuracy();
-                acc.Accuracy = data[i].Probability * 100;
+                acc.Accuracy = data[i].Probability;
                 acc.DiseaseId = detectingDiseases[i].DiseaseId;
                 acc.DetectionHistoryId = history.DetectionHistoryId;
                 _context.DetectionAccuracies.Add(acc);

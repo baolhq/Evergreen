@@ -10,8 +10,6 @@ namespace EvergreenAPI.DTO
         [MaxLength(50)]
         public string Method { get; set; }
         [Required]
-        public int DiseaseId { get; set; }
-        [Required]
         public int ThumbnailId { get; set; }
     }
 }

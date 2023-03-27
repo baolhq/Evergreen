@@ -135,6 +135,15 @@ namespace EvergreenAPI.Models
                 );
             #endregion
 
+            #region MedicineCategory seed
+
+            modelBuilder.Entity<MedicineCategory>().HasData(
+              new MedicineCategory { MedicineCategoryId = 1, Name = "Thuốc phun" },
+              new MedicineCategory { MedicineCategoryId = 2, Name = "Thuốc pha" }
+            );
+
+            #endregion
+
             #region Disease seed
 
             modelBuilder.Entity<Disease>().HasData(
@@ -145,7 +154,9 @@ namespace EvergreenAPI.Models
                     Identification = "Lá bị vàng",
                     Affect = "Giảm sản lượng",
                     DiseaseCategoryId = 1,
-                    ThumbnailId = 1
+                    ThumbnailId = 1,
+                    MedicineId = 1,
+                    TreatmentId = 1
                 },
                 new Disease
                 {
@@ -154,7 +165,9 @@ namespace EvergreenAPI.Models
                     Identification = "Các lỗ nhỏ trên vỏ cây",
                     Affect = "Làm cây chết khô",
                     DiseaseCategoryId = 2,
-                    ThumbnailId = 2
+                    ThumbnailId = 2,
+                    MedicineId = 2,
+                    TreatmentId = 2
                 },
                 new Disease
                 {
@@ -163,7 +176,9 @@ namespace EvergreenAPI.Models
                     Identification = "Vết bệnh xuất hiện đầu tiên ở các lá già phía dưới, lan dần lên các lá phía trên. Vết bệnh hình tròn hay có cạnh, màu nâu sẫm, có các vòng tròn đồng tâm màu đen, nhiều vết bệnh liên kết nhau thành vết lớn lan khắp lá, làm lá vàng khô và rụng sớm.",
                     Affect = "Sợi nấm và bào tử nấm lưu tồn trên tàn dư cây bệnh, cây ký chủ ít nhất là một năm, bào tử theo gió và côn trùng lan truyền gây bệnh trên cây trồng.",
                     DiseaseCategoryId = 1,
-                    ThumbnailId = 3
+                    ThumbnailId = 3,
+                    MedicineId = 3,
+                    TreatmentId = 3
                 },
                 new Disease
                 {
@@ -172,7 +187,9 @@ namespace EvergreenAPI.Models
                     Identification = "Lá trên cây héo ngày càng nhiều, vàng lá và rụng.",
                     Affect = "Phá hại các giai đoạn sinh trưởng của cây nhưng nặng nhất là vào cuối giai đoạn sinh trưởng.",
                     DiseaseCategoryId = 2,
-                    ThumbnailId = 2
+                    ThumbnailId = 2,
+                    MedicineId = 4,
+                    TreatmentId = 3
                 },
                 new Disease
                 {
@@ -181,7 +198,9 @@ namespace EvergreenAPI.Models
                     Identification = " Xuất hiện nhiều đốm màu vàng rọng trên lá, cuối cùng chuyển sang màu nâu.",
                     Affect = "Làm giảm khả năng quang hợp, cây lúa sinh trưởng kém, nếu lá đòng cháy sẽ gây ra hiện tượng lép lửng, ảnh hưởng đến năng xuất và chất lượng gạo.",
                     DiseaseCategoryId = 2,
-                    ThumbnailId = 3
+                    ThumbnailId = 3,
+                    MedicineId = 1,
+                    TreatmentId = 3
                 },
                 new Disease
                 {
@@ -190,7 +209,9 @@ namespace EvergreenAPI.Models
                     Identification = "Cây bị còi cọc, kiểm tra rễ cây có những vùng bị đen.",
                     Affect = "Sự vận chuyển của nước và chất dinh dưỡng từ rễ đến ngọn sẽ bị cản trở, hoặc bị mầm bệnh xâm nhập truyền khắp cây, khiến cây chết dần dần.",
                     DiseaseCategoryId = 2,
-                    ThumbnailId = 1
+                    ThumbnailId = 1,
+                    MedicineId = 2,
+                    TreatmentId = 3
                 },
                 new Disease
                 {
@@ -199,7 +220,9 @@ namespace EvergreenAPI.Models
                     Identification = "Lá cây có những đốm màu vàng và những đường sọc.",
                     Affect = "Bệnh nặng cây còi cọc, đọt bị sượng, cây bị chùn lại, cây phát triển chậm, hoa bị vàng nhỏ và rụng, cây rất ít trái, trái nhỏ và vặn vẹo (dị dạng) và có vị đắng. Cuối cùng cây có thể bị chết.",
                     DiseaseCategoryId = 2,
-                    ThumbnailId = 3
+                    ThumbnailId = 3,
+                    MedicineId = 3,
+                    TreatmentId = 3
                 },
                 new Disease
                 {
@@ -208,7 +231,9 @@ namespace EvergreenAPI.Models
                     Identification = "Đốm lá thay đổi thành màu nâu đen.",
                     Affect = "Trong vườn ươm, đây có thể là bệnh hại nghiêm trọng nhất vì chúng gây thiệt hại đến 40 – 50%. Trên cây lớn chúng gây chết lá, cành và rụng lá dẫn đến hiện tượng làm giảm năng suất",
                     DiseaseCategoryId = 2,
-                    ThumbnailId = 1
+                    ThumbnailId = 1,
+                    MedicineId = 4,
+                    TreatmentId = 3
                 },
                 new Disease
                 {
@@ -217,7 +242,9 @@ namespace EvergreenAPI.Models
                     Identification = "Xuất hiện nhiều vết nấm mốc trắng thường ở dưới lá.",
                     Affect = "Bệnh gây hại nặng ở giai đoạn cây trổ hoa đến mang trái khiến cây cho năng suất thấp và chất lượng trái kém, có thể khiến cây bị chết.",
                     DiseaseCategoryId = 2,
-                    ThumbnailId = 2
+                    ThumbnailId = 2,
+                    MedicineId = 1,
+                    TreatmentId = 3
                 },
                 new Disease
                 {
@@ -226,17 +253,11 @@ namespace EvergreenAPI.Models
                     Identification = "Trên thân và lá cây sẽ có nhiều rệp xanh hoặc vàng nhỏ.",
                     Affect = "Rệp aphid trưởng thành, ấu trùng rệp gây hại trên các phần còn non của lan như lá, chồi và nụ hoa, chúng hút một lượng lớn chất dinh dưỡng từ nhựa cây, khiến cho cây thiếu dinh dưỡng; chất bài tiết của nó dễ gây nấm, đồng thời làm phát bệnh thối đen và truyền virus.",
                     DiseaseCategoryId = 2,
-                    ThumbnailId = 3
+                    ThumbnailId = 3,
+                    MedicineId = 2,
+                    TreatmentId = 3
+
                 }
-            );
-
-            #endregion
-
-            #region MedicineCategory seed
-
-            modelBuilder.Entity<MedicineCategory>().HasData(
-              new MedicineCategory { MedicineCategoryId = 1, Name = "Thuốc phun" },
-              new MedicineCategory { MedicineCategoryId = 2, Name = "Thuốc pha" }
             );
 
             #endregion
@@ -251,7 +272,9 @@ namespace EvergreenAPI.Models
                     Uses = "Trị bệnh vàng lá",
                     MedicineCategoryId = 1,
                     ThumbnailId = 7,
-                    DiseaseId = 2
+                    
+
+
                 },
                 new Medicine
                 {
@@ -260,7 +283,8 @@ namespace EvergreenAPI.Models
                     Uses = "Trừ sâu trong thân cây",
                     MedicineCategoryId = 2,
                     ThumbnailId = 8,
-                    DiseaseId = 2
+                    
+
                 },
                 new Medicine
                 {
@@ -269,7 +293,8 @@ namespace EvergreenAPI.Models
                     Uses = "Trị lá úa sớm",
                     MedicineCategoryId = 1,
                     ThumbnailId = 9,
-                    DiseaseId = 3
+                    
+
                 },
                 new Medicine
                 {
@@ -278,7 +303,8 @@ namespace EvergreenAPI.Models
                     Uses = "Trừ sâu hại",
                     MedicineCategoryId = 1,
                     ThumbnailId = 14,
-                    DiseaseId = 2
+                    
+
 
                 }
             );
@@ -287,11 +313,19 @@ namespace EvergreenAPI.Models
 
             #region Treatment seed
             modelBuilder.Entity<Treatment>().HasData(
-                new Treatment { TreatmentId = 1, Method = "Bắt sâu", DiseaseId = 2, ThumbnailId = 10 },
-                new Treatment { TreatmentId = 2, Method = "Lặt bỏ lá bị nhiễm bệnh", DiseaseId = 3, ThumbnailId = 11 },
-                new Treatment { TreatmentId = 3, Method = "Lau cây bằng nước xà phòng hoặc rượu.", DiseaseId = 10, ThumbnailId = 12 }
+                new Treatment { TreatmentId = 1, Method = "Bắt sâu", ThumbnailId = 10,
+                    
+                },
+                new Treatment { TreatmentId = 2, Method = "Lặt bỏ lá bị nhiễm bệnh", ThumbnailId = 11,
+                    
+                },
+                new Treatment { TreatmentId = 3, Method = "Lau cây bằng nước xà phòng hoặc rượu.", ThumbnailId = 12,
+                    
+                }
             );
             #endregion
+
+
         }
     }
 }

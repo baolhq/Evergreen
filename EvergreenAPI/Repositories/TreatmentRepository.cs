@@ -15,11 +15,22 @@ namespace EvergreenAPI.Repositories
             _context = context;
         }
 
+
+
+
+
+
         public bool CreateTreatment(Treatment treatment)
         {
             _context.Add(treatment);
             return Save();
         }
+
+
+
+
+
+
 
         public bool DeleteTreatment(Treatment treatment)
         {
@@ -27,15 +38,31 @@ namespace EvergreenAPI.Repositories
             return Save();
         }
 
+
+
+
+
+
         public bool TreatmentExist(int id)
         {
             return _context.Treatments.Any(f => f.TreatmentId == id);
         }
 
+
+
+
+
+
+
         public Treatment GetTreatment(int id)
         {
-            return _context.Treatments.Include(d => d.Disease).Include(d => d.Thumbnail).Where(s => s.TreatmentId == id).FirstOrDefault(); ;
+            
+            return _context.Treatments.Include(d => d.Thumbnail).Where(s => s.TreatmentId == id).FirstOrDefault();
         }
+
+
+
+
 
 
         public ICollection<Thumbnail> GetThumbnails()
@@ -43,14 +70,20 @@ namespace EvergreenAPI.Repositories
             return _context.Thumbnails.ToList();
         }
 
+
+
+
+
+
         public ICollection<Treatment> GetTreatments()
         {
-            return _context.Treatments.Include(d => d.Disease).Include(d => d.Thumbnail).ToList();
+            return _context.Treatments.Include(d => d.Thumbnail).ToList();
         }
-        public ICollection<Disease> GetDiseases()
-        {
-            return _context.Diseases.ToList();
-        }
+
+
+
+
+
 
         public bool Save()
         {
@@ -58,11 +91,21 @@ namespace EvergreenAPI.Repositories
             return saved > 0 ? true : false;
         }
 
+
+
+
+
+
         public bool UpdateTreatment(Treatment treatment)
         {
             _context.Update(treatment);
             return Save();
         }
+
+
+
+
+
 
 
         public List<Treatment> Search(string search)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,15 +17,32 @@ namespace EvergreenAPI.Models
         public string Identification { get; set; }
 
         public string Affect { get; set; }
-        [ForeignKey("DiseaseCategory")]
+
+
+        
         [DisplayName("Disease Category")]
         public int DiseaseCategoryId { get; set; }
+        [ForeignKey("DiseaseCategoryId")]
         public virtual DiseaseCategory DiseaseCategory { get; set; }
-
-        [ForeignKey("Thumbnails")]
+        
+        
         [DisplayName("Description")]
         public int ThumbnailId { get; set; }
+        [ForeignKey("ThumbnailId")]
         public virtual Thumbnail Thumbnail { get; set; }
+
+
+        
+        [DisplayName("Medicine")]
+        public int MedicineId { get; set; }
+        [ForeignKey("MedicineId")]
+        public virtual Medicine Medicine { get; set; }
+
+        
+        [DisplayName("Treatment")]
+        public int TreatmentId { get; set; }
+        [ForeignKey("TreatmentId")]
+        public virtual Treatment Treatment { get; set; }
         
     }
 }

@@ -24,6 +24,13 @@ namespace EvergreenAPI.Controllers
             _mapper = mapper;
         }
 
+
+
+
+
+
+
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult GetDiseases()
@@ -35,6 +42,15 @@ namespace EvergreenAPI.Controllers
 
             return Ok(diseases);
         }
+
+
+
+
+
+
+
+
+
 
         [HttpGet("{DiseaseId}")]
         [AllowAnonymous]
@@ -50,6 +66,15 @@ namespace EvergreenAPI.Controllers
 
             return Ok(disease);
         }
+
+
+
+
+
+
+
+
+
 
         [HttpPost]
         public IActionResult CreateDisease([FromBody] DiseaseDTO diseaseCreate)
@@ -81,6 +106,13 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
+
+
+
+
+
+
+
         [HttpPut("{DiseaseId}")]
         public IActionResult UpdateDisease(int DiseaseId, [FromBody] DiseaseDTO updatedDisease)
         {
@@ -106,6 +138,13 @@ namespace EvergreenAPI.Controllers
 
             return Ok("Updated Success");
         }
+
+
+
+
+
+
+
 
         [HttpDelete("{DiseaseId}")]
         public IActionResult DeleteDisease(int DiseaseId)

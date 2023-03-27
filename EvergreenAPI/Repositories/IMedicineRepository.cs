@@ -7,7 +7,6 @@ namespace EvergreenAPI.Repositories
     {
         ICollection<MedicineCategory> GetMedicineCategories();
         ICollection<Thumbnail> GetThumbnails();
-        ICollection<Disease> GetDiseases();
         ICollection<Medicine> GetMedicines();
         Medicine GetMedicine(int id);
         bool MedicineExist(int id);

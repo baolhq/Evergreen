@@ -63,7 +63,7 @@ namespace EvergreenView.Controllers
             string strData = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
-                    TempData["message"] = "Cannot Log-In!";
+                    TempData["error"] = "Cannot Log-In!";
                     return RedirectToAction("Login", "Authentication");
                 }
                 else
@@ -86,7 +86,7 @@ namespace EvergreenView.Controllers
                     }
                 }
             }
-            TempData["message"] = "Your Email or Password is wrong!";
+            TempData["error"] = "Your Email or Password is wrong!";
             return View("Login", account);
         }
 
@@ -122,7 +122,7 @@ namespace EvergreenView.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
 
-                    TempData["message"] = "Cannot Register!";
+                    TempData["error"] = "Cannot Register!";
 
                 }
                 else 
@@ -157,7 +157,7 @@ namespace EvergreenView.Controllers
                 var response = await client.PostAsync($"{AuthApiUrl}/verify?token={token}", data);
                 if (!response.IsSuccessStatusCode)
                 {
-                    TempData["message"] = "Cannot Send Request!";
+                    TempData["error"] = "Cannot Send Request!";
 
                 }
                 else
@@ -188,7 +188,7 @@ namespace EvergreenView.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
 
-                    TempData["message"] = "Cannot Send Request!";
+                    TempData["error"] = "Cannot Send Request!";
 
                 }
                 else
@@ -236,7 +236,7 @@ namespace EvergreenView.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
 
-                    TempData["message"] = "Cannot Reset Password!";
+                    TempData["error"] = "Cannot Reset Password!";
 
                 }
                 else

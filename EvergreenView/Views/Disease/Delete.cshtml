@@ -30,12 +30,21 @@
                 </div>
                 <div class="col-md-6">
                     <div class="col-sm-12 pb-3">
-                        <label for="exampleFirst">Disease Title : </label>
-                        <h2>@Model.Name</h2>
+                        <label for="exampleCity">Medicine :</label>
+                        <a asp-action="AdminDetails" asp-route-id="@Model.MedicineId">@Model.Medicine.Name</a>
                     </div>
                     <div class="col-sm-12 pb-3">
-                        <label for="exampleCity">Disease Description :</label>
+                        <label for="exampleCity">Treatment :</label>
+                        <a asp-action="AdminDetails" asp-route-id="@Model.TreatmentId">@Model.Treatment.Method</a>
+                    </div>
+                    <div class="col-sm-12 pb-3">
+                        <label for="exampleCity">Identification :</label>
                         <p>@Model.Identification</p>
+                    </div>
+
+                    <div class="col-sm-12 pb-3">
+                        <label for="exampleCity">Affect :</label>
+                        <p>@Model.Affect</p>
                     </div>
                 </div>
             </div>

@@ -16,25 +16,19 @@ namespace EvergreenAPI.Models
         [Required]
         public string Uses { get; set; }
 
-
-        [ForeignKey("Disease")]
-        [DisplayName("Disease Name")]
-        public int DiseaseId { get; set; }
-        public virtual Disease Disease { get; set; }
-
-
-
-        [ForeignKey("MedicineCategories")]
+        
         [DisplayName("Medicine Category")]
         public int MedicineCategoryId { get; set; }
+        [ForeignKey("MedicineCategoryId")]
         public virtual MedicineCategory MedicineCategory { get; set; }
 
-       
-
-        [ForeignKey("Thumbnails")]
+        
         [DisplayName("Description")]
         public int? ThumbnailId { get; set; }
+        [ForeignKey("ThumbnailId")]
         public virtual Thumbnail Thumbnail { get; set; }
+
+
 
     }
 }

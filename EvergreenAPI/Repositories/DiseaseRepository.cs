@@ -36,18 +36,35 @@ namespace EvergreenAPI.Repositories
         {   
             return _context.Diseases
                 .Include(d => d.DiseaseCategory)
+                .Include(d => d.Medicine)
+                .Include(d => d.Treatment)
                 .Include(d => d.Thumbnail)
                 .Where(s => s.DiseaseId == id).FirstOrDefault(); ;
         }
 
         public ICollection<Disease> GetDiseases()
         {
-            return _context.Diseases.Include(d => d.DiseaseCategory).Include(d => d.Thumbnail).ToList();
+            return _context.Diseases
+                .Include(d => d.DiseaseCategory)
+                .Include(d => d.Medicine)
+                .Include(d => d.Treatment)
+                .Include(d => d.Thumbnail).ToList();
         }
 
         public ICollection<Thumbnail> GetThumbnails()
         {
             return _context.Thumbnails.ToList();
+        }
+
+        public ICollection<Medicine> GetMedicines()
+        {
+            return _context.Medicines.ToList();
+        }
+
+
+        public ICollection<Treatment> GetTreatments()
+        {
+            return _context.Treatments.ToList();
         }
 
         public ICollection<DiseaseCategory> GetDiseaseCategories()

@@ -8,6 +8,8 @@ namespace EvergreenAPI.Repositories
         ICollection<Disease> GetDiseases();
         ICollection<DiseaseCategory> GetDiseaseCategories();
         ICollection<Thumbnail> GetThumbnails();
+        ICollection<Medicine> GetMedicines();
+        ICollection<Treatment> GetTreatments();
         Disease GetDisease(int id);
         bool DiseaseExist(int id);
         bool CreateDisease(Disease disease);

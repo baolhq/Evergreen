@@ -19,7 +19,7 @@ namespace EvergreenView.Controllers
     {
         private string ThumbnailApiUrl = "";
         private string TreatmentApiUrl = "";
-        private string DiseaseApiUrl = "";
+        
         private readonly HttpClient client = null;
         private readonly IToastNotification _toastNotification;
 
@@ -28,9 +28,8 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            TreatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
-            DiseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease";
-            ThumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+            TreatmentApiUrl = "https://localhost:44334/api/Treatment";
+            ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
             _toastNotification = toastNotification;
         }
 
@@ -47,6 +46,13 @@ namespace EvergreenView.Controllers
             return View(treatments);
         }
 
+
+
+
+
+
+
+
         public async Task<ActionResult> Details(int id)
         {
             
@@ -56,21 +62,18 @@ namespace EvergreenView.Controllers
             return View(treatment);
         }
 
+
+
+
+
+
         public async Task<ActionResult> Create()
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
-            HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
-            string strData = await responeDisease.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
-            ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
+            
 
             HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData1 = await responeImage.Content.ReadAsStringAsync();
@@ -83,6 +86,13 @@ namespace EvergreenView.Controllers
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View();
         }
+
+
+
+
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -104,15 +114,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("AdminIndex");
             }
-            HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
-            string strData = await responeDisease.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
-            ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
+            
 
             HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData1 = await responeImage.Content.ReadAsStringAsync();
@@ -125,6 +127,13 @@ namespace EvergreenView.Controllers
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View();
         }
+
+
+
+
+
+
+
 
         public async Task<ActionResult> Edit(int id)
         {
@@ -140,15 +149,7 @@ namespace EvergreenView.Controllers
             };
             Treatment treatment = JsonSerializer.Deserialize<Treatment>(strData, options);
 
-            HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
-            string strData1 = await responeDisease.Content.ReadAsStringAsync();
-            var options1 = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData1, options1);
-            ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
+            
 
             HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
             string strData2 = await responeImage.Content.ReadAsStringAsync();
@@ -161,6 +162,11 @@ namespace EvergreenView.Controllers
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View(treatment);
         }
+
+
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -177,24 +183,12 @@ namespace EvergreenView.Controllers
             string data = JsonSerializer.Serialize(treatment);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(TreatmentApiUrl + "/" + id, content).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["message"] = "Update Successfully";
-                return RedirectToAction("AdminIndex");
-            }
+            
 
-            HttpResponseMessage responeDisease = await client.GetAsync(DiseaseApiUrl);
-            string strData = await responeDisease.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
+            
 
-            List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
-            ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
-
-            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
-            string strData2 = await responeImage.Content.ReadAsStringAsync();
+            response = await client.GetAsync(ThumbnailApiUrl);
+            string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -202,8 +196,20 @@ namespace EvergreenView.Controllers
 
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["message"] = "Update Successfully";
+                return RedirectToAction("AdminIndex");
+            }
             return View();
         }
+
+
+
+
+
+
 
         public async Task<ActionResult> Delete(int id)
         {
@@ -254,23 +260,11 @@ namespace EvergreenView.Controllers
             return JsonSerializer.Deserialize<Treatment>(strData, options);
         }
 
-        public async Task<IEnumerable<Disease>> GetDiseases()
-        {
-            HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl);
-            string strData = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            List<Disease> listDiseases = JsonSerializer.Deserialize<List<Disease>>(strData, options);
-            return listDiseases;
-        }
+        
 
         public async Task SetViewData()
         {
-            var listDiseases = await GetDiseases();
-            ViewData["Diseases"] = new SelectList(listDiseases, "DiseaseId", "Name");
+            
             var listImage = await GetImages();
             ViewData["Thumbnails"] = new SelectList(listImage, "ThumbnailId", "AltText");
         }

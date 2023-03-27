@@ -175,18 +175,10 @@ namespace EvergreenView.Controllers
             string data = JsonSerializer.Serialize(blog);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(BlogApiUrl + "/" + id, content);
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["message"] = "Update Successfully";
-                return RedirectToAction("AdminIndex");
-            }
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
+            
 
-            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
-            string strData2 = await responeImage.Content.ReadAsStringAsync();
+            response = await client.GetAsync(ThumbnailApiUrl);
+            string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -194,6 +186,12 @@ namespace EvergreenView.Controllers
 
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["message"] = "Update Successfully";
+                return RedirectToAction("AdminIndex");
+            }
 
             return View();
 

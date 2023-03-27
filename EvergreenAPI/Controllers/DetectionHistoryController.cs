@@ -14,6 +14,12 @@ using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System;
+using static System.Net.WebRequestMethods;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Diagnostics;
+using System.Text.Json;
+
 
 namespace EvergreenAPI.Controllers
 {
@@ -21,6 +27,7 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class DetectionHistoryController : ControllerBase
     {
+        private readonly HttpClient client = null;
         private readonly IDetectionHistoryRepository _detectionHistoryRepository;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
@@ -28,6 +35,11 @@ namespace EvergreenAPI.Controllers
 
         public DetectionHistoryController(IDetectionHistoryRepository detectionHistoryRepository, IMapper mapper, AppDbContext context, IHostingEnvironment environment)
         {
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+
+
             _detectionHistoryRepository = detectionHistoryRepository;
             _mapper = mapper;
             _context = context;
@@ -77,6 +89,7 @@ namespace EvergreenAPI.Controllers
 
             using var stream = System.IO.File.Create(uniqueFilePath);
             await postedFile.CopyToAsync(stream);
+            stream.Close();
 
             // Save image location to database
             _context.Images.Add(new Image { AltText = uniqueFileName, Url = uniqueFilePath });
@@ -91,26 +104,79 @@ namespace EvergreenAPI.Controllers
             });
 
             // Call Python API to detect disease
-            var accuracies = await RetrieveAccuraciesFromApi(history);
+            var accuracies = await RetrieveAccuraciesFromApi(history, uniqueFilePath);
 
             responseMessage = $"{fileName} uploaded successfully";
             return Ok(responseMessage);
         }
 
-        private async Task<List<DetectionAccuracy>> RetrieveAccuraciesFromApi(DetectionHistory history)
+        private async Task<List<DetectionAccuracy>> RetrieveAccuraciesFromApi(DetectionHistory history, string filepath)
         {
             // Simulate Python API
             var random = new Random();
             var accList = new List<DetectionAccuracy>();
+            var ApiBaseUrl = "http://127.0.0.1:8000/predict";
+            var detectingDiseases = new List<Disease>();
 
-            foreach (var disease in _context.Diseases)
+            using (var multipartFormContent = new MultipartFormDataContent())
+            {
+                //Load the file and set the file's Content-Type header
+                FileStream temp = null;
+                try
+                {
+                    temp = System.IO.File.Open(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                
+                var fileStreamContent = new StreamContent(temp);
+                var ext = Path.GetExtension(filepath);
+                var filename = Path.GetFileName(filepath);
+
+                fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("image/" + ext);
+
+                //Add the file
+                multipartFormContent.Add(fileStreamContent, name: "file", fileName: filename);
+
+                //Send it
+                var response = await client.PostAsync(ApiBaseUrl, multipartFormContent);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+                var result = response.Content.ReadAsStringAsync().Result;
+
+
+                var data = JsonSerializer.Deserialize<List<PredictionDTO>>(result);
+                
+
+
+                foreach (var disease in _context.Diseases)
+                {
+                    if (disease.Name == "Early Blight" 
+                        || disease.Name == "Septoria" 
+                        || disease.Name == "Yellow Curl" 
+                        || disease.Name == "Healthy Leaf")
+                    {
+                        detectingDiseases.Add(disease);
+                    }
+                }
+            }
+
+
+
+            foreach (var disease in detectingDiseases)
             {
                 var acc = new DetectionAccuracy();
-                acc.Accuracy = (float)random.NextDouble() * 100;
+                acc.Accuracy = (float)random.NextDouble();
                 acc.DiseaseId = disease.DiseaseId;
                 acc.DetectionHistoryId = history.DetectionHistoryId;
                 _context.DetectionAccuracies.Add(acc);
             }
+
+
 
             await _context.SaveChangesAsync();
             return accList;

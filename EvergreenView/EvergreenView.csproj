@@ -34,7 +34,7 @@
 
 	<ItemGroup>
 		<Content Update="wwwroot\css\chatbox.css">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 

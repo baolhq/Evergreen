@@ -4,7 +4,7 @@
     {
         public string ImageName { get; set; }
         public string DetectedDisease { get; set; }
-        public float Accuracy { get; set; }
+        public double Accuracy { get; set; }
         public string ImageUrl { get; set; }
     }
 }

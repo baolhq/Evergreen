@@ -28,7 +28,7 @@ namespace EvergreenView.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
 
-            ThumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+            ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -95,8 +95,6 @@ namespace EvergreenView.Controllers
 
             if (thumbnail == null) return NotFound();
 
-            var data = JsonSerializer.Serialize(thumbnail);
-            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.DeleteAsync(ThumbnailApiUrl + "/" + thumbnail.ThumbnailId);
             if (response.IsSuccessStatusCode)
                 return RedirectToAction("Index");

@@ -41,6 +41,8 @@
     <link rel="stylesheet" href="~/css/pagination.css">
     <link rel="stylesheet" href="~/css/chatbox.css" />
 
+    <link rel="icon" href="@Url.Content("~/images/favicon.png")" />
+
     @RenderSection("Styles", required: false)
 
 
@@ -113,6 +115,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/ImageDetection" ? "text-danger" : "text-dark")" asp-area="" asp-controller="ImageDetection" asp-action="Index">Detect</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Service" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Service" asp-action="Index">Service</a>
                         </li>
 
                         @if (session.GetString("n") != null)
@@ -221,7 +226,6 @@
     <script src="~/js/pagination.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
-
 
     <partial name="_ChatBox.cshtml" />
 </body>

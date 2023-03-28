@@ -1,11 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -33,17 +26,7 @@
 
     <link rel="icon" href="@Url.Content("~/images/favicon.png")" />
 
-    @RenderSection("Styles", required: false)
-
-    <style>
-        .text-ellipsis {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-        }
-    </style>
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body id="page-top">
@@ -116,7 +99,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" asp-action="Logout" asp-controller="Authen   tication">Logout</a>
+                        <a class="btn btn-primary" asp-action="Logout" asp-controller="Authentication">Logout</a>
                     </div>
                 </div>
             </div>

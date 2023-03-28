@@ -1,8 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
+@inject IHttpContextAccessor HttpContentAccessor
 @{
-    var session = httpContentAccessor.HttpContext.Session;
+    var session = HttpContentAccessor.HttpContext?.Session;
     string avatar;
     if (session.GetString("a") != null)
         avatar = session.GetString("a");
@@ -68,7 +67,7 @@
                     let arr = res.split("/eol/")
                     for (let i = 0; i < arr.length; i++) {
                         let msg
-                        if (i % 2 == 0) {
+                        if (i % 2 === 0) {
                             // AI response
                             msg = arr[i].slice(4)
 
@@ -99,8 +98,8 @@
     });
 
     function newMessage() {
-        message = $(".message-input input").val();
-        if ($.trim(message) == "") {
+        let message = $(".message-input input").val();
+        if ($.trim(message) === "") {
             return false;
         }
         $(
@@ -152,7 +151,7 @@
     });
 
     $(window).on("keydown", function (e) {
-        if (e.which == 13) {
+        if (e.which === 13) {
             newMessage();
             return false;
         }

@@ -2,22 +2,16 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
-using System.Security.Claims;
 using System;
-using static System.Net.WebRequestMethods;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Diagnostics;
 using Newtonsoft.Json;
 
 
@@ -27,17 +21,18 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class DetectionHistoryController : ControllerBase
     {
-        private readonly HttpClient client = null;
+        private readonly HttpClient _client;
         private readonly IDetectionHistoryRepository _detectionHistoryRepository;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
-        private IHostingEnvironment _environment;
+        private readonly IHostingEnvironment _environment;
 
-        public DetectionHistoryController(IDetectionHistoryRepository detectionHistoryRepository, IMapper mapper, AppDbContext context, IHostingEnvironment environment)
+        public DetectionHistoryController(IDetectionHistoryRepository detectionHistoryRepository, IMapper mapper,
+            AppDbContext context, IHostingEnvironment environment)
         {
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
 
 
             _detectionHistoryRepository = detectionHistoryRepository;
@@ -49,7 +44,6 @@ namespace EvergreenAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload()
         {
-            var responseMessage = "";
             var postedFile = Request.Form.Files.FirstOrDefault();
             var accountId = Request.Form["uid"].FirstOrDefault();
 
@@ -67,27 +61,28 @@ namespace EvergreenAPI.Controllers
                 Directory.CreateDirectory(path);
             }
 
-            string fileName = Path.GetFileName(postedFile.FileName);
-            string uniqueFilePath = Path.Combine(path, fileName);
-            string uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
+            var fileName = Path.GetFileName(postedFile.FileName);
+            var uniqueFilePath = Path.Combine(path, fileName);
+            var uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
             // Check if file name exist, use Windows style rename
             if (System.IO.File.Exists(uniqueFilePath))
             {
-                int count = 1;
+                var count = 1;
 
-                string extension = Path.GetExtension(uniqueFilePath);
-                string newFullPath = uniqueFilePath;
+                var extension = Path.GetExtension(uniqueFilePath);
+                var newFullPath = uniqueFilePath;
 
                 while (System.IO.File.Exists(Path.Combine(path, newFullPath)))
                 {
-                    string tempFileName = string.Format("{0} ({1})", uniqueFileName, count++);
+                    var tempFileName = $"{uniqueFileName} ({count++})";
                     newFullPath = Path.Combine(path, tempFileName + extension);
                 }
+
                 uniqueFilePath = newFullPath;
                 uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
             }
 
-            using var stream = System.IO.File.Create(uniqueFilePath);
+            await using var stream = System.IO.File.Create(uniqueFilePath);
             await postedFile.CopyToAsync(stream);
             stream.Close();
 
@@ -95,31 +90,34 @@ namespace EvergreenAPI.Controllers
             _context.Images.Add(new Image { AltText = uniqueFileName, Url = uniqueFilePath });
             await _context.SaveChangesAsync();
 
-            var history = await SaveHistory(new DetectionHistory
+            if (accountId != null)
             {
-                AccountId = int.Parse(accountId),
-                Date = DateTime.Now,
-                ImageName = uniqueFileName,
-                ImageUrl = uniqueFilePath,
-            });
+                var history = new DetectionHistory
+                {
+                    AccountId = int.Parse(accountId),
+                    Date = DateTime.Now,
+                    ImageName = uniqueFileName,
+                    ImageUrl = uniqueFilePath,
+                };
 
-            // Call Python API to detect disease
-            var accuracies = await RetrieveAccuraciesFromApi(history, uniqueFilePath);
+                var detectedDisease = await RetrieveAccuraciesFromApi(history, uniqueFilePath);
+                history.DetectedDisease = detectedDisease;
+                await SaveHistory(history);
+            }
 
-            responseMessage = $"{fileName} uploaded successfully";
+            var responseMessage = $"{fileName} uploaded successfully";
             return Ok(responseMessage);
         }
 
-        private async Task<List<DetectionAccuracy>> RetrieveAccuraciesFromApi(DetectionHistory history, string filepath)
+        private async Task<Disease> RetrieveAccuraciesFromApi(DetectionHistory history, string filepath)
         {
-            var accList = new List<DetectionAccuracy>();
-            var ApiBaseUrl = "http://127.0.0.1:8000/predict";
+            const string apiBaseUrl = "http://127.0.0.1:8000/predict";
             var detectingDiseases = _context.Diseases.Where(
                 d => d.Name == "Early Blight"
-                || d.Name == "Septoria"
-                || d.Name == "Yellow Curl" ||
-                d.Name == "Healthy Leaf").ToList();
-            var data = new List<PredictionDTO>();
+                     || d.Name == "Septoria"
+                     || d.Name == "Yellow Curl" ||
+                     d.Name == "Healthy Leaf").ToList();
+            List<PredictionDTO> data;
 
             using (var multipartFormContent = new MultipartFormDataContent())
             {
@@ -134,36 +132,51 @@ namespace EvergreenAPI.Controllers
                     Console.WriteLine(e);
                 }
 
-                var fileStreamContent = new StreamContent(temp);
-                var ext = Path.GetExtension(filepath);
-                var filename = Path.GetFileName(filepath);
+                if (temp != null)
+                {
+                    var fileStreamContent = new StreamContent(temp);
+                    var filename = Path.GetFileName(filepath);
 
-                fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
+                    fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
 
-                //Add the file
-                multipartFormContent.Add(fileStreamContent, name: "file", fileName: filename);
+                    //Add the file
+                    multipartFormContent.Add(fileStreamContent, name: "file", fileName: filename);
+                }
 
                 //Send it
-                var response = await client.PostAsync(ApiBaseUrl, multipartFormContent);
+                var response = await _client.PostAsync(apiBaseUrl, multipartFormContent);
                 if (!response.IsSuccessStatusCode)
                 {
                     return null;
                 }
+
                 var result = response.Content.ReadAsStringAsync().Result;
                 data = JsonConvert.DeserializeObject<List<PredictionDTO>>(result);
             }
 
+            var detectedDisease = new Disease();
+            double maxAcc = 0;
+
             for (var i = 0; i < detectingDiseases.Count; i++)
             {
-                var acc = new DetectionAccuracy();
-                acc.Accuracy = data[i].Probability;
-                acc.DiseaseId = detectingDiseases[i].DiseaseId;
-                acc.DetectionHistoryId = history.DetectionHistoryId;
+                var acc = new DetectionAccuracy
+                {
+                    Accuracy = data[i].Probability,
+                    DiseaseId = detectingDiseases[i].DiseaseId,
+                    DetectionHistoryId = history.DetectionHistoryId
+                };
+
+                if (acc.Accuracy > maxAcc)
+                {
+                    maxAcc = acc.Accuracy;
+                    detectedDisease = acc.Disease;
+                }
+
                 _context.DetectionAccuracies.Add(acc);
             }
 
             await _context.SaveChangesAsync();
-            return accList;
+            return detectedDisease;
         }
 
         /// <summary>
@@ -171,12 +184,11 @@ namespace EvergreenAPI.Controllers
         /// </summary>
         /// <param name="history">The image to save into history</param>
         /// <returns></returns>
-        private async Task<DetectionHistory> SaveHistory(DetectionHistory history)
+        private async Task SaveHistory(DetectionHistory history)
         {
-            if (history == null) return null;
+            if (history == null) return;
             _context.DetectionHistories.Add(history);
             await _context.SaveChangesAsync();
-            return history;
         }
 
         // For testing
@@ -234,7 +246,7 @@ namespace EvergreenAPI.Controllers
             var result =
                 from acc in _context.DetectionAccuracies
                 join disease in _context.Diseases
-                on acc.DiseaseId equals disease.DiseaseId
+                    on acc.DiseaseId equals disease.DiseaseId
                 orderby acc.Accuracy descending
                 where acc.DetectionHistoryId == historyId
                 select acc;

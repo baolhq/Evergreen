@@ -1,9 +1,6 @@
 ﻿using EvergreenAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EvergreenAPI.Repositories
 {
@@ -18,7 +15,7 @@ namespace EvergreenAPI.Repositories
 
         public DetectionHistory GetDetectionHistory(int id)
         {
-            return _context.DetectionHistories.Where(s => s.DetectionHistoryId == id).FirstOrDefault(); ;
+            return _context.DetectionHistories.FirstOrDefault(s => s.DetectionHistoryId == id);
         }
 
         public ICollection<DetectionHistory> GetDetectionHistories(int accountId)

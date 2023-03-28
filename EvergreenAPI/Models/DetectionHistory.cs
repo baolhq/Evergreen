@@ -5,21 +5,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EvergreenAPI.Models
 {
-    public class DetectionHistory
+    public sealed class DetectionHistory
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DetectionHistoryId { get; set; }
-        [Required]
-        public string ImageName { get; set; } = string.Empty;
-        [Required]
-        public string ImageUrl { get; set; } = string.Empty;
-        [Required]
-        public DateTime Date { get; set; }
+
+        [Required] public string ImageName { get; init; } = string.Empty;
+        [Required] public string ImageUrl { get; init; } = string.Empty;
+        [Required] public DateTime Date { get; set; }
+
+        public bool IsExpertConfirmed { get; set; } = false;
+
+        public Disease DetectedDisease { get; set; }
 
         [Required]
         [ForeignKey(nameof(Account))]
-        public int AccountId { get; set; }
-        public virtual Account Account { get; set; }
+        public int AccountId { get; init; }
+
+        public Account Account { get; set; }
     }
 }

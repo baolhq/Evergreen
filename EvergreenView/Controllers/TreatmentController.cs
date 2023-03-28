@@ -7,36 +7,29 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using System.Data;
 using Microsoft.AspNetCore.Http;
-using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
-    
     public class TreatmentController : Controller
     {
-        private string ThumbnailApiUrl = "";
-        private string TreatmentApiUrl = "";
-        
-        private readonly HttpClient client = null;
-        private readonly IToastNotification _toastNotification;
+        private readonly string _thumbnailApiUrl;
+        private readonly string _treatmentApiUrl;
+        private readonly HttpClient _client;
 
-        public TreatmentController(IToastNotification toastNotification)
+        public TreatmentController()
         {
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-            TreatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
-            ThumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
-            _toastNotification = toastNotification;
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            _treatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
+            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()
         {
-            HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl);
-            
+            HttpResponseMessage response = await _client.GetAsync(_treatmentApiUrl);
+
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -47,24 +40,13 @@ namespace EvergreenView.Controllers
         }
 
 
-
-
-
-
-
-
         public async Task<ActionResult> Details(int id)
         {
-            
             var treatment = await GetTreatmentById(id);
             if (treatment == null)
                 return NotFound();
             return View(treatment);
         }
-
-
-
-
 
 
         public async Task<ActionResult> Create()
@@ -73,10 +55,10 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
-            
 
-            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
-            string strData1 = await responeImage.Content.ReadAsStringAsync();
+
+            HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
+            string strData1 = await responseImage.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -86,12 +68,6 @@ namespace EvergreenView.Controllers
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View();
         }
-
-
-
-
-
-
 
 
         [HttpPost]
@@ -104,20 +80,20 @@ namespace EvergreenView.Controllers
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string data = JsonSerializer.Serialize(treatment);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PostAsync(TreatmentApiUrl, content).Result;
+            HttpResponseMessage response = _client.PostAsync(_treatmentApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("AdminIndex");
             }
-            
 
-            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
-            string strData1 = await responeImage.Content.ReadAsStringAsync();
+
+            HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
+            string strData1 = await responseImage.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -129,19 +105,14 @@ namespace EvergreenView.Controllers
         }
 
 
-
-
-
-
-
-
         public async Task<ActionResult> Edit(int id)
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
-            HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl + "/" + id);
+
+            HttpResponseMessage response = await _client.GetAsync(_treatmentApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -149,10 +120,9 @@ namespace EvergreenView.Controllers
             };
             Treatment treatment = JsonSerializer.Deserialize<Treatment>(strData, options);
 
-            
 
-            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
-            string strData2 = await responeImage.Content.ReadAsStringAsync();
+            HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
+            string strData2 = await responseImage.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -162,10 +132,6 @@ namespace EvergreenView.Controllers
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View(treatment);
         }
-
-
-
-
 
 
         [HttpPost]
@@ -178,16 +144,14 @@ namespace EvergreenView.Controllers
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            string data = JsonSerializer.Serialize(treatment);
-            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PutAsync(TreatmentApiUrl + "/" + id, content).Result;
-            
+            var data = JsonSerializer.Serialize(treatment);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            var response = _client.PutAsync(_treatmentApiUrl + "/" + id, content).Result;
 
-            
 
-            response = await client.GetAsync(ThumbnailApiUrl);
+            response = await _client.GetAsync(_thumbnailApiUrl);
             string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -202,13 +166,9 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Update Successfully";
                 return RedirectToAction("AdminIndex");
             }
+
             return View();
         }
-
-
-
-
-
 
 
         public async Task<ActionResult> Delete(int id)
@@ -217,6 +177,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
             var treatment = await GetTreatmentById(id);
             if (treatment == null)
                 return NotFound();
@@ -234,21 +195,22 @@ namespace EvergreenView.Controllers
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var treatment = await GetTreatmentById(id);
-            HttpResponseMessage response = await client.DeleteAsync(TreatmentApiUrl + "/" + id);
+            HttpResponseMessage response = await _client.DeleteAsync(_treatmentApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
                 TempData["message"] = "Delete Successfully";
                 return RedirectToAction("AdminIndex");
             }
+
             return View(treatment);
         }
 
         private async Task<Treatment> GetTreatmentById(int id)
         {
-            HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl + "/" + id);
+            HttpResponseMessage response = await _client.GetAsync(_treatmentApiUrl + "/" + id);
             if (!response.IsSuccessStatusCode)
                 return null;
             string strData = await response.Content.ReadAsStringAsync();
@@ -260,18 +222,16 @@ namespace EvergreenView.Controllers
             return JsonSerializer.Deserialize<Treatment>(strData, options);
         }
 
-        
 
         public async Task SetViewData()
         {
-            
             var listImage = await GetImages();
             ViewData["Thumbnails"] = new SelectList(listImage, "ThumbnailId", "AltText");
         }
 
         public async Task<IEnumerable<Thumbnail>> GetImages()
         {
-            HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_treatmentApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -281,9 +241,6 @@ namespace EvergreenView.Controllers
             List<Thumbnail> listImage = JsonSerializer.Deserialize<List<Thumbnail>>(strData, options);
             return listImage;
         }
-
-
-
 
 
         public async Task<IActionResult> AdminIndex(string searchString)
@@ -302,14 +259,14 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response;
             if (query == null)
             {
-                response = await client.GetAsync(TreatmentApiUrl);
+                response = await _client.GetAsync(_treatmentApiUrl);
             }
             else
             {
-                response = await client.GetAsync(TreatmentApiUrl + query);
+                response = await _client.GetAsync(_treatmentApiUrl + query);
             }
 
-            
+
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -318,9 +275,6 @@ namespace EvergreenView.Controllers
             List<Treatment> treatments = JsonSerializer.Deserialize<List<Treatment>>(strData, options);
             return View(treatments);
         }
-
-
-
 
 
         public async Task<IActionResult> AdminDetails(int id)
@@ -334,7 +288,6 @@ namespace EvergreenView.Controllers
             if (treatment == null)
                 return NotFound();
             return View(treatment);
-
         }
     }
 }

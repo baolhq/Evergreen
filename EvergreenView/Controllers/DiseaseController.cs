@@ -2,50 +2,41 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
-using System.Data;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
-using NToastNotify;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Linq;
 
 namespace EvergreenView.Controllers
 {
     public class DiseaseController : Controller
     {
 
-        private string DiseaseApiUrl = "";
-        private string DiseaseCategoryApiUrl = "";
-        private string ThumbnailApiUrl = "";
-        private string MedicineApiUrl = "";
-        private string TreatmentApiUrl = "";
-        private readonly IToastNotification _toastNotification;
-        private readonly HttpClient client = null;
+        private readonly string _diseaseApiUrl;
+        private readonly string _diseaseCategoryApiUrl;
+        private readonly string _thumbnailApiUrl;
+        private readonly string _medicineApiUrl;
+        private readonly string _treatmentApiUrl;
+        private readonly HttpClient _client;
 
-        public DiseaseController(IToastNotification toastNotification)
+        public DiseaseController()
         {
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-            DiseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease";
-            DiseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
-            ThumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
-            MedicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine";
-            TreatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
-
-            _toastNotification = toastNotification;
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            _diseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease";
+            _diseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
+            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+            _medicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine";
+            _treatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
         }
 
         public async Task<IActionResult> Index()
         {
 
-            HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_diseaseApiUrl);
 
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -66,77 +57,56 @@ namespace EvergreenView.Controllers
             return View(disease);
         }
 
-
-
-
-
-
-
-
-
-
-
         public async Task<ActionResult> Create()
         {
             if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
-            HttpResponseMessage responeDiseaseCategory = await client.GetAsync(DiseaseCategoryApiUrl);
-            string strData = await responeDiseaseCategory.Content.ReadAsStringAsync();
+            var responseDiseaseCategory = await _client.GetAsync(_diseaseCategoryApiUrl);
+            var strData = await responseDiseaseCategory.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
-            List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
+            var listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
-            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
-            string strData1 = await responeImage.Content.ReadAsStringAsync();
+            var responseImage = await _client.GetAsync(_thumbnailApiUrl);
+            var strData1 = await responseImage.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
-            List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData1, options1);
+            var listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData1, options1);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
 
-            HttpResponseMessage responeMedicine = await client.GetAsync(MedicineApiUrl);
-            string strData2 = await responeMedicine.Content.ReadAsStringAsync();
+            var responseMedicine = await _client.GetAsync(_medicineApiUrl);
+            var strData2 = await responseMedicine.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
-            List<Medicine> listMedicine = JsonSerializer.Deserialize<List<Medicine>>(strData2, options2);
+            var listMedicine = JsonSerializer.Deserialize<List<Medicine>>(strData2, options2);
             ViewData["Medicines"] = new SelectList(listMedicine, "MedicineId", "Name");
 
 
-            HttpResponseMessage responeTreatment = await client.GetAsync(TreatmentApiUrl);
-            string strData3 = await responeTreatment.Content.ReadAsStringAsync();
+            var responseTreatment = await _client.GetAsync(_treatmentApiUrl);
+            var strData3 = await responseTreatment.Content.ReadAsStringAsync();
             var options3 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
-            List<Treatment> listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData3, options3);
+            var listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData3, options3);
             ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "Method");
 
             return View();
         }
-
-
-
-
-
-
-
-
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -148,18 +118,18 @@ namespace EvergreenView.Controllers
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string data = JsonSerializer.Serialize(disease);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PostAsync(DiseaseApiUrl, content).Result;
+            HttpResponseMessage response = _client.PostAsync(_diseaseApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("AdminIndex");
             }
-            HttpResponseMessage responeDiseaseCategory = await client.GetAsync(DiseaseCategoryApiUrl);
-            string strData = await responeDiseaseCategory.Content.ReadAsStringAsync();
+            HttpResponseMessage responseDiseaseCategory = await _client.GetAsync(_diseaseCategoryApiUrl);
+            string strData = await responseDiseaseCategory.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -168,8 +138,8 @@ namespace EvergreenView.Controllers
             List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
-            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
-            string strData1 = await responeImage.Content.ReadAsStringAsync();
+            HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
+            string strData1 = await responseImage.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -180,8 +150,8 @@ namespace EvergreenView.Controllers
 
 
 
-            HttpResponseMessage responeMedicine = await client.GetAsync(MedicineApiUrl);
-            string strData2 = await responeMedicine.Content.ReadAsStringAsync();
+            HttpResponseMessage responseMedicine = await _client.GetAsync(_medicineApiUrl);
+            string strData2 = await responseMedicine.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -192,8 +162,8 @@ namespace EvergreenView.Controllers
 
 
 
-            HttpResponseMessage responeTreatment = await client.GetAsync(TreatmentApiUrl);
-            string strData3 = await responeTreatment.Content.ReadAsStringAsync();
+            HttpResponseMessage responseTreatment = await _client.GetAsync(_treatmentApiUrl);
+            string strData3 = await responseTreatment.Content.ReadAsStringAsync();
             var options3 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -222,7 +192,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
-            HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl + "/" + id);
+            HttpResponseMessage response = await _client.GetAsync(_diseaseApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -230,8 +200,8 @@ namespace EvergreenView.Controllers
             };
             Disease disease = JsonSerializer.Deserialize<Disease>(strData, options);
 
-            HttpResponseMessage responeDiseaseCategory = await client.GetAsync(DiseaseCategoryApiUrl);
-            string strData1 = await responeDiseaseCategory.Content.ReadAsStringAsync();
+            HttpResponseMessage responseDiseaseCategory = await _client.GetAsync(_diseaseCategoryApiUrl);
+            string strData1 = await responseDiseaseCategory.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -240,8 +210,8 @@ namespace EvergreenView.Controllers
             List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData1, options1);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
-            HttpResponseMessage responeImage = await client.GetAsync(ThumbnailApiUrl);
-            string strData2 = await responeImage.Content.ReadAsStringAsync();
+            HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
+            string strData2 = await responseImage.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -251,8 +221,8 @@ namespace EvergreenView.Controllers
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
 
-            HttpResponseMessage responeMedicine = await client.GetAsync(MedicineApiUrl);
-            string strData3 = await responeMedicine.Content.ReadAsStringAsync();
+            HttpResponseMessage responseMedicine = await _client.GetAsync(_medicineApiUrl);
+            string strData3 = await responseMedicine.Content.ReadAsStringAsync();
             var options3 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -262,8 +232,8 @@ namespace EvergreenView.Controllers
             ViewData["Medicines"] = new SelectList(listMedicine, "MedicineId", "Name");
 
 
-            HttpResponseMessage responeTreatment = await client.GetAsync(TreatmentApiUrl);
-            string strData4 = await responeTreatment.Content.ReadAsStringAsync();
+            HttpResponseMessage responseTreatment = await _client.GetAsync(_treatmentApiUrl);
+            string strData4 = await responseTreatment.Content.ReadAsStringAsync();
             var options4 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -298,17 +268,15 @@ namespace EvergreenView.Controllers
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
 
-            string data = JsonSerializer.Serialize(disease);
-            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PutAsync(DiseaseApiUrl + "/" + id, content).Result;
-            
+            var data = JsonSerializer.Serialize(disease);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            var response = _client.PutAsync(_diseaseApiUrl + "/" + id, content).Result;
 
-
-            response = await client.GetAsync(DiseaseCategoryApiUrl);
+            response = await _client.GetAsync(_diseaseCategoryApiUrl);
             string strData1 = await response.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
@@ -318,11 +286,7 @@ namespace EvergreenView.Controllers
             List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData1, options1);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
-
-
-
-
-            response = await client.GetAsync(ThumbnailApiUrl);
+            response = await _client.GetAsync(_thumbnailApiUrl);
             string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -336,7 +300,7 @@ namespace EvergreenView.Controllers
 
 
 
-            response = await client.GetAsync(MedicineApiUrl);
+            response = await _client.GetAsync(_medicineApiUrl);
             string strData3 = await response.Content.ReadAsStringAsync();
             var options3 = new JsonSerializerOptions
             {
@@ -350,7 +314,7 @@ namespace EvergreenView.Controllers
 
 
 
-            response = await client.GetAsync(TreatmentApiUrl);
+            response = await _client.GetAsync(_treatmentApiUrl);
             string strData4 = await response.Content.ReadAsStringAsync();
             var options4 = new JsonSerializerOptions
             {
@@ -382,7 +346,7 @@ namespace EvergreenView.Controllers
 
         private async Task<Disease> GetDiseaseById(int id)
         {
-            HttpResponseMessage response = await client.GetAsync(DiseaseApiUrl + "/" + id);
+            HttpResponseMessage response = await _client.GetAsync(_diseaseApiUrl + "/" + id);
             if (!response.IsSuccessStatusCode)
                 return null;
             string strData = await response.Content.ReadAsStringAsync();
@@ -417,10 +381,10 @@ namespace EvergreenView.Controllers
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var disease = await GetDiseaseById(id);
-            HttpResponseMessage response = await client.DeleteAsync(DiseaseApiUrl + "/" + id);
+            HttpResponseMessage response = await _client.DeleteAsync(_diseaseApiUrl + "/" + id);
 
             if (response.IsSuccessStatusCode)
             {
@@ -433,7 +397,7 @@ namespace EvergreenView.Controllers
 
         public async Task<IEnumerable<DiseaseCategory>> GetDiseaseCategory()
         {
-            HttpResponseMessage response = await client.GetAsync(DiseaseCategoryApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_diseaseCategoryApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -447,7 +411,7 @@ namespace EvergreenView.Controllers
 
         public async Task<IEnumerable<Medicine>> GetMedicine()
         {
-            HttpResponseMessage response = await client.GetAsync(MedicineApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_medicineApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -462,7 +426,7 @@ namespace EvergreenView.Controllers
 
         public async Task<IEnumerable<Treatment>> GetTreatment()
         {
-            HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_treatmentApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -477,7 +441,7 @@ namespace EvergreenView.Controllers
 
         public async Task<IEnumerable<Thumbnail>> GetImages()
         {
-            HttpResponseMessage response = await client.GetAsync(ThumbnailApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_thumbnailApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -524,11 +488,11 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response;
             if (query == null)
             {
-                response = await client.GetAsync(DiseaseApiUrl);
+                response = await _client.GetAsync(_diseaseApiUrl);
             }
             else
             {
-                response = await client.GetAsync(DiseaseApiUrl + query);
+                response = await _client.GetAsync(_diseaseApiUrl + query);
             }
 
             string strData = await response.Content.ReadAsStringAsync();

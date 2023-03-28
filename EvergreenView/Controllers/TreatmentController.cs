@@ -22,10 +22,10 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
 
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-            TreatmentApiUrl = "https://localhost:44334/api/Treatment";
-            ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
-            _toastNotification = toastNotification;
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            _treatmentApiUrl = "https://localhost:44334/api/Treatment";
+            _thumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
+            
 
         }
 

@@ -9,10 +9,9 @@ namespace EvergreenAPI.DTO
     public class BlogDTO
     {
         public int BlogId { get; set; }
-        [Required]
-        [StringLength(190)]
+        
         public string Title { get; set; }
-        [Required]
+        
         public string Description { get; set; }
         [Required]
         [StringLength(10000)]

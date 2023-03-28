@@ -24,6 +24,10 @@ namespace EvergreenAPI.Controllers
             _mapper = mapper;
         }
 
+
+
+
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult GetTreatments()
@@ -35,6 +39,11 @@ namespace EvergreenAPI.Controllers
 
             return Ok(treatments);
         }
+
+
+
+
+
 
         [HttpGet("{TreatmentId}")]
         [AllowAnonymous]
@@ -51,6 +60,9 @@ namespace EvergreenAPI.Controllers
             return Ok(treatment);
         }
 
+
+
+
         [HttpPost]
         public IActionResult CreateTreatment([FromBody] TreatmentDTO treatmentCreate)
         {
@@ -58,7 +70,7 @@ namespace EvergreenAPI.Controllers
                 return BadRequest(ModelState);
 
             var plant = _treatmentRepository.GetTreatments()
-                .Where(c => c.Method.Trim().ToUpper() == treatmentCreate.Method.TrimEnd().ToUpper())
+                .Where(c => c.TreatmentName.Trim().ToUpper() == treatmentCreate.TreatmentName.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
             if (plant != null)
@@ -80,6 +92,9 @@ namespace EvergreenAPI.Controllers
 
             return Ok("Create Success");
         }
+
+
+
 
         [HttpPut("{TreatmentId}")]
         public IActionResult UpdateTreatment(int TreatmentId, [FromBody] TreatmentDTO updatedTreatment)
@@ -107,6 +122,11 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
+
+
+
+
+
         [HttpDelete("{TreatmentId}")]
         public IActionResult DeletePlantCategory(int TreatmentId)
         {
@@ -125,6 +145,8 @@ namespace EvergreenAPI.Controllers
             }
             return Ok("Delete Success");
         }
+
+
 
 
 

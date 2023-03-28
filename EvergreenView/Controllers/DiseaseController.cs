@@ -33,14 +33,16 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            DiseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease";
-            DiseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
-            ThumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
-            MedicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine";
-            TreatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
+            DiseaseApiUrl = "https://localhost:44334/api/Disease";
+            DiseaseCategoryApiUrl = "https://localhost:44334/api/DiseaseCategory";
+            ThumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
+            MedicineApiUrl = "https://localhost:44334/api/Medicine";
+            TreatmentApiUrl = "https://localhost:44334/api/Treatment";
 
             _toastNotification = toastNotification;
         }
+
+
 
         public async Task<IActionResult> Index()
         {
@@ -122,7 +124,7 @@ namespace EvergreenView.Controllers
             };
 
             List<Treatment> listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData3, options3);
-            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "Method");
+            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
 
             return View();
         }
@@ -200,7 +202,7 @@ namespace EvergreenView.Controllers
             };
 
             List<Treatment> listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData3, options3);
-            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "Method");
+            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
 
             return View();
         }
@@ -270,7 +272,7 @@ namespace EvergreenView.Controllers
             };
 
             List<Treatment> listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData4, options4);
-            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "Method");
+            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
 
 
             return View(disease);
@@ -358,7 +360,7 @@ namespace EvergreenView.Controllers
             };
 
             List<Treatment> listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData4, options4);
-            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "Method");
+            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
 
 
 
@@ -460,6 +462,8 @@ namespace EvergreenView.Controllers
 
 
 
+
+
         public async Task<IEnumerable<Treatment>> GetTreatment()
         {
             HttpResponseMessage response = await client.GetAsync(TreatmentApiUrl);
@@ -495,7 +499,7 @@ namespace EvergreenView.Controllers
         {
 
             var listTreatment = await GetTreatment();
-            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "Method");
+            ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
             var listMedicine = await GetMedicine();
             ViewData["Medicines"] = new SelectList(listMedicine, "MedicineId", "Name");
             var listDiseaseCategory = await GetDiseaseCategory();

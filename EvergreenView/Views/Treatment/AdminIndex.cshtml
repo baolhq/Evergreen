@@ -34,9 +34,11 @@
                 <thead>
                     <tr>
                         <th>
+                            @Html.DisplayNameFor(model => model.TreatmentName)
+                        </th>
+                        <th>
                             @Html.DisplayNameFor(model => model.Method)
                         </th>
-                        
                         <th hidden>
                             @Html.DisplayNameFor(model => model.Thumbnail)
                         </th>
@@ -48,9 +50,11 @@
                     {
                         <tr>
                             <td>
+                                @Html.DisplayFor(modelItem => item.TreatmentName)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.Method)
                             </td>
-                            
                             <td hidden>
                                 @Html.DisplayFor(modelItem => item.Thumbnail.Url)
                             </td>

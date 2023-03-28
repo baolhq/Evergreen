@@ -11,19 +11,19 @@ namespace EvergreenAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BlogId { get; set; }
         [Required]
-        [StringLength(190)]
         public string Title { get; set; }
         public string Description { get; set; }
         [Required]
         [StringLength(10000)]
         public string Content { get; set; }
-        [Required]
+
         public DateTime LastModifiedDate { get; set; }
         public int ViewCount { get; set; } = 0;
 
-        [ForeignKey("Thumbnails")]
+        
         [DisplayName("Image Description")]
         public int ThumbnailId { get; set; }
+        [ForeignKey("ThumbnailId")]
         public virtual Thumbnail Thumbnail { get; set; }
     }
 }

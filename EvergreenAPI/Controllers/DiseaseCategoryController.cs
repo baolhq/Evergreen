@@ -107,6 +107,8 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
+
+
         [HttpDelete("{DiseaseCategoryID}")]
         public IActionResult DeleteDiseaseCategory(int DiseaseCategoryID)
         {

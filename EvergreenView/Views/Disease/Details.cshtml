@@ -35,7 +35,7 @@
                     </div>
                     <div class="col-sm-12 pb-3">
                         <label for="exampleCity">Treatment :</label>
-                        <a asp-action="Details" asp-controller="Treatment" asp-route-id="@Model.TreatmentId">@Model.Treatment.Method</a>
+                        <a asp-action="Details" asp-controller="Treatment" asp-route-id="@Model.TreatmentId">@Model.Treatment.TreatmentName</a>
                     </div>
                     <div class="col-sm-12 pb-3">
                         <label for="exampleCity">Identification :</label>
@@ -50,7 +50,7 @@
         </div>
         <div class="card-footer">
             <div class="justify-content-between">
-                  <a asp-action="Index" class="btn btn-success px-5"> Back </a>
+                  <a asp-action="Index" class="btn btn-warning px-5"> All List of Diseases </a>
             </div>
         </div>
     </div>

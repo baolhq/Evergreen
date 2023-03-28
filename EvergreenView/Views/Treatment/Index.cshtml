@@ -17,8 +17,9 @@
                     <div class="card flex-md-row mb-4 box-shadow h-md-250">
                         <div class="card-body d-flex flex-column align-items-start">
                             <h4 class="mb-0">
-                                <a class="text-dark" href="#">@item.Method</a>
+                                <a class="text-dark" href="#">@item.TreatmentName</a>
                             </h4>
+                        <p class="card-text mb-auto text-ellipsis" style="max-width: 248px;">@item.Method</p>
                         <a class="btn btn-danger rounded" asp-action="Details" asp-route-id="@item.TreatmentId">Read More</a>
                         </div>
                         <div class="img-hover-zoom flex-auto d-none d-md-block card-img-right" style="width: 250px; height: 250px; border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;">

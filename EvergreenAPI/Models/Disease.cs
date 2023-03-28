@@ -12,10 +12,11 @@ namespace EvergreenAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DiseaseId { get; set; }
         [Required]
+        [DisplayName("Disease Name")]
         public string Name { get; set; }
-
+        
         public string Identification { get; set; }
-
+       
         public string Affect { get; set; }
 
 

@@ -149,12 +149,19 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var data = JsonSerializer.Serialize(treatment);
+
+			var treatmentId = await GetTreatmentById(id);
+			var data = JsonSerializer.Serialize(treatment);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            var response = _client.PutAsync(_treatmentApiUrl + "/" + id, content).Result;
+            HttpResponseMessage response = _client.PutAsync(_treatmentApiUrl + "/" + id, content).Result;
 
+			if (response.IsSuccessStatusCode)
+			{
+				TempData["message"] = "Update Successfully";
+				return RedirectToAction("AdminIndex");
+			}
 
-            response = await _client.GetAsync(_thumbnailApiUrl);
+			response = await _client.GetAsync(_thumbnailApiUrl);
             string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -164,14 +171,9 @@ namespace EvergreenView.Controllers
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["message"] = "Update Successfully";
-                return RedirectToAction("AdminIndex");
-            }
 
-            return View();
-        }
+            return View(treatmentId);
+		}
 
 
         public async Task<ActionResult> Delete(int id)

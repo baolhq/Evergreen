@@ -28,9 +28,9 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _medicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine";
-            _medicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
-            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+            _medicineApiUrl = "https://localhost:44334/api/Medicine";
+            _medicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory";
+            _thumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()

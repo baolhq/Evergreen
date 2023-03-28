@@ -1,13 +1,6 @@
 ﻿using EvergreenAPI.DTO;
-using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
-using EvergreenAPI.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System.Linq;
-using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace EvergreenAPI.Controllers

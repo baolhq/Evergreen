@@ -7,9 +7,8 @@
 }
 <h1 class="text-dark">Update Medicine</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4 text-dark">
-        <form asp-action="Edit" method="post">
+<div class="container">
+        <form asp-action="Edit" method="post" class="text-dark">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MedicineId" />
             <div class="form-group py-2">
@@ -36,7 +35,6 @@
                 <a asp-action="AdminIndex" class="btn btn-success">Back to List</a>
             </div>
         </form>
-    </div>
 </div>
 
 @section Scripts {

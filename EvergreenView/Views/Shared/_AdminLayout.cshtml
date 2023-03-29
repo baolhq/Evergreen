@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -53,14 +58,21 @@
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <span></span>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="Blogs">Blog</a>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="Disease">Disease</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="DiseaseCategory">Disease Category</a>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="Medicine">Medicine</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="MedicineCategory">Medicine Category</a>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="Treatment">Treatment</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Thumbnail">Thumbnail</a>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="User">User</a>
+                        @if (session.GetString("r") == "Admin")
+                        {
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Blogs">Blog</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Disease">Disease</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="DiseaseCategory">Disease Category</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Medicine">Medicine</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="MedicineCategory">Medicine Category</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Treatment">Treatment</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Thumbnail">Thumbnail</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="User">User</a>
+                        }
+                        else if(session.GetString("r") == "Professor")
+                        {
+                            <a class="collapse-item" asp-action="Index" asp-controller="ExpertConfirmation">Expert Confirm</a>
+                        }
                         <a class="collapse-item" asp-action="Logout" asp-controller="Authentication">Logout</a>
                     </div>
                 </div>

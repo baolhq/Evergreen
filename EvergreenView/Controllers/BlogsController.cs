@@ -137,15 +137,11 @@ namespace EvergreenView.Controllers
             {
                 PropertyNameCaseInsensitive = true
             };
-            Blog blog = JsonSerializer.Deserialize<Blog>(strData, options);
-            HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
-            string strData2 = await responseImage.Content.ReadAsStringAsync();
-            var options2 = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
+            var blog = JsonSerializer.Deserialize<Blog>(strData, options);
+            var responseImage = await _client.GetAsync(_thumbnailApiUrl);
+            var strData2 = await responseImage.Content.ReadAsStringAsync();
 
-            List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
+            var listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
             return View(blog);

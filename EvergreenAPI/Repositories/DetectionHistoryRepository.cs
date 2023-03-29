@@ -22,6 +22,11 @@ namespace EvergreenAPI.Repositories
         {
             return _context.DetectionHistories.Where(d => d.AccountId == accountId).ToList();
         }
+        
+        public ICollection<DetectionHistory> GetAll()
+        {
+            return _context.DetectionHistories.ToList();
+        }
 
         public bool Exist(int id) => _context.DetectionHistories.Any(f => f.DetectionHistoryId == id);
     }

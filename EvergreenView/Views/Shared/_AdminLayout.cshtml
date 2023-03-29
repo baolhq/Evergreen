@@ -9,7 +9,6 @@
 <head>
 
 
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -29,18 +28,19 @@
     <!-- Custom styles for this template-->
     <link href="~/AdminAssets/css/sb-admin-2.min.css" rel="stylesheet">
 
-    <link rel="icon" href="@Url.Content("~/images/favicon.png")" />
+    <link rel="icon" href="@Url.Content("~/images/favicon.png")"/>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
+<!-- Page Wrapper -->
+<div id="wrapper">
 
-        <!-- Sidebar -->
-        <div class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <!-- Sidebar -->
+    <div class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Admin" asp-action="Index">
@@ -96,34 +96,35 @@
         <!-- Scroll to Top Button-->
         <a class="scroll-to-top rounded" href="#page-top">
             <i class="fas fa-angle-up"></i>
-        </a>
 
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" asp-action="Logout" asp-controller="Authentication">Logout</a>
-                    </div>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" asp-action="Logout" asp-controller="Authentication">Logout</a>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <script src="~/js/jquery-3.2.1.min.js"></script>
-    <script src="~/AdminAssets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/AdminAssets/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="~/AdminAssets/js/sb-admin-2.min.js"></script>
+</div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+<script src="~/js/jquery-3.2.1.min.js"></script>
+<script src="~/AdminAssets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/AdminAssets/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="~/AdminAssets/js/sb-admin-2.min.js"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

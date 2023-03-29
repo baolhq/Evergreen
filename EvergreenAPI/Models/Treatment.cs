@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,6 +12,9 @@ namespace EvergreenAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TreatmentId { get; set; }
         [Required]
+        [DisplayName("Treatment Name")]
+        public string TreatmentName { get; set; }
+        
         public string Method { get; set; }
      
         

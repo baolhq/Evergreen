@@ -1,13 +1,8 @@
-﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
-@model IEnumerable<EvergreenAPI.Models.Blog>
+﻿@model IEnumerable<EvergreenAPI.Models.Blog>
 
 @{  
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Blog";
 }
 
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">

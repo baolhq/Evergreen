@@ -6,46 +6,42 @@ using EvergreenAPI.Models;
 using System.Text;
 using System.Net.Http.Json;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.AspNetCore.Authorization;
-using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
-
     public class AuthenticationController : Controller
     {
-        private string AuthApiUrl = "";
-        private readonly HttpClient client;
+        private readonly string _authApiUrl;
+        private readonly HttpClient _client;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IToastNotification _toastNotification;
 
-
-        public AuthenticationController(IHttpContextAccessor httpContextAccessor, IToastNotification toastNotification)
+        public AuthenticationController(IHttpContextAccessor httpContextAccessor)
         {
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-            AuthApiUrl = "https://evergreen-api.onrender.com/api/auth";
-            _toastNotification = toastNotification;
-
-
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            _authApiUrl = "https://evergreen-api.onrender.com/api/auth";
             _httpContextAccessor = httpContextAccessor;
         }
-        public ISession session { get { return _httpContextAccessor.HttpContext.Session; } }
+
+        private ISession Session
+        {
+            get { return _httpContextAccessor.HttpContext?.Session; }
+        }
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()
         {
-            if (!string.IsNullOrWhiteSpace(session.GetString("t")))
+            if (!string.IsNullOrWhiteSpace(Session.GetString("t")))
             {
                 return RedirectToAction("Index", "Home");
             }
+
             return View();
         }
 
@@ -53,39 +49,30 @@ namespace EvergreenView.Controllers
         public async Task<IActionResult> Login(LoginDTO account)
         {
             if (ModelState.IsValid)
-            { 
+            {
+                if (account == null) return View();
 
-            if (account == null) return View();
-
-            string data = System.Text.Json.JsonSerializer.Serialize(account);
-            var content = new StringContent(data, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"{AuthApiUrl}/login", content);
-            string strData = await response.Content.ReadAsStringAsync();
+                string data = JsonSerializer.Serialize(account);
+                var content = new StringContent(data, Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync($"{_authApiUrl}/login", content);
+                await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
                     TempData["error"] = "Cannot Log-In!";
                     return RedirectToAction("Login", "Authentication");
                 }
-                else
-                {
-                    var body = await response.Content.ReadFromJsonAsync<Account>();
 
-                    HttpContext.Session.SetString("n", body.Email);
-                    HttpContext.Session.SetString("r", body.Role);
-                    HttpContext.Session.SetString("t", body.Token);
-                    HttpContext.Session.SetString("i", body.AccountId.ToString());
-                    HttpContext.Session.SetString("a", body.AvatarUrl.ToString());
+                var body = await response.Content.ReadFromJsonAsync<Account>();
 
-                    if (HttpContext.Session.GetString("r") == "Admin")
-                    {
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
+                HttpContext.Session.SetString("n", body.Email);
+                HttpContext.Session.SetString("r", body.Role);
+                HttpContext.Session.SetString("t", body.Token);
+                HttpContext.Session.SetString("i", body.AccountId.ToString());
+                HttpContext.Session.SetString("a", body.AvatarUrl);
+
+                return RedirectToAction("Index", HttpContext.Session.GetString("r") == "Admin" ? "Admin" : "Home");
             }
+
             TempData["error"] = "Your Email or Password is wrong!";
             return View("Login", account);
         }
@@ -93,7 +80,7 @@ namespace EvergreenView.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
-            session.Clear();
+            Session.Clear();
             return RedirectToAction("Login", "Authentication");
         }
 
@@ -101,10 +88,11 @@ namespace EvergreenView.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
-            if (!string.IsNullOrWhiteSpace(session.GetString("t")))
+            if (!string.IsNullOrWhiteSpace(Session.GetString("t")))
             {
                 return RedirectToAction("Index", "Home");
             }
+
             return View();
         }
 
@@ -116,22 +104,20 @@ namespace EvergreenView.Controllers
             {
                 if (account == null) return View();
 
-                string data = System.Text.Json.JsonSerializer.Serialize(account);
+                string data = JsonSerializer.Serialize(account);
                 var content = new StringContent(data, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{AuthApiUrl}/register", content);
+                var response = await _client.PostAsync($"{_authApiUrl}/register", content);
                 if (!response.IsSuccessStatusCode)
                 {
-
                     TempData["error"] = "Cannot Register!";
-
                 }
-                else 
+                else
                 {
                     TempData["message"] = "Register success, please visit your email to verify your account!!";
-                    return RedirectToAction("VerifyAccount", "Authentication", new {email = account.Email});
+                    return RedirectToAction("VerifyAccount", "Authentication", new { email = account.Email });
                 }
-
             }
+
             return View("Register", account);
         }
 
@@ -139,26 +125,25 @@ namespace EvergreenView.Controllers
         [HttpGet]
         public ActionResult VerifyAccount(string email)
         {
-            var verifyaccountDTO = new VerifyAccountDTO()
+            var verifyAccountDto = new VerifyAccountDTO()
             {
                 Email = email
             };
-            return View(verifyaccountDTO);
+            return View(verifyAccountDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult> VerifyAccount(VerifyAccountDTO verifyAccountDTO)
+        public async Task<ActionResult> VerifyAccount(VerifyAccountDTO verifyAccountDto)
         {
-            var token = verifyAccountDTO.Token;
+            var token = verifyAccountDto.Token;
             if (ModelState.IsValid)
             {
-                string content = System.Text.Json.JsonSerializer.Serialize(token);
+                string content = JsonSerializer.Serialize(token);
                 var data = new StringContent(content, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{AuthApiUrl}/verify?token={token}", data);
+                var response = await _client.PostAsync($"{_authApiUrl}/verify?token={token}", data);
                 if (!response.IsSuccessStatusCode)
                 {
                     TempData["error"] = "Cannot Send Request!";
-
                 }
                 else
                 {
@@ -166,8 +151,8 @@ namespace EvergreenView.Controllers
                     return RedirectToAction("Login", "Authentication");
                 }
             }
-            return View(verifyAccountDTO);
 
+            return View(verifyAccountDto);
         }
 
         [HttpGet]
@@ -182,14 +167,12 @@ namespace EvergreenView.Controllers
         {
             if (ModelState.IsValid)
             {
-                string data = System.Text.Json.JsonSerializer.Serialize(email);
+                string data = JsonSerializer.Serialize(email);
                 var content = new StringContent(data, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{AuthApiUrl}/forgot-password?email={email}", content);
+                var response = await _client.PostAsync($"{_authApiUrl}/forgot-password?email={email}", content);
                 if (!response.IsSuccessStatusCode)
                 {
-
                     TempData["error"] = "Cannot Send Request!";
-
                 }
                 else
                 {
@@ -198,56 +181,48 @@ namespace EvergreenView.Controllers
                     {
                         PropertyNameCaseInsensitive = true,
                     };
-                    string TokenToResetPassword = System.Text.Json.JsonSerializer.Deserialize<string>(strData, options);
-
+                    JsonSerializer.Deserialize<string>(strData, options);
                     TempData["message"] = "Please visit your email to reset password!";
                     return RedirectToAction("ResetPassword", "Authentication");
                 }
             }
+
             return View();
         }
 
 
-
-       
-
-
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult ResetPassword(string TokenResetPassword)
+        public ActionResult ResetPassword(string tokenResetPassword)
         {
-            var resetPasswordDTO = new ResetPasswordDTO()
+            var resetPasswordDto = new ResetPasswordDTO()
             {
-                Token = TokenResetPassword
+                Token = tokenResetPassword
             };
-            return View(resetPasswordDTO);
+            return View(resetPasswordDto);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> ResetPassword(ResetPasswordDTO resetPasswordDTO)
+        public async Task<ActionResult> ResetPassword(ResetPasswordDTO resetPasswordDto)
         {
             if (ModelState.IsValid)
             {
-
-                string content = System.Text.Json.JsonSerializer.Serialize(resetPasswordDTO);
+                string content = JsonSerializer.Serialize(resetPasswordDto);
                 var data = new StringContent(content, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{AuthApiUrl}/reset-password", data);
+                var response = await _client.PostAsync($"{_authApiUrl}/reset-password", data);
                 if (!response.IsSuccessStatusCode)
                 {
-
                     TempData["error"] = "Cannot Reset Password!";
-
                 }
                 else
                 {
-                    TempData["message"] = "Your Password Reseted Successfully!";
+                    TempData["message"] = "Your password has been reset successfully!";
                     return RedirectToAction("Login", "Authentication");
                 }
             }
-            
-            return View(resetPasswordDTO);
+
+            return View(resetPasswordDto);
         }
-         
     }
 }

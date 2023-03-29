@@ -2,7 +2,6 @@
 using EvergreenAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -13,28 +12,26 @@ namespace EvergreenView.Controllers
 {
     public class ImageDetectionController : Controller
     {
-        private readonly HttpClient client = null;
-        private string DetectionApiUrl = "";
-        private readonly IConfiguration _config;
+        private readonly HttpClient _client;
+        private readonly string _detectionApiUrl;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public ImageDetectionController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public ImageDetectionController(IHttpContextAccessor httpContextAccessor)
         {
-
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
 
-            DetectionApiUrl = "https://evergreen-api.onrender.com/api/DetectionHistory";
-            _config = configuration;
+            _detectionApiUrl = "https://evergreen-api.onrender.com/api/DetectionHistory";
             _httpContextAccessor = httpContextAccessor;
         }
-        public ISession session
+
+        private ISession Session
         {
             get
             {
-                return _httpContextAccessor.HttpContext.Session;
+                return _httpContextAccessor.HttpContext?.Session;
             }
         }
 
@@ -43,8 +40,8 @@ namespace EvergreenView.Controllers
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("r")))
                 return RedirectToAction("Login", "Authentication");
 
-            var query = "/" + session.GetString("i");
-            var response = await client.GetAsync(DetectionApiUrl + query);
+            var query = "/" + Session.GetString("i");
+            var response = await _client.GetAsync(_detectionApiUrl + query);
             var strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -63,7 +60,7 @@ namespace EvergreenView.Controllers
             //    return RedirectToAction("Login", "Authentication");
 
             var query = "/Details/" + id;
-            var response = await client.GetAsync(DetectionApiUrl + query);
+            var response = await _client.GetAsync(_detectionApiUrl + query);
             var strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

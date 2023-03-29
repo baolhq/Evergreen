@@ -1,15 +1,7 @@
-﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
-
 
 
     <meta charset="utf-8">
@@ -31,104 +23,95 @@
     <!-- Custom styles for this template-->
     <link href="~/AdminAssets/css/sb-admin-2.min.css" rel="stylesheet">
 
-    <link rel="icon" href="@Url.Content("~/images/favicon.png")" />
+    <link rel="icon" href="@Url.Content("~/images/favicon.png")"/>
 
-    @RenderSection("Styles", required: false)
-
-    <style>
-        .text-ellipsis {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-        }
-    </style>
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
+<!-- Page Wrapper -->
+<div id="wrapper">
 
-        <!-- Sidebar -->
-        <div class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <!-- Sidebar -->
+    <div class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Admin" asp-action="Index">
-                <div class="sidebar-brand-text mx-3">Admin Dashboard</div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Heading -->
-            <div class="sidebar-heading"></div>
-            <br />
-            <div class="nav-item">
-                <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
-                     data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <span></span>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="Blogs">Blog</a>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="Disease">Disease</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="DiseaseCategory">Disease Category</a>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="Medicine">Medicine</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="MedicineCategory">Medicine Category</a>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="Treatment">Treatment</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Thumbnail">Thumbnail</a>
-                        <a class="collapse-item" asp-action="AdminIndex" asp-controller="User">User</a>
-                        <a class="collapse-item" asp-action="Logout" asp-controller="Authentication">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End of Sidebar -->
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column pt-3">
-
-            <!-- Main Content -->
-            <div id="content">
-                <main class="px-5">
-                    @RenderBody()
-                </main>
-
-            </div>
-            <!-- End of Content Wrapper -->
-
-        </div>
-        <!-- End of Page Wrapper -->
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Admin" asp-action="Index">
+            <div class="sidebar-brand-text mx-3">Admin Dashboard</div>
         </a>
 
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" asp-action="Logout" asp-controller="Authen   tication">Logout</a>
-                    </div>
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Heading -->
+        <div class="sidebar-heading"></div>
+        <br/>
+        <div class="nav-item">
+            <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <span></span>
+                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="Blogs">Blog</a>
+                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="Disease">Disease</a>
+                    <a class="collapse-item" asp-action="Index" asp-controller="DiseaseCategory">Disease Category</a>
+                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="Medicine">Medicine</a>
+                    <a class="collapse-item" asp-action="Index" asp-controller="MedicineCategory">Medicine Category</a>
+                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="Treatment">Treatment</a>
+                    <a class="collapse-item" asp-action="Index" asp-controller="Thumbnail">Thumbnail</a>
+                    <a class="collapse-item" asp-action="Index" asp-controller="ExpertConfirmation">Expert Confirmation</a>
+                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="User">User</a>
+                    <a class="collapse-item" asp-action="Logout" asp-controller="Authentication">Logout</a>
                 </div>
             </div>
         </div>
+    </div>
+    <!-- End of Sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column pt-3">
+
+        <!-- Main Content -->
+        <div id="content">
+            <main class="px-5">
+                @RenderBody()
+            </main>
+
+        </div>
+        <!-- End of Content Wrapper -->
 
     </div>
+    <!-- End of Page Wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
 
-    <script src="~/js/jquery-3.2.1.min.js"></script>
-    <script src="~/AdminAssets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/AdminAssets/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="~/AdminAssets/js/sb-admin-2.min.js"></script>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" asp-action="Logout" asp-controller="Authentication">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+</div>
+
+<script src="~/js/jquery-3.2.1.min.js"></script>
+<script src="~/AdminAssets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/AdminAssets/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="~/AdminAssets/js/sb-admin-2.min.js"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

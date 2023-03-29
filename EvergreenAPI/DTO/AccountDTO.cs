@@ -41,9 +41,7 @@ namespace EvergreenAPI.DTO
         [StringLength(11, MinimumLength = 10)]
         public string PhoneNumber { get; set; }
         public bool Status { get; set; } = true;
-        /*public DateTime? VerifiedAt { get; set; }
-        public byte[] PasswordHash { get; set; } = new byte[32];
-        public byte[] PasswordSalt { get; set; } = new byte[32];*/
+        
 
     }
 }

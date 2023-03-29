@@ -29,7 +29,7 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            DiseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
+            DiseaseCategoryApiUrl = "https://localhost:44334/api/DiseaseCategory";
             _config = configuration;
             _httpContextAccessor = httpContextAccessor;
             _toastNotification = toastNotification;
@@ -154,6 +154,8 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+
+            var diseaseCat = GetDiseaseCategoryById(id);
             string data = JsonSerializer.Serialize(diseaseCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(DiseaseCategoryApiUrl + "/" + id, content).Result;
@@ -162,12 +164,8 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Update Successfully";
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(diseaseCat);
         }
-
-
-
-
 
         private async Task<DiseaseCategory> GetDiseaseCategoryById(int id)
         {

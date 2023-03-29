@@ -1,15 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
+@inject IHttpContextAccessor HttpContentAccessor
+@inject IHttpContextAccessor HttpContextAccessor
 @{
-    var session = httpContentAccessor.HttpContext.Session;
+    var session = HttpContentAccessor.HttpContext?.Session;
 }
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-
-    <title>@ViewData["Title"] - EvergreenView</title>
+    <title>@ViewData["Title"] - Evergreen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -43,7 +41,7 @@
 
     <link rel="icon" href="@Url.Content("~/images/favicon.png")" />
 
-    @RenderSection("Styles", required: false)
+    @await RenderSectionAsync("Styles", required: false)
 
 
     <style>
@@ -102,28 +100,28 @@
                 <div class="collapse navbar-collapse" id="ftco-nav">
                     <ul class="navbar-nav ml-auto align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Blogs" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Blogs" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Disease" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Disease" asp-action="Index">Disease</a>
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Disease" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Disease" asp-action="Index">Disease</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Medicine" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Medicine" asp-action="Index">Medicine</a>
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Medicine" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Medicine" asp-action="Index">Medicine</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Treatment" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Treatment" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/ImageDetection" ? "text-danger" : "text-dark")" asp-area="" asp-controller="ImageDetection" asp-action="Index">Detect</a>
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/ImageDetection" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="ImageDetection" asp-action="Index">Detect</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Service" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Service" asp-action="Index">Service</a>
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Service" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Service" asp-action="Index">Service</a>
                         </li>
 
                         @if (session.GetString("n") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/User" ? "text-danger" : "text-dark")" asp-area="" asp-controller="User" asp-action="Details" asp-route-id="@session.GetString("i")">
+                                <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/User" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="User" asp-action="Details" asp-route-id="@session.GetString("i")">
                                     <img class="avatar" src="@session.GetString("a")" alt="Profile" />
                                 </a>
                             </li>
@@ -132,10 +130,10 @@
                         {
 
                             <li class="nav-item">
-                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Login" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Login">Login</a>
+                                <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Authentication/Login" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @(httpContextAccessor.HttpContext.Request.Path.Value == "/Authentication/Register" ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Register">Register</a>
+                                <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Authentication/Register" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Authentication" asp-action="Register">Register</a>
                             </li>
 
                         }

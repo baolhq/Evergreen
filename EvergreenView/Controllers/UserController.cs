@@ -1,7 +1,5 @@
-﻿using AutoMapper.Execution;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Net.Http;
@@ -9,31 +7,23 @@ using System.Text.Json;
 using System.Text;
 using System.Threading.Tasks;
 using EvergreenAPI.Models;
-using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using System;
 using EvergreenAPI.DTO;
-using System.Net.Http.Json;
-using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
     public class UserController : Controller
     {
-        private readonly HttpClient client;
-        private string UserApiUrl = "";
-        private readonly IToastNotification _toastNotification;
+        private readonly HttpClient _client;
+        private readonly string _userApiUrl;
 
-
-        public UserController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IToastNotification toastNotification)
+        public UserController()
         {
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-
-            UserApiUrl = "https://evergreen-api.onrender.com/api/User";
-            _toastNotification = toastNotification;
-
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            _userApiUrl = "https://evergreen-api.onrender.com/api/User";
         }
 
         public async Task<ActionResult> AdminDetails(int id)
@@ -50,17 +40,12 @@ namespace EvergreenView.Controllers
             }
 
             token = token.Replace("\"", string.Empty);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync($"{UserApiUrl}/{id}");
+            var response = await _client.GetAsync($"{_userApiUrl}/{id}");
             string strData = await response.Content.ReadAsStringAsync();
 
             var temp = JObject.Parse(strData);
-
-            if (temp == null)
-            {
-                return View("Not Found");
-            }
 
             var user = new Account()
             {
@@ -71,14 +56,9 @@ namespace EvergreenView.Controllers
                 FullName = (string)temp["fullName"],
                 Role = (string)temp["role"],
                 AvatarUrl = (string)temp["avatarUrl"],
-                VerifiedAt = DateTime.Parse((string)temp["verifiedAt"]),
+                VerifiedAt = DateTime.Parse((string)temp["verifiedAt"] ?? string.Empty),
                 Professions = (string)temp["professions"]
             };
-
-            if (user == null)
-            {
-                return NotFound();
-            }
 
             return View(user);
         }
@@ -100,17 +80,12 @@ namespace EvergreenView.Controllers
             }
 
             token = token.Replace("\"", string.Empty);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync($"{UserApiUrl}/{id}");
+            var response = await _client.GetAsync($"{_userApiUrl}/{id}");
             string strData = await response.Content.ReadAsStringAsync();
 
             var temp = JObject.Parse(strData);
-
-            if (temp == null)
-            {
-                return View("Not Found");
-            }
 
             var user = new Account()
             {
@@ -120,7 +95,7 @@ namespace EvergreenView.Controllers
                 PhoneNumber = (string)temp["phoneNumber"],
                 FullName = (string)temp["fullName"],
                 AvatarUrl = (string)temp["avatarUrl"],
-                VerifiedAt = DateTime.Parse((string)temp["verifiedAt"]),
+                VerifiedAt = DateTime.Parse((string)temp["verifiedAt"] ?? string.Empty),
                 Professions = (string)temp["professions"],
                 Bio = (string)temp["bio"],
             };
@@ -137,17 +112,12 @@ namespace EvergreenView.Controllers
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync($"{UserApiUrl}/({id})");
+            var response = await _client.GetAsync($"{_userApiUrl}/({id})");
             string strData = await response.Content.ReadAsStringAsync();
 
             var temp = JObject.Parse(strData);
-
-            if (temp == null)
-            {
-                return View("Not Found");
-            }
 
 
             var user = new Account()
@@ -157,11 +127,6 @@ namespace EvergreenView.Controllers
                 PhoneNumber = (string)temp["phoneNumber"],
                 Professions = (string)temp["professions"]
             };
-
-            if (user == null)
-            {
-                return NotFound();
-            }
 
             return View(user);
         }
@@ -176,7 +141,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index", "Home");
             }
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var userEdit = new Account()
             {
@@ -191,7 +156,7 @@ namespace EvergreenView.Controllers
             };
             var userToEdit = JsonSerializer.Serialize(userEdit);
             var content = new StringContent(userToEdit, Encoding.UTF8, "application/json");
-            var response = await client.PutAsync(UserApiUrl + "/" + userEdit.AccountId, content);
+            var response = await _client.PutAsync(_userApiUrl + "/" + userEdit.AccountId, content);
             if (!response.IsSuccessStatusCode)
             {
 
@@ -211,17 +176,12 @@ namespace EvergreenView.Controllers
             if (string.IsNullOrEmpty(token)) return RedirectToAction("Index", "Home");
 
             token = token.Replace("\"", string.Empty);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync($"{UserApiUrl}/{id}");
+            var response = await _client.GetAsync($"{_userApiUrl}/{id}");
             string strData = await response.Content.ReadAsStringAsync();
 
             var temp = JObject.Parse(strData);
-
-            if (temp == null)
-            {
-                return View("Not Found");
-            }
 
             var user = new Account()
             {
@@ -231,7 +191,7 @@ namespace EvergreenView.Controllers
                 PhoneNumber = (string)temp["phoneNumber"],
                 FullName = (string)temp["fullName"],
                 AvatarUrl = (string)temp["avatarUrl"],
-                VerifiedAt = DateTime.Parse((string)temp["verifiedAt"]),
+                VerifiedAt = DateTime.Parse((string)temp["verifiedAt"] ?? string.Empty),
                 Professions = (string)temp["professions"],
                 Bio = (string)temp["bio"],
             };
@@ -248,7 +208,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index", "Home");
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var userEdit = new AccountUpdateDTO()
             {
@@ -262,7 +222,7 @@ namespace EvergreenView.Controllers
             };
             var userToEdit = JsonSerializer.Serialize(userEdit);
             var content = new StringContent(userToEdit, Encoding.UTF8, "application/json");
-            var response = await client.PutAsync(UserApiUrl + "/" + id, content);
+            var response = await _client.PutAsync(_userApiUrl + "/" + id, content);
             if (!response.IsSuccessStatusCode)
             {
                 return View(user);
@@ -293,7 +253,7 @@ namespace EvergreenView.Controllers
             }
 
             token = token.Replace("\"", string.Empty);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string query = null;
             if (searchString != null)
@@ -303,11 +263,11 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response;
             if (query == null)
             {
-                response = await client.GetAsync(UserApiUrl);
+                response = await _client.GetAsync(_userApiUrl);
             }
             else
             {
-                response = await client.GetAsync(UserApiUrl + query);
+                response = await _client.GetAsync(_userApiUrl + query);
             }
 
 
@@ -333,7 +293,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index", "Home");
             }
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var formUser = new UserDTO()
             {
@@ -348,7 +308,7 @@ namespace EvergreenView.Controllers
             };
             var newUser = JsonSerializer.Serialize(formUser);
             var content = new StringContent(newUser, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(UserApiUrl, content);
+            var response = await _client.PostAsync(_userApiUrl, content);
             if (!response.IsSuccessStatusCode)
             {
                 return View(account);
@@ -367,10 +327,10 @@ namespace EvergreenView.Controllers
             }
 
             token = token.Replace("\"", string.Empty);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             // Get users
-            HttpResponseMessage response = await client.GetAsync(UserApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_userApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -392,10 +352,10 @@ namespace EvergreenView.Controllers
             }
 
             token = token.Replace("\"", string.Empty);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             // Get users
-            HttpResponseMessage response = await client.GetAsync(UserApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_userApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

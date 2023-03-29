@@ -51,5 +51,10 @@ namespace EvergreenAPI.Repositories
             _context.Update(medicineCategory);
             return Save();
         }
+
+        public List<string> GetMedicineCategoryName()
+        {
+            return _context.MedicineCategories.Select(s => s.Name).ToList();
+        }
     }
 }

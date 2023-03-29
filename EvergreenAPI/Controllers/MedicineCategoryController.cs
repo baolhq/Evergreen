@@ -125,5 +125,12 @@ namespace EvergreenAPI.Controllers
             }
             return Ok("Delete Success");
         }
+
+       [HttpGet("GetMedicineCategoryName")]
+       public List<string> GetMedicineCategoryName()
+        {   
+
+            return _medicineCategoryRepository.GetMedicineCategoryName();
+        }
     }
 }

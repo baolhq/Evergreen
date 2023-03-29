@@ -28,9 +28,9 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _medicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine";
-            _medicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
-            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+            _medicineApiUrl = "https://localhost:44334/api/Medicine";
+            _medicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory";
+            _thumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()
@@ -226,12 +226,20 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var data = JsonSerializer.Serialize(medicine);
-            var content = new StringContent(data, Encoding.UTF8, "application/json");
-            var response = _client.PutAsync(_medicineApiUrl + "/" + id, content).Result;
-            
 
-            response = await _client.GetAsync(_medicineCategoryApiUrl);
+
+			var medicineId = await GetMedicineById(id);
+			var data = JsonSerializer.Serialize(medicine);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = _client.PutAsync(_medicineApiUrl + "/" + id, content).Result;
+
+			if (response.IsSuccessStatusCode)
+			{
+				TempData["message"] = "Update Successfully";
+				return RedirectToAction("AdminIndex");
+			}
+
+			response = await _client.GetAsync(_medicineCategoryApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -251,12 +259,8 @@ namespace EvergreenView.Controllers
             var listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
-            if (!response.IsSuccessStatusCode)
-            {
-                return View();
-            }
-            TempData["message"] = "Update Successfully";
-            return RedirectToAction("AdminIndex");
+            return View(medicineId);
+           
         }
 
         public async Task<ActionResult> Delete(int id)

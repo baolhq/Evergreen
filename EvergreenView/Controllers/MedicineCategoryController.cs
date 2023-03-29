@@ -22,7 +22,7 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _medicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
+            _medicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory";
         }
 
         public async Task<IActionResult> Index()
@@ -110,6 +110,8 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+
+            var mediCat = GetMedicineCategoryById(id);
             string data = JsonSerializer.Serialize(medicineCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = _client.PutAsync(_medicineCategoryApiUrl + "/" + id, content).Result;
@@ -118,7 +120,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Update Successfully";
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(mediCat);
         }
 
         private async Task<MedicineCategory> GetMedicineCategoryById(int id)

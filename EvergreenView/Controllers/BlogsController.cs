@@ -165,11 +165,20 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var data = JsonSerializer.Serialize(blog);
-            var content = new StringContent(data, Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync(_blogApiUrl + "/" + id, content);
 
-            response = await _client.GetAsync(_thumbnailApiUrl);
+			var blogId = await GetBlogById(id);
+			var data = JsonSerializer.Serialize(blog);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+			HttpResponseMessage response = await _client.PutAsync(_blogApiUrl + "/" + id, content);
+
+
+			if (response.IsSuccessStatusCode)
+			{
+				TempData["message"] = "Update Successfully";
+				return RedirectToAction("AdminIndex");
+			}
+
+			response = await _client.GetAsync(_thumbnailApiUrl);
             string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -179,13 +188,9 @@ namespace EvergreenView.Controllers
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["message"] = "Update Successfully";
-                return RedirectToAction("AdminIndex");
-            }
-            return View();
-        }
+
+            return View(blogId);
+		}
 
         public async Task<ActionResult> Delete(int id)
         {

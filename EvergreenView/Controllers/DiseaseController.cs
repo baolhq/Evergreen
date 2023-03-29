@@ -272,12 +272,18 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-
-            var data = JsonSerializer.Serialize(disease);
+			var diseaseId = await GetDiseaseById(id);
+			var data = JsonSerializer.Serialize(disease);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            var response = _client.PutAsync(_diseaseApiUrl + "/" + id, content).Result;
+			HttpResponseMessage response = _client.PutAsync(_diseaseApiUrl + "/" + id, content).Result;
 
-            response = await _client.GetAsync(_diseaseCategoryApiUrl);
+			if (response.IsSuccessStatusCode)
+			{
+				TempData["message"] = "Update Successfully";
+				return RedirectToAction("AdminIndex");
+			}
+
+			response = await _client.GetAsync(_diseaseCategoryApiUrl);
             string strData1 = await response.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
@@ -326,18 +332,9 @@ namespace EvergreenView.Controllers
             ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
 
 
+            return View(diseaseId);
 
-
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["message"] = "Update Successfully";
-                return RedirectToAction("AdminIndex");
-            }
-
-            return View();
-
-
-        }
+		}
 
 
 

@@ -1,18 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Http;
-@inject IHttpContextAccessor httpContentAccessor
+@inject IHttpContextAccessor HttpContentAccessor
 @{
-    var session = httpContentAccessor.HttpContext.Session;
+    var session = HttpContentAccessor.HttpContext?.Session;
     ViewData["Title"] = "Disease detection";
 }
 
 @section Styles {
     <style>
         .wrapper {
-            margin: auto;
             max-width: 640px;
             padding-top: 60px;
             text-align: center;
-            margin-bottom: 3em;
+            margin: auto auto 3em;
         }
 
         .browse-container {
@@ -132,13 +131,7 @@
                 cursor: pointer;
                 transition: opacity 0.2s ease;
             }
-
-        .file-name {
-            letter-spacing: 0.4px;
-            -webkit-line-clamp: 1 !important;
-            text-align: left;
-        }
-    </style>
+        </style>
 }
 
 <div class="wrapper">
@@ -166,12 +159,13 @@
 
 <div class="container ftco-animate">
     <h3 class="text-center title">History</h3>
-    <p class='text-center' id="blank-history">There's currently no files in your history, please try detect one.</p>
+    <p class="text-center" id="blank-history">There's currently no files in your history, please try detect one.</p>
     <div class="mb-2 list-group-title" id="histories">
         <a class="item-link" href="#">
             <div class="d-flex justify-content-between" title="Click to view details">
                 <span class="img-name w-25">Image name</span>
-                <span class="disease-name w-50">Detected disease</span>
+                <span class="disease-name w-25">Detected disease</span>
+                <span class="w-25">Expert Confirmed</span>
                 <span class="acc w-25 text-right">Accuracy</span>
             </div>
         </a>
@@ -181,8 +175,8 @@
     <div id="pagination-container"></div>
 </div>
 
-<input type="hidden" id="pass-data" value="@ViewBag.history" />
-<input type="hidden" id="uid" value="@session.GetString("i")" />
+<input type="hidden" id="pass-data" value="@ViewBag.history"/>
+<input type="hidden" id="uid" value="@session.GetString("i")"/>
 
 @section Scripts {
     <script>
@@ -214,14 +208,14 @@
                 $("#file-container").append(newDiv)
             }
 
-            $("#submit-btn").prop("disabled", files.length > 0 ? false : true)
+            $("#submit-btn").prop("disabled", files.length<=0)
         })
 
         const handleSelectedFileClick = (elem, fileName) => {
             // Remove clicked file from file list
             files = files.filter(item => item !== fileName)
             console.log(files)
-            $("#submit-btn").prop("disabled", files.length > 0 ? false : true)
+            $("#submit-btn").prop("disabled", files.length<=0)
             // Remove clicked file in the file container
             elem.remove()
         }
@@ -238,7 +232,8 @@
                     + `<a class="item-link" href="/ImageDetection/Details/${item["DetectionHistoryId"]}">`
                     + `<div class="d-flex justify-content-between" title="Click to view details">`
                     + `<span class="img-name w-25">${item["ImageName"]}</span>`
-                    + `<span class="disease-name w-50">${item["DetectedDisease"]}</span>`
+                    + `<span class="disease-name w-25">${item["DetectedDisease"]}</span>`
+                    + `<span class="w-25">${item["IsExpertConfirmed"]}</span>`
                     + `<span class="acc w-25 text-right">${item["Accuracy"]}</span>`
                     + `</div>`
                     + `</a>`
@@ -278,7 +273,7 @@
 
         $("#submit-btn").on("click", (e) => {
             e.preventDefault();
-            let apiUrl = "https://evergreen-api.onrender.com/api/DetectionHistory"
+            let apiUrl = "https://localhost:5001/api/DetectionHistory"
             let uid = $("#uid").val()
             // Disabling submit button, avoid spammer
             $("#submit-btn").attr("disabled", true);

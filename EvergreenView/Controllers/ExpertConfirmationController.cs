@@ -1,30 +1,44 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Threading.Tasks;
+using EvergreenAPI.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EvergreenView.Controllers
 {
     public class ExpertConfirmationController : Controller
     {
-        private readonly string _expertConfirmationApi;
-        private readonly string _thumbnailApiUrl;
         private readonly string _detectionHistoryApiUrl;
+        private readonly HttpClient _client;
 
         public ExpertConfirmationController()
         {
-            _expertConfirmationApi = "https://evergreen-api.onrender.com/api/ExpertConfirmation";
-            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
-            _detectionHistoryApiUrl = "https://evergreen-api.onrender.com/api/DetectionHistory";
+            _detectionHistoryApiUrl = "https://localhost:5001/api/DetectionHistory";
+            _client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
         }
-        
+
         // GET
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("r") != "Admin" || HttpContext.Session.GetString("r") != "Professor")
-            {
+            var role = HttpContext.Session.GetString("r");
+            if (role is null or "User")
                 return RedirectToAction("Index", "Home");
-            }
-            
-            return View();
+
+            var token = HttpContext.Session.GetString("t");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await _client.GetAsync(_detectionHistoryApiUrl);
+            var strData = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                return RedirectToAction("Index", "Home");
+
+            var histories = JsonSerializer.Deserialize<List<ExtractDetectionHistoriesDTO>>(strData);
+
+            return View(histories);
         }
     }
 }

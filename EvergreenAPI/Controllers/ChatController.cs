@@ -1,11 +1,12 @@
-﻿using EvergreenAPI.Models;
-using EvergreenAPI.Repositories;
-using Microsoft.AspNetCore.Http;
+﻿using System;
+using EvergreenAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using OpenAI_API.Completions;
 using OpenAI_API;
 using System.Threading.Tasks;
 using System.Linq;
+
+// ReSharper disable StringLiteralTypo
 
 namespace EvergreenAPI.Controllers
 {
@@ -13,8 +14,8 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class ChatController : ControllerBase
     {
-        private AppDbContext _context;
-        private string ApiKey = "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";
+        private readonly AppDbContext _context;
+        private readonly string _apiKey = "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";
 
         public ChatController(AppDbContext context)
         {
@@ -24,7 +25,7 @@ namespace EvergreenAPI.Controllers
         [HttpGet("{userId}")]
         public IActionResult GetMessages(int userId)
         {
-            var account = _context.Accounts.Where(a => a.AccountId == userId).FirstOrDefault();
+            var account = _context.Accounts.FirstOrDefault(a => a.AccountId == userId);
             if (account == null) return BadRequest("Account ID does not exist");
             return Ok(account.Chat);
         }
@@ -32,17 +33,18 @@ namespace EvergreenAPI.Controllers
         [HttpPost("{userId}")]
         public async Task<IActionResult> GetResponse(int userId, [FromBody] string prompt)
         {
-            var account = _context.Accounts.Where(a => a.AccountId == userId).FirstOrDefault();
+            var account = _context.Accounts.FirstOrDefault(a => a.AccountId == userId);
             if (account == null) return BadRequest("Account ID does not exist");
 
             string answer = string.Empty;
-            var openai = new OpenAIAPI(ApiKey);
-            var completion = new CompletionRequest();
+            var openai = new OpenAIAPI(_apiKey);
+            var completion = new CompletionRequest
+            {
+                // Load old conversation data
+                Prompt = account.Chat + "\\nHuman: " + prompt,
+                MaxTokens = 1000
+            };
 
-            // Load old conversation data
-            completion.Prompt = account.Chat + "\\nHuman: " + prompt;
-
-            completion.MaxTokens = 1000;
             var result = openai.Completions.CreateCompletionAsync(completion);
             if (result != null)
             {
@@ -50,7 +52,7 @@ namespace EvergreenAPI.Controllers
                 {
                     answer = item.Text;
                 }
-                
+
                 // Remove new line at the start of answer
                 while (true)
                 {
@@ -61,9 +63,9 @@ namespace EvergreenAPI.Controllers
                 // Remove the "AI: " at the start of answer
                 while (true)
                 {
-                    var index = answer.IndexOf("AI: ");
+                    var index = answer.IndexOf("AI: ", StringComparison.Ordinal);
                     if (index != -1)
-                        answer = answer.Substring(index + 3);
+                        answer = answer[(index + 3)..];
                     else break;
                 }
 

@@ -1,7 +1,7 @@
 ﻿@model List<EvergreenAPI.Models.DetectionAccuracy>
 @{
-    ViewData["Titile"] = "Detection details";
-    var detectedDisease = Model.OrderByDescending(i => i.Accuracy).FirstOrDefault().Disease;
+    ViewData["Title"] = "Detection details";
+    var detectedDisease = Model.OrderByDescending(i => i.Accuracy).FirstOrDefault()?.Disease;
 }
 
 @section Styles {

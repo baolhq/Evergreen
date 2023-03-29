@@ -99,10 +99,11 @@ namespace EvergreenAPI.Controllers
                     ImageName = uniqueFileName,
                     ImageUrl = uniqueFilePath,
                 };
+                await SaveHistory(history);
 
                 var detectedDisease = await RetrieveAccuraciesFromApi(history, uniqueFilePath);
                 history.DetectedDisease = detectedDisease;
-                await SaveHistory(history);
+                await _context.SaveChangesAsync();
             }
 
             var responseMessage = $"{fileName} uploaded successfully";
@@ -175,7 +176,16 @@ namespace EvergreenAPI.Controllers
                 _context.DetectionAccuracies.Add(acc);
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
             return detectedDisease;
         }
 
@@ -191,7 +201,6 @@ namespace EvergreenAPI.Controllers
             await _context.SaveChangesAsync();
         }
 
-        // For testing
         [HttpGet("{accountId}")]
         public IActionResult GetDetectionHistories(int accountId)
         {
@@ -212,7 +221,38 @@ namespace EvergreenAPI.Controllers
                     ImageName = detection.ImageName,
                     DetectedDisease = detectedDisease.Disease.Name,
                     Accuracy = (float)highestAcc,
-                    ImageUrl = detection.ImageUrl
+                    ImageUrl = detection.ImageUrl,
+                    IsExpertConfirmed = detection.IsExpertConfirmed
+                });
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var detectionHistories =
+                _mapper.Map<List<DetectionHistory>>(_detectionHistoryRepository.GetAll());
+
+            var result = new List<ExtractDetectionHistoriesDTO>();
+            foreach (var detection in detectionHistories)
+            {
+                var accuracies = GetDetectionAccuracies(detection.DetectionHistoryId).Include(x => x.Disease);
+                var highestAcc = accuracies.Max(x => x.Accuracy);
+                var detectedDisease = accuracies.First(x => x.Accuracy == highestAcc);
+
+                result.Add(new ExtractDetectionHistoriesDTO
+                {
+                    DetectionHistoryId = detection.DetectionHistoryId,
+                    ImageName = detection.ImageName,
+                    DetectedDisease = detectedDisease.Disease.Name,
+                    Accuracy = (float)highestAcc,
+                    ImageUrl = detection.ImageUrl,
+                    IsExpertConfirmed = detection.IsExpertConfirmed
                 });
             }
 

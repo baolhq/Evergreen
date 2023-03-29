@@ -167,10 +167,6 @@ namespace EvergreenView.Controllers
             return View(diseaseCat);
         }
 
-
-
-
-
         private async Task<DiseaseCategory> GetDiseaseCategoryById(int id)
         {
             HttpResponseMessage response = await client.GetAsync(DiseaseCategoryApiUrl + "/" + id);

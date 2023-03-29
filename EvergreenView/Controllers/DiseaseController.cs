@@ -31,12 +31,7 @@ namespace EvergreenView.Controllers
             _thumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
             _medicineApiUrl = "https://localhost:44334/api/Medicine";
             _treatmentApiUrl = "https://localhost:44334/api/Treatment";
-
-            
-
         }
-
-
 
         public async Task<IActionResult> Index()
         {

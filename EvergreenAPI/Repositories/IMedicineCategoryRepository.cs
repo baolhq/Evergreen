@@ -12,5 +12,6 @@ namespace EvergreenAPI.Repositories
         bool UpdateMedicineCategory(MedicineCategory medicineCategory);
         bool DeleteMedicineCategory(MedicineCategory medicineCategory);
         bool Save();
+        List<string> GetMedicineCategoryName();
     }
 }

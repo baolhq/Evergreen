@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContentAccessor
+@{
+    var session = httpContentAccessor.HttpContext.Session;
+}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -36,54 +41,62 @@
     <!-- Sidebar -->
     <div class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Admin" asp-action="Index">
-            <div class="sidebar-brand-text mx-3">Admin Dashboard</div>
-        </a>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Admin" asp-action="Index">
+                <div class="sidebar-brand-text mx-3">Admin Dashboard</div>
+            </a>
 
-        <!-- Heading -->
-        <div class="sidebar-heading"></div>
-        <br/>
-        <div class="nav-item">
-            <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <span></span>
-                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="Blogs">Blog</a>
-                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="Disease">Disease</a>
-                    <a class="collapse-item" asp-action="Index" asp-controller="DiseaseCategory">Disease Category</a>
-                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="Medicine">Medicine</a>
-                    <a class="collapse-item" asp-action="Index" asp-controller="MedicineCategory">Medicine Category</a>
-                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="Treatment">Treatment</a>
-                    <a class="collapse-item" asp-action="Index" asp-controller="Thumbnail">Thumbnail</a>
-                    <a class="collapse-item" asp-action="Index" asp-controller="ExpertConfirmation">Expert Confirmation</a>
-                    <a class="collapse-item" asp-action="AdminIndex" asp-controller="User">User</a>
-                    <a class="collapse-item" asp-action="Logout" asp-controller="Authentication">Logout</a>
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Heading -->
+            <div class="sidebar-heading"></div>
+            <br />
+            <div class="nav-item">
+                <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <span></span>
+                        @if (session.GetString("r") == "Admin")
+                        {
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Blogs">Blog</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Disease">Disease</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="DiseaseCategory">Disease Category</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Medicine">Medicine</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="MedicineCategory">Medicine Category</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Treatment">Treatment</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Thumbnail">Thumbnail</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="User">User</a>
+                        }
+                        else if(session.GetString("r") == "Professor")
+                        {
+                            <a class="collapse-item" asp-action="Index" asp-controller="ExpertConfirmation">Expert Confirm</a>
+                        }
+                        <a class="collapse-item" asp-action="Logout" asp-controller="Authentication">Logout</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- End of Sidebar -->
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column pt-3">
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column pt-3">
 
-        <!-- Main Content -->
-        <div id="content">
-            <main class="px-5">
-                @RenderBody()
-            </main>
+            <!-- Main Content -->
+            <div id="content">
+                <main class="px-5">
+                    @RenderBody()
+                </main>
+
+            </div>
+            <!-- End of Content Wrapper -->
 
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- End of Page Wrapper -->
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
 
-    </div>
-    <!-- End of Page Wrapper -->
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
     </a>
 
     <!-- Logout Modal-->

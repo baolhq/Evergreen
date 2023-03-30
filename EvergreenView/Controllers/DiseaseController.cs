@@ -59,7 +59,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Create()
         {
-            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -113,7 +113,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Disease disease)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -189,7 +189,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -263,7 +263,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, Disease disease)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -358,7 +358,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -373,7 +373,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -475,7 +475,7 @@ namespace EvergreenView.Controllers
 
         public async Task<IActionResult> AdminIndex(string searchString)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -511,7 +511,7 @@ namespace EvergreenView.Controllers
 
         public async Task<IActionResult> AdminDetails(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
+            if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }

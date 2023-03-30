@@ -25,6 +25,7 @@ namespace EvergreenAPI.Controllers
                 _context.DetectionHistories.FirstOrDefault(d => d.DetectionHistoryId == detectionHistoryId);
             if (detectionHistory == null) return NotFound();
 
+            detectionHistory.IsExpertConfirmed = true;
             detectionHistory.DetectedDisease = disease;
             await _context.SaveChangesAsync();
             return Ok();

@@ -144,7 +144,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, DiseaseCategory diseaseCategory)
+        public async Task<ActionResult> Edit(int id, DiseaseCategory diseaseCategory)
         {
             if (session.GetString("r") != "Admin" && session.GetString("r") != "Professor")
             {
@@ -155,7 +155,7 @@ namespace EvergreenView.Controllers
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-            var diseaseCat = GetDiseaseCategoryById(id);
+            var diseaseCat = await GetDiseaseCategoryById(id);
             string data = JsonSerializer.Serialize(diseaseCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync(DiseaseCategoryApiUrl + "/" + id, content).Result;

@@ -13,15 +13,15 @@ namespace EvergreenView.Controllers
 {
     public class AdminController : Controller
     {
-        private string MedicineCategoryApiUrl = "";
-        private readonly HttpClient client = null;
+        private readonly string _medicineCategoryApiUrl;
+        private readonly HttpClient _client;
 
         public AdminController()
         {
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-            MedicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            _medicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
         }
 
         public async Task<IActionResult> Index()
@@ -30,7 +30,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            HttpResponseMessage response = await client.GetAsync(MedicineCategoryApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_medicineCategoryApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

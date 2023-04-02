@@ -2,10 +2,7 @@
 @inject IHttpContextAccessor HttpContentAccessor
 @{
     var session = HttpContentAccessor.HttpContext?.Session;
-    string avatar;
-    if (session.GetString("a") != null)
-        avatar = session.GetString("a");
-    else avatar = "https://i.imgur.com/n1rrde0.png";
+    var avatar = session.GetString("a") ?? "https://i.imgur.com/n1rrde0.png";
 }
 
 <style>

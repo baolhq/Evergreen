@@ -23,8 +23,8 @@ namespace EvergreenView.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
 
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _treatmentApiUrl = "https://localhost:44334/api/Treatment";
-            _thumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
+            _treatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
+            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
             
 
         }

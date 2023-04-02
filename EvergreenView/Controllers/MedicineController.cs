@@ -2,15 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
-using System.Data;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using NToastNotify;
-using System.Linq;
 
 namespace EvergreenView.Controllers
 {
@@ -28,9 +25,9 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _medicineApiUrl = "https://localhost:44334/api/Medicine";
-            _medicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory";
-            _thumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
+            _medicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine";
+            _medicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
+            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()

@@ -295,32 +295,32 @@
             $("#blank-history").css("display", "none")
             $("#histories").css("display", "block")
             // Re-render data without reload
-            //$.ajax({
-            //    contentType: false,
-            //    processData: false,
-            //    url: `${apiUrl}/${uid}`,
-            //    success: function (data, textStatus, xhr) {
-            //        // Transform text to PascalCase format
-            //        for (var i = 0; i < data.length; i++) {
+            $.ajax({
+               contentType: false,
+               processData: false,
+               url: `${apiUrl}/${uid}`,
+               success: function (data, textStatus, xhr) {
+                   // Transform text to PascalCase format
+                   for (let i = 0; i < data.length; i++) {
 
-            //            var a = data[i];
-            //            for (var key in a) {
-            //                if (a.hasOwnProperty(key)) {
-            //                    a[key.charAt(0).toUpperCase() + key.substring(1)] = a[key];
-            //                    delete a[key];
+                       const a = data[i];
+                       for (const key in a) {
+                           if (a.hasOwnProperty(key)) {
+                               a[key.charAt(0).toUpperCase() + key.substring(1)] = a[key];
+                               delete a[key];
 
-            //                }
-            //            }
-            //            data[i] = a;
+                           }
+                       }
+                       data[i] = a;
 
-            //        }
+                   }
 
-            //        // Finally, paginate'm
-            //        paginate(data)
-            //    }, error: function (xhr, status, error) {
-            //        console.log(error)
-            //    }
-            //});
+                   // Finally, paginate them
+                   paginate(data)
+               }, error: function (xhr, status, error) {
+                   console.log(error)
+               }
+            });
         })
 
         const uploadImage = async (formData, apiUrl) => {

@@ -5,41 +5,32 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EvergreenAPI.Models;
-using AutoMapper.Execution;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using System.Data;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using NToastNotify;
 
 namespace EvergreenView.Controllers
 {
     
     public class DiseaseCategoryController : Controller
     {
-        private string DiseaseCategoryApiUrl = "";
-        private readonly HttpClient client = null;
+        private readonly string _diseaseCategoryApiUrl;
+        private readonly HttpClient _client;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IConfiguration _config;
-        private readonly IToastNotification _toastNotification;
 
-        public DiseaseCategoryController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IToastNotification toastNotification)
+        public DiseaseCategoryController(IHttpContextAccessor httpContextAccessor)
         {
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-            DiseaseCategoryApiUrl = "https://localhost:44334/api/DiseaseCategory";
-            _config = configuration;
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            _diseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
             _httpContextAccessor = httpContextAccessor;
-            _toastNotification = toastNotification;
         }
 
-        public ISession session
+        private ISession Session
         {
             get
             {
-                return _httpContextAccessor.HttpContext.Session;
+                return _httpContextAccessor.HttpContext?.Session;
             }
         }
 
@@ -47,11 +38,11 @@ namespace EvergreenView.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
-            HttpResponseMessage response = await client.GetAsync(DiseaseCategoryApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_diseaseCategoryApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -66,7 +57,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            if (session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -81,7 +72,7 @@ namespace EvergreenView.Controllers
 
         public ActionResult Create()
         {
-            if (session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -97,17 +88,17 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(DiseaseCategory diseaseCategory)
         {
-            if (session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string data = JsonSerializer.Serialize(diseaseCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PostAsync(DiseaseCategoryApiUrl, content).Result;
+            HttpResponseMessage response = _client.PostAsync(_diseaseCategoryApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
                 TempData["message"] = "Create Successfully";
@@ -123,11 +114,11 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            if (session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
-            HttpResponseMessage response = await client.GetAsync(DiseaseCategoryApiUrl + "/" + id);
+            HttpResponseMessage response = await _client.GetAsync(_diseaseCategoryApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -146,19 +137,19 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task <IActionResult> Edit(int id, DiseaseCategory diseaseCategory)
         {
-            if (session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
             var diseaseCat =  await GetDiseaseCategoryById(id);
             string data = JsonSerializer.Serialize(diseaseCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PutAsync(DiseaseCategoryApiUrl + "/" + id, content).Result;
+            HttpResponseMessage response = _client.PutAsync(_diseaseCategoryApiUrl + "/" + id, content).Result;
             if (response.IsSuccessStatusCode)
             {
                 TempData["message"] = "Update Successfully";
@@ -169,7 +160,7 @@ namespace EvergreenView.Controllers
 
         private async Task<DiseaseCategory> GetDiseaseCategoryById(int id)
         {
-            HttpResponseMessage response = await client.GetAsync(DiseaseCategoryApiUrl + "/" + id);
+            HttpResponseMessage response = await _client.GetAsync(_diseaseCategoryApiUrl + "/" + id);
             if (!response.IsSuccessStatusCode)
                 return null;
             string strData = await response.Content.ReadAsStringAsync();
@@ -186,7 +177,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            if (session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -203,16 +194,16 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
 
             var token = HttpContext.Session.GetString("t");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var disease = await GetDiseaseCategoryById(id);
-            HttpResponseMessage response = await client.DeleteAsync(DiseaseCategoryApiUrl + "/" + id);
+            HttpResponseMessage response = await _client.DeleteAsync(_diseaseCategoryApiUrl + "/" + id);
             if (response.IsSuccessStatusCode)
             {
                 TempData["message"] = "Delete Successfully";

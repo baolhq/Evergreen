@@ -26,11 +26,11 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _diseaseApiUrl = "https://localhost:44334/api/Disease";
-            _diseaseCategoryApiUrl = "https://localhost:44334/api/DiseaseCategory";
-            _thumbnailApiUrl = "https://localhost:44334/api/Thumbnail";
-            _medicineApiUrl = "https://localhost:44334/api/Medicine";
-            _treatmentApiUrl = "https://localhost:44334/api/Treatment";
+            _diseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease";
+            _diseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
+            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+            _medicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine";
+            _treatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
         }
 
         public async Task<IActionResult> Index()
@@ -246,18 +246,6 @@ namespace EvergreenView.Controllers
 
             return View(disease);
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

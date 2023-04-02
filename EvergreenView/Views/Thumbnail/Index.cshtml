@@ -1,9 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
-@model IEnumerable<EvergreenAPI.Models.Thumbnail>
+﻿@model IEnumerable<EvergreenAPI.Models.Thumbnail>
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -24,10 +19,9 @@
         }
 
         figure {
-            margin: 0;
             display: grid;
             grid-template-rows: 1fr auto;
-            margin-bottom: 10px;
+            margin: 0 0 10px;
             break-inside: avoid;
             position: relative;
             overflow: hidden;
@@ -64,7 +58,7 @@
         }
 
             .inner p {
-                padding: 6px 6px 0px 6px;
+                padding: 6px 6px 0 6px;
                 margin-bottom: 0;
             }
 
@@ -91,7 +85,8 @@
     @foreach (var item in Model)
     {
         <figure>
-            <img src="@Url.Content(item.Url)" alt="@item.AltText" onerror="this.onerror=null;this.src='https://i.imgur.com/MP8rmmN.png';" />
+            <!--suppress HtmlDeprecatedAttribute -->
+            <img alt="@item.AltText" onerror="this.onerror=null;this.src='https://i.imgur.com/MP8rmmN.png';" src="@Url.Content(item.Url)"/>
             <div class="inner">
                 <p class="text-ellipsis">@item.AltText</p>
                 <div class="d-flex align-items-center">

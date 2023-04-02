@@ -1,29 +1,26 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 
 namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
     public class BlogController : ControllerBase
     {
-        private readonly IBlogRepository _BlogRepository;
+        private readonly IBlogRepository _blogRepository;
         private readonly IMapper _mapper;
 
-        public BlogController(IBlogRepository BlogRepository, IMapper mapper)
+        public BlogController(IBlogRepository blogRepository, IMapper mapper)
         {
-            _BlogRepository = BlogRepository;
+            _blogRepository = blogRepository;
             _mapper = mapper;
         }
 
@@ -36,7 +33,7 @@ namespace EvergreenAPI.Controllers
         [HttpGet]
         public IActionResult GetBlogs()
         {
-            var blogs = _mapper.Map<List<Blog>>(_BlogRepository.GetBlogs());
+            var blogs = _mapper.Map<List<Blog>>(_blogRepository.GetBlogs());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -45,36 +42,34 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-        [HttpGet("{BlogId}")]
+        [HttpGet("{blogId}")]
         [AllowAnonymous]
-        public IActionResult GetBlog(int BlogId)
+        public IActionResult GetBlog(int blogId)
         {
-            if (!_BlogRepository.BlogExist(BlogId))
-                return NotFound($"Blog Category '{BlogId}' is not exists!!");
+            if (!_blogRepository.BlogExist(blogId))
+                return NotFound($"Blog Category '{blogId}' is not exists!!");
 
-            var Blogs = _mapper.Map<Blog>(_BlogRepository.GetBlog(BlogId));
+            var blogs = _mapper.Map<Blog>(_blogRepository.GetBlog(blogId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Blogs);
+            return Ok(blogs);
         }
 
 
-
-
         [HttpPost]
-        public IActionResult CreateBlog([FromBody] BlogDTO BlogCreate)
+        public IActionResult CreateBlog([FromBody] BlogDTO blogCreate)
         {
-            if (BlogCreate == null)
+            if (blogCreate == null)
                 return BadRequest(ModelState);
 
-            var Blog = _BlogRepository.GetBlogs()
-                .Where(c => c.Title.Trim().ToUpper() == BlogCreate.Title.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var blog = _blogRepository
+                .GetBlogs()
+                .FirstOrDefault(c => string.Equals(c.Title.Trim(), blogCreate.Title.TrimEnd(),
+                    StringComparison.CurrentCultureIgnoreCase));
 
-            if (Blog != null)
+            if (blog != null)
             {
                 ModelState.AddModelError("", "It is already exists");
                 return StatusCode(422, ModelState);
@@ -83,9 +78,9 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var BlogMap = _mapper.Map<Blog>(BlogCreate);
+            var blogMap = _mapper.Map<Blog>(blogCreate);
 
-            if (!_BlogRepository.CreateBlog(BlogMap))
+            if (!_blogRepository.CreateBlog(blogMap))
             {
                 ModelState.AddModelError("", "Something was wrong while saving");
                 return StatusCode(500, ModelState);
@@ -95,25 +90,24 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-        [HttpPut("{BlogId}")]
-        public IActionResult UpdateBlog(int BlogId, [FromBody] BlogDTO updatedBlog)
+        [HttpPut("{blogId}")]
+        public IActionResult UpdateBlog(int blogId, [FromBody] BlogDTO updatedBlog)
         {
             if (updatedBlog == null)
                 return BadRequest(ModelState);
 
-            if (BlogId != updatedBlog.BlogId)
+            if (blogId != updatedBlog.BlogId)
                 return BadRequest(ModelState);
 
-            if (!_BlogRepository.BlogExist(BlogId))
+            if (!_blogRepository.BlogExist(blogId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var BlogMap = _mapper.Map<Blog>(updatedBlog);
+            var blogMap = _mapper.Map<Blog>(updatedBlog);
 
-            if (!_BlogRepository.UpdateBlog(BlogMap))
+            if (!_blogRepository.UpdateBlog(blogMap))
             {
                 ModelState.AddModelError("", "Something was wrong when saving");
                 return StatusCode(500, ModelState);
@@ -123,23 +117,23 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-        [HttpDelete("{BlogId}")]
-        public IActionResult DeleteBlog(int BlogId)
+        [HttpDelete("{blogId}")]
+        public IActionResult DeleteBlog(int blogId)
         {
-            if (!_BlogRepository.BlogExist(BlogId))
+            if (!_blogRepository.BlogExist(blogId))
                 return NotFound();
 
-            var BlogToDelete = _BlogRepository.GetBlog(BlogId);
+            var blogToDelete = _blogRepository.GetBlog(blogId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_BlogRepository.DeleteBlog(BlogToDelete))
+            if (!_blogRepository.DeleteBlog(blogToDelete))
             {
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);
             }
+
             return Ok("Delete Success");
         }
 
@@ -147,7 +141,7 @@ namespace EvergreenAPI.Controllers
         [HttpGet("Search")]
         public ActionResult<List<Blog>> Search(string search)
         {
-            var list = _BlogRepository.Search(search);
+            var list = _blogRepository.Search(search);
 
             return Ok(list);
         }

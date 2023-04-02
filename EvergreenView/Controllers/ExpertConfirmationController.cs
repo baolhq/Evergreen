@@ -16,7 +16,7 @@ namespace EvergreenView.Controllers
 
         public ExpertConfirmationController()
         {
-            _detectionHistoryApiUrl = "https://localhost:5001/api/DetectionHistory";
+            _detectionHistoryApiUrl = "https://evergreen-api.onrender.com/api/DetectionHistory";
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);

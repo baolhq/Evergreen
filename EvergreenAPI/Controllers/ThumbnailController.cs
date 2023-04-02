@@ -3,11 +3,8 @@ using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,7 +20,7 @@ namespace EvergreenAPI.Controllers
         private readonly IThumbnailRepository _thumbnailRepository;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
-        private IHostingEnvironment _environment;
+        private readonly IHostingEnvironment _environment;
 
         public ThumbnailController(IThumbnailRepository thumbnailRepository, IMapper mapper,
             IHostingEnvironment environment, AppDbContext context)
@@ -46,14 +43,14 @@ namespace EvergreenAPI.Controllers
             return Ok(thumbnails);
         }
 
-        [HttpGet("{ThumbnailId}")]
+        [HttpGet("{thumbnailId}")]
         [AllowAnonymous]
-        public IActionResult GetThumbnail(int ThumbnailId)
+        public IActionResult GetThumbnail(int thumbnailId)
         {
-            if (!_thumbnailRepository.ThumbnailExist(ThumbnailId))
-                return NotFound($"ThumbnailId '{ThumbnailId}' is not exists!!");
+            if (!_thumbnailRepository.ThumbnailExist(thumbnailId))
+                return NotFound($"ThumbnailId '{thumbnailId}' is not exists!!");
 
-            var thumbnail = _mapper.Map<ThumbnailDTO>(_thumbnailRepository.GetThumbnail(ThumbnailId));
+            var thumbnail = _mapper.Map<ThumbnailDTO>(_thumbnailRepository.GetThumbnail(thumbnailId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -94,15 +91,17 @@ namespace EvergreenAPI.Controllers
 
                 while (System.IO.File.Exists(Path.Combine(path, newFullPath)))
                 {
-                    string tempFileName = string.Format("{0} ({1})", uniqueFileName, count++);
+                    string tempFileName = $"{uniqueFileName} ({count++})";
                     newFullPath = Path.Combine(path, tempFileName + extension);
                 }
+
                 uniqueFilePath = newFullPath;
             }
-            var splitted = uniqueFilePath.Split('\\');
-            uniqueFilePath = splitted[^2] + "/" + splitted[^1];
 
-            using var stream = System.IO.File.Create(uniqueFilePath);
+            var split = uniqueFilePath.Split('\\');
+            uniqueFilePath = split[^2] + "/" + split[^1];
+
+            await using var stream = System.IO.File.Create(uniqueFilePath);
             await postedFile.CopyToAsync(stream);
 
             // Save thumbnail location to database
@@ -133,39 +132,46 @@ namespace EvergreenAPI.Controllers
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            string fileName = Path.GetFileName(postedFile.FileName);
-            string uniqueFilePath = Path.Combine(path, fileName);
-            var oldFile = Path.Combine(_environment.ContentRootPath, oldUrl);
-            // Delete old file
-            if (System.IO.File.Exists(oldFile))
-                System.IO.File.Delete(oldFile);
+            var fileName = Path.GetFileName(postedFile.FileName);
+            var uniqueFilePath = Path.Combine(path, fileName);
+            if (oldUrl != null)
+            {
+                var oldFile = Path.Combine(_environment.ContentRootPath, oldUrl);
+                // Delete old file
+                if (System.IO.File.Exists(oldFile))
+                    System.IO.File.Delete(oldFile);
+            }
 
-            var splitted = uniqueFilePath.Split('\\');
-            uniqueFilePath = splitted[^2] + "/" + splitted[^1];
+            var split = uniqueFilePath.Split('\\');
+            uniqueFilePath = split[^2] + "/" + split[^1];
 
-            using var stream = System.IO.File.Create(uniqueFilePath);
+            await using var stream = System.IO.File.Create(uniqueFilePath);
             await postedFile.CopyToAsync(stream);
 
             // Save thumbnail location to database
-            _context.Thumbnails.Update(new Thumbnail
+            if (thumbnailId != null)
             {
-                ThumbnailId = int.Parse(thumbnailId),
-                AltText = altText,
-                Url = uniqueFilePath
-            });
+                _context.Thumbnails.Update(new Thumbnail
+                {
+                    ThumbnailId = int.Parse(thumbnailId),
+                    AltText = altText,
+                    Url = uniqueFilePath
+                });
+            }
+
             await _context.SaveChangesAsync();
 
             string responseMessage = $"{fileName} updated successfully";
             return Ok(responseMessage);
         }
 
-        [HttpDelete("{ThumbnailId}")]
-        public IActionResult DeleteThumbnail(int ThumbnailId)
+        [HttpDelete("{thumbnailId}")]
+        public IActionResult DeleteThumbnail(int thumbnailId)
         {
-            if (!_thumbnailRepository.ThumbnailExist(ThumbnailId))
+            if (!_thumbnailRepository.ThumbnailExist(thumbnailId))
                 return NotFound();
 
-            var thumbnailToDelete = _thumbnailRepository.GetThumbnail(ThumbnailId);
+            var thumbnailToDelete = _thumbnailRepository.GetThumbnail(thumbnailId);
             var uploadPath = @"F:\SP23\Evergreen\EvergreenAPI";
             var thumbnailUrl = Path.Combine(uploadPath, thumbnailToDelete.Url);
             if (System.IO.File.Exists(thumbnailUrl))
@@ -179,6 +185,7 @@ namespace EvergreenAPI.Controllers
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);
             }
+
             return Ok("Delete Success");
         }
     }

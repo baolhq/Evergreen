@@ -14,7 +14,8 @@ namespace EvergreenAPI.Models
         public string Title { get; set; }
         public string Description { get; set; }
         [Required]
-        [StringLength(100000)]
+        [StringLength(1000000000)]
+        [MinLength(100)]
         public string Content { get; set; }
 
         public DateTime LastModifiedDate { get; set; }

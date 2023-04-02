@@ -45,6 +45,7 @@ namespace EvergreenAPI.Repositories
 
         public ICollection<Blog> GetBlogs()
         {
+
             return _context.Blogs.Include(d => d.Thumbnail).ToList();
         }
 

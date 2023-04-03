@@ -25,8 +25,6 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Accept.Add(contentType);
             _treatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
             _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
-            
-
         }
 
         public async Task<IActionResult> Index()

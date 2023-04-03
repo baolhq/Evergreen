@@ -12,7 +12,6 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
     public class TreatmentController : ControllerBase
     {
         private readonly ITreatmentRepository _treatmentRepository;
@@ -23,10 +22,6 @@ namespace EvergreenAPI.Controllers
             _treatmentRepository = treatmentRepository;
             _mapper = mapper;
         }
-
-
-
-
 
         [HttpGet]
         [AllowAnonymous]
@@ -40,19 +35,14 @@ namespace EvergreenAPI.Controllers
             return Ok(treatments);
         }
 
-
-
-
-
-
-        [HttpGet("{TreatmentId}")]
+        [HttpGet("{treatmentId}")]
         [AllowAnonymous]
-        public IActionResult GetTreatment(int TreatmentId)
+        public IActionResult GetTreatment(int treatmentId)
         {
-            if (!_treatmentRepository.TreatmentExist(TreatmentId))
-                return NotFound($"Treatment '{TreatmentId}' is not exists!!");
+            if (!_treatmentRepository.TreatmentExist(treatmentId))
+                return NotFound($"Treatment '{treatmentId}' is not exists!!");
 
-            var treatment = _mapper.Map<Treatment>(_treatmentRepository.GetTreatment(TreatmentId));
+            var treatment = _mapper.Map<Treatment>(_treatmentRepository.GetTreatment(treatmentId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -60,18 +50,15 @@ namespace EvergreenAPI.Controllers
             return Ok(treatment);
         }
 
-
-
-
         [HttpPost]
         public IActionResult CreateTreatment([FromBody] TreatmentDTO treatmentCreate)
         {
             if (treatmentCreate == null)
                 return BadRequest(ModelState);
 
-            var plant = _treatmentRepository.GetTreatments()
-                .Where(c => c.TreatmentName.Trim().ToUpper() == treatmentCreate.TreatmentName.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var plant = _treatmentRepository
+                .GetTreatments()
+                .FirstOrDefault(c => c.TreatmentName.Trim().ToUpper() == treatmentCreate.TreatmentName.TrimEnd().ToUpper());
 
             if (plant != null)
             {
@@ -94,18 +81,16 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-
-        [HttpPut("{TreatmentId}")]
-        public IActionResult UpdateTreatment(int TreatmentId, [FromBody] TreatmentDTO updatedTreatment)
+        [HttpPut("{treatmentId}")]
+        public IActionResult UpdateTreatment(int treatmentId, [FromBody] TreatmentDTO updatedTreatment)
         {
             if (updatedTreatment == null)
                 return BadRequest(ModelState);
 
-            if (TreatmentId != updatedTreatment.TreatmentId)
+            if (treatmentId != updatedTreatment.TreatmentId)
                 return BadRequest(ModelState);
 
-            if (!_treatmentRepository.TreatmentExist(TreatmentId))
+            if (!_treatmentRepository.TreatmentExist(treatmentId))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -123,17 +108,13 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-
-
-
-        [HttpDelete("{TreatmentId}")]
-        public IActionResult DeletePlantCategory(int TreatmentId)
+        [HttpDelete("{treatmentId}")]
+        public IActionResult DeletePlantCategory(int treatmentId)
         {
-            if (!_treatmentRepository.TreatmentExist(TreatmentId))
+            if (!_treatmentRepository.TreatmentExist(treatmentId))
                 return NotFound();
 
-            var treatmentToDelete = _treatmentRepository.GetTreatment(TreatmentId);
+            var treatmentToDelete = _treatmentRepository.GetTreatment(treatmentId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -143,11 +124,9 @@ namespace EvergreenAPI.Controllers
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);
             }
+
             return Ok("Delete Success");
         }
-
-
-
 
 
         [HttpGet("Search")]

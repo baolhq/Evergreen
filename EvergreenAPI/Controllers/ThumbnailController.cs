@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace EvergreenAPI.Controllers
@@ -109,7 +111,11 @@ namespace EvergreenAPI.Controllers
             await _context.SaveChangesAsync();
 
             string responseMessage = $"{fileName} uploaded successfully";
-            return Ok(responseMessage);
+            var response = new HttpResponseMessage();
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            response.Headers.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
+            response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+            return Ok(response);
         }
 
         [HttpPut]

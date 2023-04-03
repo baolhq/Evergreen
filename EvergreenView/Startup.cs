@@ -1,17 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using NToastNotify;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EvergreenView
 {
@@ -23,10 +17,24 @@ namespace EvergreenView
         }
 
         private IConfiguration Configuration { get; }
+        private const string MyAllowSpecificOrigins = "custom";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    policy =>
+                    {
+                        policy.WithOrigins("https://localhost:5001", "https://localhost:44334",
+                                "https://evergreen-api.onrender.com")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                    });
+            });
+
             services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
             {
                 ProgressBar = true,
@@ -57,7 +65,8 @@ namespace EvergreenView
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseRouting();
             app.UseSession();
@@ -65,12 +74,6 @@ namespace EvergreenView
             app.UseAuthorization();
 
             app.UseStaticFiles();
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //    Path.Combine(@"C:\Users\ASUS\dev\web\Evergreen\EvergreenAPI", "Uploads")),
-            //    RequestPath = "/Uploads"
-            //});
 
             app.UseEndpoints(endpoints =>
             {

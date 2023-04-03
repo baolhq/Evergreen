@@ -40,8 +40,8 @@ namespace EvergreenAPI.DTO
         [RegularExpression("([0-9]+)", ErrorMessage = "Please enter correct phone num")]
         [StringLength(11, MinimumLength = 10)]
         public string PhoneNumber { get; set; }
-        public bool Status { get; set; } = true;
-        
+        public bool IsBlocked { get; set; } = false;
+
 
     }
 }

@@ -50,32 +50,32 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
-                        <td class="status">
+                        <td class="isBlocked">
                             @if (item.Role == "Admin")
                             {
-                                <select asp-for="@item.Status" class="form-control" disabled>
-                                    @if (item.Status)
+                                <select asp-for="@item.IsBlocked" class="form-control" disabled>
+                                    @if (item.IsBlocked)
                                     {
-                                        <option selected>True</option>
+                                        <option selected>False</option>
                                     }
                                     else
                                     {
-                                        <option selected>False</option>
+                                        <option selected>True</option>
                                     }
                                 </select>
                             }
                             else
                             {
-                                <select asp-for="@item.Status" class="form-control account-@item.AccountId" onchange="changeStatus(this)">
-                                    @if (item.Status)
-                                    {
-                                        <option selected value="True">True</option>
-                                        <option value="False">False</option>
-                                    }
-                                    else
+                                <select asp-for="@item.IsBlocked" class="form-control account-@item.AccountId" onchange="changeBlocked(this)">
+                                    @if (item.IsBlocked)
                                     {
                                         <option selected value="False">False</option>
                                         <option value="True">True</option>
+                                    }
+                                    else
+                                    {
+                                        <option selected value="True">True</option>
+                                        <option value="False">False</option>
                                     }
                                 </select>
                             }
@@ -93,16 +93,16 @@
 
 
     <script>
-        const changeStatus = (elem) => {
+        const changeBlocked = (elem) => {
             // Take the second class contains account ID, change the format "account-x" to "x"
             let accountId = elem.classList.item(1).split("-")[1]
             // Take role from select list
-            let status = elem.value
+            let blocked = elem.value
 
-            let apiUrl = "https://localhost:44334/api/User/ManageStatus"
+            let apiUrl = "https://localhost:44334/api/User/ManageBlocked"
             let formData = {
                 "accountId": accountId,
-                "status": status
+                "blocked": blocked
             }
 
             $.ajax({

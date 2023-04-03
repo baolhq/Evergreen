@@ -126,11 +126,14 @@ namespace EvergreenAPI.Controllers
             return Ok("Delete Success");
         }
 
-       [HttpGet("GetMedicineCategoryName")]
-       public List<string> GetMedicineCategoryName()
-        {   
-
-            return _medicineCategoryRepository.GetMedicineCategoryName();
+        [HttpGet("GetMedicineCategoryName")]
+        public ActionResult GetMedicineCategoryName()
+        {
+            var listCategoriesName = _medicineCategoryRepository.GetMedicineCategoryName();
+            return Ok(new
+            {
+                listCategoriesName
+            });
         }
     }
 }

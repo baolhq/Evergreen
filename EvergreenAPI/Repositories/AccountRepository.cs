@@ -44,7 +44,7 @@ namespace EvergreenAPI.Repositories
 
         public Account Login(LoginDTO account)
         {
-            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && account.Status);
+            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && account.IsBlocked);
             if (user == null)
             {
                 return null;

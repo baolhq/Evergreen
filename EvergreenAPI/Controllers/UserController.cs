@@ -64,7 +64,7 @@ namespace EvergreenAPI.Controllers
         }
 
 
-        [HttpPut("ManageStatus")]
+        [HttpPut("ManageBlocked")]
         public async Task<IActionResult> SetBlocked(BlockedDTO blockedDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -72,7 +72,7 @@ namespace EvergreenAPI.Controllers
             var account = _context.Accounts.Where(a => a.AccountId == int.Parse(blockedDTO.AccountId)).FirstOrDefault();
             if (account == null) return NotFound($"Account {blockedDTO.AccountId} cannot be found");
 
-            account.Status = blockedDTO.Status;
+            account.Status = blockedDTO.IsBlocked;
             await _context.SaveChangesAsync();
 
 

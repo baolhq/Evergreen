@@ -32,7 +32,7 @@ namespace EvergreenAPI.Repositories
 
         public Thumbnail GetThumbnail(int id)
         {
-            return _context.Thumbnails.Where(s => s.ThumbnailId == id).FirstOrDefault(); ;
+            return _context.Thumbnails.FirstOrDefault(s => s.ThumbnailId == id); ;
         }
 
         public ICollection<Thumbnail> GetThumbnails()

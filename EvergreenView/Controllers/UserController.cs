@@ -336,7 +336,7 @@ namespace EvergreenView.Controllers
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
+            var listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
 
             TempData["message"] = "Manage Role Successfully";
             return View(listUsers);

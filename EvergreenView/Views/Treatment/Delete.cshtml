@@ -1,10 +1,5 @@
 ﻿@model EvergreenAPI.Models.Treatment
-@using Microsoft.AspNetCore.Http;
-@using System.Net
-@inject IHttpContextAccessor httpContentAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
+
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Delete";
@@ -29,8 +24,8 @@
                 <div class="col-md-6">
                      
                     <div class="col-sm-12 pb-3">
-                        <label for="exampleCity">Treatment Description :</label>
-                        <p>@Model.Method</p>
+                        <label for="method">Treatment Description :</label>
+                        <p id="method">@Model.Method</p>
                     </div>
                 </div>
             </div>

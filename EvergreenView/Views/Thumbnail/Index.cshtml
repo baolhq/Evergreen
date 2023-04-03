@@ -84,9 +84,11 @@
 <div id="grid-container">
     @foreach (var item in Model)
     {
+        var apiUrl = item.Url.StartsWith("http") ? "" : "https://evergreen-api.onrender.com/";
+        var src = apiUrl + item.Url;
         <figure>
             <!--suppress HtmlDeprecatedAttribute -->
-            <img alt="@item.AltText" onerror="this.onerror=null;this.src='https://i.imgur.com/MP8rmmN.png';" src="@Url.Content(item.Url)"/>
+            <img alt="@item.AltText" onerror="this.onerror=null;this.src='https://i.imgur.com/MP8rmmN.png';" src="@Url.Content(src)"/>
             <div class="inner">
                 <p class="text-ellipsis">@item.AltText</p>
                 <div class="d-flex align-items-center">

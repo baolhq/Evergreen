@@ -16,32 +16,28 @@ namespace EvergreenAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _UserRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
 
-        public UserController(IUserRepository UserRepository, IMapper mapper, AppDbContext context)
+        public UserController(IUserRepository userRepository, IMapper mapper, AppDbContext context)
         {
-            _UserRepository = UserRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
             _context = context;
         }
 
         [HttpGet]
-
         public IActionResult GetUsers()
         {
-            var users = _UserRepository.GetUsers();
+            var users = _userRepository.GetUsers();
             return Ok(_mapper.Map<List<Account>>(users));
-
-
         }
 
         [HttpGet("{id}")]
-
         public IActionResult GetUser(int id)
         {
-            var user = _UserRepository.GetUser(id);
+            var user = _userRepository.GetUser(id);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -50,35 +46,38 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPut("ManageRole")]
-        public async Task<IActionResult> SetRole(RoleDTO roleDTO)
+        public async Task<IActionResult> SetRole(RoleDTO roleDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var account = _context.Accounts.Where(a => a.AccountId == int.Parse(roleDTO.AccountId)).FirstOrDefault();
-            if (account == null) return NotFound($"Account {roleDTO.AccountId} cannot be found");
+            var account = _context.Accounts.FirstOrDefault(a => a.AccountId == int.Parse(roleDto.AccountId));
+            if (account == null) return NotFound($"Account {roleDto.AccountId} cannot be found");
 
-            account.Role = roleDTO.Role;
+            account.Role = roleDto.Role;
             await _context.SaveChangesAsync();
 
             return Ok(account);
         }
+
 
 
         [HttpPut("ManageBlocked")]
         public async Task<IActionResult> SetBlocked(BlockedDTO blockedDTO)
+
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var account = _context.Accounts.Where(a => a.AccountId == int.Parse(blockedDTO.AccountId)).FirstOrDefault();
-            if (account == null) return NotFound($"Account {blockedDTO.AccountId} cannot be found");
+            var account = _context.Accounts.FirstOrDefault(a => a.AccountId == int.Parse(blockedDto.AccountId));
+            if (account == null) return NotFound($"Account {blockedDto.AccountId} cannot be found");
+
 
             account.Status = blockedDTO.IsBlocked;
+
             await _context.SaveChangesAsync();
 
 
             return Ok(account);
         }
-
 
 
         [HttpPost]
@@ -88,11 +87,11 @@ namespace EvergreenAPI.Controllers
             if (user == null)
                 return BadRequest(ModelState);
 
-            var User = _UserRepository.GetUsers()
-                .Where(c => c.Email.Trim().ToUpper() == user.Email.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var userToCreate = _userRepository
+                .GetUsers()
+                .FirstOrDefault(c => c.Email.Trim().ToUpper() == user.Email.TrimEnd().ToUpper());
 
-            if (User != null)
+            if (userToCreate != null)
             {
                 ModelState.AddModelError("", "It is already exists");
                 return StatusCode(422, ModelState);
@@ -101,21 +100,21 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserMap = _mapper.Map<UserDTO>(user);
+            var userMap = _mapper.Map<UserDTO>(user);
 
-            if (!_UserRepository.CreateUser(UserMap))
+            if (_userRepository.CreateUser(userMap))
             {
-                ModelState.AddModelError("", "Something was wrong while saving");
-                return StatusCode(500, ModelState);
+                return Ok("Create User Successfully");
             }
 
-            return Ok("Create User Successfully");
+            ModelState.AddModelError("", "Something was wrong while saving");
+            return StatusCode(500, ModelState);
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateUser(int id, [FromBody] AccountUpdateDTO updatedUser)
         {
-            var user = _UserRepository.GetUser(id);
+            var user = _userRepository.GetUser(id);
             if (user == null)
                 return BadRequest(ModelState);
 
@@ -125,7 +124,7 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_UserRepository.UpdateUser(updatedUser, id))
+            if (!_userRepository.UpdateUser(updatedUser, id))
             {
                 ModelState.AddModelError("", "Something was wrong when saving");
                 return StatusCode(500, ModelState);
@@ -135,23 +134,21 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
         [HttpDelete("{email}")]
-
         public IActionResult DeleteUser(int id)
         {
-
-            var user = _UserRepository.GetUser(id);
+            var user = _userRepository.GetUser(id);
             if (user == null)
                 return BadRequest(ModelState);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_UserRepository.DeleteUser(id))
+            if (!_userRepository.DeleteUser(id))
             {
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);
             }
+
             return NoContent();
         }
 
@@ -159,7 +156,7 @@ namespace EvergreenAPI.Controllers
         [HttpGet("Search")]
         public ActionResult<List<Account>> Search(string search)
         {
-            var list = _UserRepository.Search(search);
+            var list = _userRepository.Search(search);
 
             return Ok(list);
         }

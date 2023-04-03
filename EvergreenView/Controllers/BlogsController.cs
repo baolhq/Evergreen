@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using EvergreenAPI.Models;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 
 namespace EvergreenView.Controllers
 {
@@ -49,7 +50,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
-
+            
             var blog = await GetBlogById(id);
             if (blog == null)
                 return NotFound();
@@ -71,13 +72,14 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index");
             }
             
-            HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
-            string strData1 = await responseImage.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await _client.GetAsync(_thumbnailApiUrl);
+            string strData1 = await response.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
+            
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData1, options1);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View();
@@ -97,12 +99,14 @@ namespace EvergreenView.Controllers
 
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
+            
+            p.LastModifiedDate = DateTime.Now.AddHours(7);
             string data = JsonSerializer.Serialize(p);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = _client.PostAsync(_blogApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
+                
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("AdminIndex");
             }
@@ -162,7 +166,10 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-			var blogId = await GetBlogById(id);
+
+
+            blog.LastModifiedDate = DateTime.Now.AddHours(7);
+            var blogId = await GetBlogById(id);
 			var data = JsonSerializer.Serialize(blog);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
 			HttpResponseMessage response = await _client.PutAsync(_blogApiUrl + "/" + id, content);
@@ -232,14 +239,20 @@ namespace EvergreenView.Controllers
             HttpResponseMessage response = await _client.GetAsync(_blogApiUrl + "/" + id);
             if (!response.IsSuccessStatusCode)
                 return null;
-            string strData = await response.Content.ReadAsStringAsync();
 
+            
+            string strData = await response.Content.ReadAsStringAsync();
+            
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
             return JsonSerializer.Deserialize<Blog>(strData, options);
         }
+
+
+
+
 
         public async Task<IEnumerable<Thumbnail>> GetImages()
         {

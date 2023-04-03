@@ -40,8 +40,8 @@
                                 @Html.DisplayFor(modelItem => item.Name)
                             </td>
                             <td>
-                                <a asp-action="Delete" asp-route-id="@item.MedicineCategoryId" class="btn btn-danger">Delete</a>
-                                <a asp-action="Edit" asp-route-id="@item.MedicineCategoryId" class="btn btn-warning">Update</a>
+                                <a asp-action="Delete" asp-route-id="@item.MedicineCategoryId" class="btn btn-danger"> <i class="far fa-trash-alt"></i> </a>
+                                <a asp-action="Edit" asp-route-id="@item.MedicineCategoryId" class="btn btn-warning"> <i class="fas fa-edit"></i> </a>
                             </td>
                         </tr>
                     }

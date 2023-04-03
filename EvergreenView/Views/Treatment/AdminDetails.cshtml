@@ -1,21 +1,14 @@
 ﻿@model EvergreenAPI.Models.Treatment
-@using Microsoft.AspNetCore.Http;
-@using System.Net
-@inject IHttpContextAccessor httpContentAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
+
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Details";
 }
 
-
-
 <div class="container">
     <div class="card card-outline-secondary text-dark">
         <div class="card-header">
-             <h4 for="exampleFirst">Treatment Name: @Model.TreatmentName</h4>
+            <h4 for="exampleFirst">Treatment Name: @Model.TreatmentName</h4>
         </div>
         <div class="card-body">
             <div class="row mt-4  justify-content-center">
@@ -28,18 +21,22 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                         
+
                         <div class="col-sm-12 pb-3">
-                            <label for="exampleCity">Treatment Description :</label>
-                            <p>@Model.Method</p>
+                            <label for="method">Treatment Description :</label>
+                            <p id="method">@Model.Method</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card-footer">
                 <div class="justify-content-between">
-                    <a asp-action="Delete" asp-route-id="@Model.TreatmentId" class="btn btn-danger px-5"> <i class="far fa-trash-alt"></i> </a>
-                    <a asp-action="Edit" asp-route-id="@Model.TreatmentId" class="btn btn-warning px-5"> <i class="fas fa-edit"></i> </a>
+                    <a asp-action="Delete" asp-route-id="@Model.TreatmentId" class="btn btn-danger px-5">
+                        <i class="far fa-trash-alt"></i>
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.TreatmentId" class="btn btn-warning px-5">
+                        <i class="fas fa-edit"></i>
+                    </a>
                     <a asp-action="AdminIndex" class="btn btn-success px-5"> Back To List</a>
                 </div>
             </div>

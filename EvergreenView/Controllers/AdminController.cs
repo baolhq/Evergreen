@@ -13,31 +13,38 @@ namespace EvergreenView.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly string _medicineCategoryApiUrl;
-        private readonly HttpClient _client;
+        private string MedicineCategoryApiUrl = "";
+        private readonly HttpClient client = null;
 
         public AdminController()
         {
-            _client = new HttpClient();
+            client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _medicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            MedicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory/GetMedicineCategoryName";
         }
 
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            var token = HttpContext.Session.GetString("t");
+            if (HttpContext.Session.GetString("r") != "Admin" || string.IsNullOrEmpty(token))
             {
                 return RedirectToAction("Index", "Home");
             }
-            HttpResponseMessage response = await _client.GetAsync(_medicineCategoryApiUrl);
+
+            token = token.Replace("\"", string.Empty);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage response = await client.GetAsync(MedicineCategoryApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
+
             var medicineCategoriesName = JsonSerializer.Deserialize<JsonElement>(strData, options);
-            HttpContext.Session.SetString("medicineCategoriesName", medicineCategoriesName.ToString());
+            var listCategoriesName = medicineCategoriesName.GetProperty("listCategoriesName");
+            HttpContext.Session.SetString("medicineCategoriesName", listCategoriesName.ToString());
             return View();
         }
     }

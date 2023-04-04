@@ -27,82 +27,38 @@
             </div>
         </div>
 
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Disease Chart</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie mx-auto">
-                        <canvas id="myDiseaseChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>    
+        
     </div>
 </div>
 
 @section Scripts {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-        //setup
-        const dataMedi = {
-            labels: ['Pesticide', 'Fertilizer', 'Fungicide'],
-            datasets: [{
-                label: 'Total medicine of this kind: ',
-                data: [2, 1, 1],
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)',
-                    'rgb(45, 204, 130)',
-                    'rgb(194, 58, 146)'
-                ],
-                hoverOffset: 4
-            }]
-        };
+    <script>
+        let result = "@medicineCategoriesName";
+        let newresult = result.replaceAll(/&quot;/g, '"')
+        let newresult2 = newresult.replaceAll('[','')
+        let newresult3 = newresult2.replaceAll(']','')
+        let newresult4 = newresult3.replaceAll(/["]/g, '')
 
-        const dataDisease = {
-            labels: ['By Pests', 'By Viruses', 'By Weather'],
-            datasets: [{
-                label: 'Total disease of this kind: ',
-                data: [1, 2, 1],
-                backgroundColor: [
-                    'rgb(75, 192, 192)',
-                    'rgb(45, 204, 130)',
-                    'rgb(194, 58, 146)',
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)'
-                ],
-                hoverOffset: 4
-            }]
-        };
-
-        //config
-        const configMedi = {
+        const newArr = newresult4.split(",")
+        const ctxPie = document.getElementById('myMediChart').getContext('2d');
+        new Chart(ctxPie, {
             type: 'pie',
-            data: dataMedi
-        };
+            data: {
+                labels : newArr,
+                datasets: [{
+                    label: 'Total medicine of this kind:',
+                    data: [3, 0, 1],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)'
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+        });
 
-        const configDisease = {
-            type: 'pie',
-            data: dataDisease
-        };
-
-        //render init block
-        const myMediChart = new Chart(
-            document.getElementById('myMediChart'),
-            configMedi
-        );
-
-        const myDiseaseChart = new Chart(
-            document.getElementById('myDiseaseChart'),
-            configDisease
-        );
-
-</script>
+    </script>
 }

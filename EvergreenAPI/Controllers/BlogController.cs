@@ -117,6 +117,36 @@ namespace EvergreenAPI.Controllers
         }
 
 
+
+        [HttpPut("UpdateViewBlog/{blogId}")]
+        public IActionResult UpdateViewBlog(int blogId)
+        {
+            
+
+            if (!_blogRepository.UpdateViewBlog(blogId))
+            {
+                ModelState.AddModelError("", "Something was wrong when saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Updated Success");
+        }
+
+
+
+        [HttpGet("GetViewBlog/{id}")]
+        public IActionResult GetViewBlog(int id)
+        {
+            if (_blogRepository.GetViewBlog(id) == 0)
+            {
+                ModelState.AddModelError("", "Something was wrong when saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(_blogRepository.GetViewBlog(id));
+        }
+
+
         [HttpDelete("{blogId}")]
         public IActionResult DeleteBlog(int blogId)
         {

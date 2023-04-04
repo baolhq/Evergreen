@@ -58,7 +58,7 @@ namespace EvergreenView.Controllers
                 await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
-                    TempData["error"] = "Cannot Log-In!";
+                    TempData["error"] = "Cannot Log-In! Your account has been blocked!";
                     return RedirectToAction("Login", "Authentication");
                 }
 
@@ -90,6 +90,7 @@ namespace EvergreenView.Controllers
         {
             if (!string.IsNullOrWhiteSpace(Session.GetString("t")))
             {
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -109,11 +110,11 @@ namespace EvergreenView.Controllers
                 var response = await _client.PostAsync($"{_authApiUrl}/register", content);
                 if (!response.IsSuccessStatusCode)
                 {
-                    TempData["error"] = "Cannot Register!";
+                    TempData["error"] = "Cannot Register! Email address already exists!";
                 }
                 else
                 {
-                    TempData["message"] = "Register success, please visit your email to verify your account!!";
+                    TempData["message"] = "Register success, Please visit your email to verify your account!!";
                     return RedirectToAction("VerifyAccount", "Authentication", new { email = account.Email });
                 }
             }

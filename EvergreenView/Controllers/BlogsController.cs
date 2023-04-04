@@ -9,6 +9,7 @@ using EvergreenAPI.Models;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Reflection.Metadata;
 
 namespace EvergreenView.Controllers
 {
@@ -25,7 +26,7 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _blogApiUrl = "https://evergreen-api.onrender.com/api/Blog";
+            _blogApiUrl = "https://localhost:44334/api/Blog";
             _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
         }
 
@@ -62,7 +63,12 @@ namespace EvergreenView.Controllers
             var blog = await GetBlogById(id);
             if (blog == null)
                 return NotFound();
-            return View(blog);
+             var view = await UpdateViewBlogById(id);
+           if(view == true)
+            {
+                return View(blog);
+            }
+           return View(blog);
         }
 
         public async Task<ActionResult> Create()
@@ -234,6 +240,30 @@ namespace EvergreenView.Controllers
 
 
 
+        private async Task<bool> UpdateViewBlogById(int blogid)
+        {
+            var blog = await GetBlogById(blogid);
+            var data = JsonSerializer.Serialize(blog);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _client.PutAsync(_blogApiUrl + "/UpdateViewBlog/" + blogid, content) ;
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+
+            string strData = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            return true;
+        }
+        
+
+
+
+
+
         private async Task<Blog> GetBlogById(int id)
         {
             HttpResponseMessage response = await _client.GetAsync(_blogApiUrl + "/" + id);
@@ -307,6 +337,8 @@ namespace EvergreenView.Controllers
             {
                 PropertyNameCaseInsensitive = true
             };
+            
+
             List<Blog> listBlogs = JsonSerializer.Deserialize<List<Blog>>(strData, options);
             return View(listBlogs);
         }

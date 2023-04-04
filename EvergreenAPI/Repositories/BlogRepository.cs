@@ -62,6 +62,26 @@ namespace EvergreenAPI.Repositories
         }
 
 
+
+
+        public bool UpdateViewBlog(int BlogId)
+        {
+            var blog = _context.Blogs.SingleOrDefault(b => b.BlogId == BlogId);
+            blog.ViewCount++;
+            _context.Update(blog);
+            return Save();
+        }
+
+
+
+        public int GetViewBlog(int blogId)
+        {
+            var blog = _context.Blogs.SingleOrDefault(b => b.BlogId == blogId);
+            return blog.ViewCount;
+           
+        }
+
+
         public List<Blog> Search(string search)
         {
             List<Blog> d = new List<Blog>();

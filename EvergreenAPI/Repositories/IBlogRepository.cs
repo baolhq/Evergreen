@@ -18,6 +18,8 @@ namespace EvergreenAPI.Repositories
         bool UpdateBlog(Blog b);
         bool Save();
         List<Blog> Search(string search);
+        bool UpdateViewBlog(int BlogId);
+        int GetViewBlog(int blogId);
 
     }
 }

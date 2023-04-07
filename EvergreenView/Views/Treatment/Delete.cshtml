@@ -2,7 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete treatment";
 }
 
 <div class="container">
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                     
+
                     <div class="col-sm-12 pb-3">
                         <label for="method">Treatment Description :</label>
                         <p id="method">@Model.Method</p>
@@ -33,8 +33,8 @@
         <div class="card-footer">
             <div class="justify-content-between">
                 <form asp-action="Delete" method="post">
-                    <input type="hidden" asp-for="TreatmentId" />
-                    <input type="submit" value="Delete" class="btn btn-danger" />
+                    <input type="hidden" asp-for="TreatmentId"/>
+                    <input type="submit" value="Delete" class="btn btn-danger"/>
                     <a asp-action="AdminIndex" class="btn btn-success">Back To List</a>
                 </form>
             </div>

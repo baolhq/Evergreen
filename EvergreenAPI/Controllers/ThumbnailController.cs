@@ -110,7 +110,6 @@ namespace EvergreenAPI.Controllers
             _context.Thumbnails.Add(new Thumbnail { AltText = altText, Url = uniqueFilePath });
             await _context.SaveChangesAsync();
 
-            string responseMessage = $"{fileName} uploaded successfully";
             var response = new HttpResponseMessage();
             response.Headers.Add("Access-Control-Allow-Origin", "*");
             response.Headers.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");

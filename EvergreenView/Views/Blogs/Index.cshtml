@@ -1,12 +1,7 @@
-﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
-@model IEnumerable<EvergreenAPI.Models.Blog>
+﻿@model IEnumerable<EvergreenAPI.Models.Blog>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Blogs";
 }
 
 <style>

@@ -1,9 +1,8 @@
 ﻿@model EvergreenAPI.Models.Blog
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit " + Model.Title;
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var listImages = ViewData["Thumbnails"] as SelectList;
-    
 }
 <h1 class="text-dark">Update Blog</h1>
 <hr />

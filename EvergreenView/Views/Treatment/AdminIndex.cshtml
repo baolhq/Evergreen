@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EvergreenAPI.Models.Treatment>
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Treatment management";
 }
 
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
             <form method="get" class="ml-2">
                 <div class="input-group">
                     <div class="form-outline">
-                        <input type="search" name="searchString" placeholder="Search for.." class="form-control" />
+                        <input type="search" name="searchString" placeholder="Search for.." class="form-control"/>
                     </div>
                     <button type="submit" value="Search" class="btn btn-primary">
                         <i class="fas fa-search"></i>
@@ -27,37 +27,37 @@
         <div class="table-responsive">
             <table class="table table-bordered text-dark" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.TreatmentName)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Method)
-                        </th>
-                        <th hidden>
-                            @Html.DisplayNameFor(model => model.Thumbnail)
-                        </th>
-                        <th></th>
-                    </tr>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TreatmentName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Method)
+                    </th>
+                    <th hidden>
+                        @Html.DisplayNameFor(model => model.Thumbnail)
+                    </th>
+                    <th></th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TreatmentName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Method)
-                            </td>
-                            <td hidden>
-                                @Html.DisplayFor(modelItem => item.Thumbnail.Url)
-                            </td>
-                            <td>
-                                <a asp-action="AdminDetails" asp-route-id="@item.TreatmentId" class="btn btn-info"> View <i class="fa fa-eye"></i> </a>
-                            </td>
-                        </tr>
-                    }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TreatmentName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Method)
+                        </td>
+                        <td hidden>
+                            @Html.DisplayFor(modelItem => item.Thumbnail.Url)
+                        </td>
+                        <td>
+                            <a asp-action="AdminDetails" asp-route-id="@item.TreatmentId" class="btn btn-info"> View <i class="fa fa-eye"></i> </a>
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>
@@ -80,5 +80,3 @@
         }
     </script>
 }
-
-

@@ -2,9 +2,9 @@
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "Manage Role";
+    ViewData["Title"] = "Manage user role";
 
-    List<string> listRoles = new List<string>()
+    var listRoles = new List<string>()
     {
         "User",
         "Professor"
@@ -24,60 +24,60 @@
         <div class="table-responsive">
             <table class="table table-bordered text-dark">
                 <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.AccountId)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Username)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.FullName)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Email)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Role)
-                        </th>
-                    </tr>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Username)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FullName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Role)
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AccountId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Username)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.FullName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Email)
-                            </td>
-                            <td class="role">
-                                @if (item.Role == "Admin")
-                                {
-                                    <select asp-for="@item.Role" class="form-control" disabled>
-                                        <option selected>@Html.DisplayFor(modelItem => item.Role)</option>
-                                    </select>
-                                }
-                                else
-                                {
-                                    <select asp-for="@item.Role" class="form-control account-@item.AccountId" onchange="changeRole(this)">
-                                        <option selected>@Html.DisplayFor(modelItem => item.Role)</option>
-                                        @foreach (var t in listRoles.Where(t => t != item.Role && t != "Admin"))
-                                        {
-                                            <option>@t</option>
-                                        }
-                                    </select>
-                                }
-                            </td>
-                        </tr>
-                    }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccountId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Username)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td class="role">
+                            @if (item.Role == "Admin")
+                            {
+                                <select asp-for="@item.Role" class="form-control" disabled>
+                                    <option selected>@Html.DisplayFor(modelItem => item.Role)</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <select asp-for="@item.Role" class="form-control account-@item.AccountId" onchange="changeRole(this)">
+                                    <option selected>@Html.DisplayFor(modelItem => item.Role)</option>
+                                    @foreach (var t in listRoles.Where(t => t != item.Role && t != "Admin"))
+                                    {
+                                        <option>@t</option>
+                                    }
+                                </select>
+                            }
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>

@@ -1,12 +1,7 @@
-@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
 @model IEnumerable<EvergreenAPI.Models.MedicineCategory>
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Medicine category management";
 }
 
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
@@ -22,29 +17,33 @@
         <div class="table-responsive">
             <table class="table table-bordered text-dark" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Name)
-                        </th>
-                        <th>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
 
-                        </th>
+                    </th>
 
-                    </tr>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
-                            <td>
-                                <a asp-action="Delete" asp-route-id="@item.MedicineCategoryId" class="btn btn-danger"> <i class="far fa-trash-alt"></i> </a>
-                                <a asp-action="Edit" asp-route-id="@item.MedicineCategoryId" class="btn btn-warning"> <i class="fas fa-edit"></i> </a>
-                            </td>
-                        </tr>
-                    }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.MedicineCategoryId" class="btn btn-danger">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.MedicineCategoryId" class="btn btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>
@@ -67,4 +66,3 @@
         }
     </script>
 }
-

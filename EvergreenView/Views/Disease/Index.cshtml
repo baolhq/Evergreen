@@ -1,11 +1,6 @@
-@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
 @model IEnumerable<EvergreenAPI.Models.Disease>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Diseases";
 }
 <style>
     .text-ellipsis {
@@ -42,4 +37,3 @@
         }
     </div>
 </div>
-

@@ -1,16 +1,9 @@
 ﻿@model EvergreenAPI.Models.Disease
-@using Microsoft.AspNetCore.Http;
-@using System.Net
-@inject IHttpContextAccessor httpContentAccessor
+
 @{
-    var session = httpContentAccessor.HttpContext.Session;
-}
-@{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete " + Model.Name;
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-
 
 <div class="container">
     <div class="card card-outline-secondary">
@@ -52,12 +45,11 @@
         <div class="card-footer">
             <div class="justify-content-between">
                 <form asp-action="Delete" method="post">
-                    <input type="hidden" asp-for="DiseaseId" />
-                    <input type="submit" value="Delete" class="btn btn-danger" /> 
+                    <input type="hidden" asp-for="DiseaseId"/>
+                    <input type="submit" value="Delete" class="btn btn-danger"/>
                     <a asp-action="AdminIndex" class="btn btn-success"> Back To List </a>
                 </form>
             </div>
         </div>
     </div>
 </div>
-

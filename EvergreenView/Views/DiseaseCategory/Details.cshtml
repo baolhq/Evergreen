@@ -1,9 +1,10 @@
 ﻿@model EvergreenAPI.Models.DiseaseCategory
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = Model.Name;
 }
 <h1 class="text-dark">Disease Category Name: @Model.Name</h1>
-<hr />
+<hr/>
 <div class="text-dark">
     <dl class="row">
         <dt class="col-sm-2">
@@ -15,7 +16,11 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Delete" asp-route-id="@Model.DiseaseCategoryId" class="btn btn-danger"> <i class="far fa-trash-alt"></i> </a>
-    <a asp-action="Edit" asp-route-id="@Model.DiseaseCategoryId" class="btn btn-warning"> <i class="fas fa-edit"></i> </a>
-        <a asp-action="Index" class="btn btn-success">Back To List</a>
+    <a asp-action="Delete" asp-route-id="@Model.DiseaseCategoryId" class="btn btn-danger">
+        <i class="far fa-trash-alt"></i>
+    </a>
+    <a asp-action="Edit" asp-route-id="@Model.DiseaseCategoryId" class="btn btn-warning">
+        <i class="fas fa-edit"></i>
+    </a>
+    <a asp-action="Index" class="btn btn-success">Back To List</a>
 </div>

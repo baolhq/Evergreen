@@ -1,12 +1,7 @@
 ﻿@model EvergreenAPI.Models.Medicine
-@using Microsoft.AspNetCore.Http;
-@using System.Net
-@inject IHttpContextAccessor httpContentAccessor
+
 @{
-    var session = httpContentAccessor.HttpContext.Session;
-}
-@{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name;
 }
 
 <div class="container">

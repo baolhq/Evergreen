@@ -1,10 +1,10 @@
 ﻿@model EvergreenAPI.Models.MedicineCategory
-@{  
+@{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete " + Model.Name;
 }
 <h1 class="text-dark">Are you sure you want to delete @Model.Name ?</h1>
-<hr />
+<hr/>
 <div class="text-dark">
     <dl class="row">
         <dt class="col-sm-2">
@@ -16,8 +16,8 @@
     </dl>
 
     <form asp-action="Delete" method="post">
-        <input type="hidden" asp-for="MedicineCategoryId" />
-        <input type="submit" value="Delete" class="btn btn-danger" />
+        <input type="hidden" asp-for="MedicineCategoryId"/>
+        <input type="submit" value="Delete" class="btn btn-danger"/>
         <a asp-action="Index" class="btn btn-success">Back To List</a>
     </form>
 </div>

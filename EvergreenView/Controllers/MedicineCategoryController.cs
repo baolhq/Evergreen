@@ -22,7 +22,7 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _medicineCategoryApiUrl = "https://localhost:44334/api/MedicineCategory";
+            _medicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
         }
 
         public async Task<IActionResult> Index()

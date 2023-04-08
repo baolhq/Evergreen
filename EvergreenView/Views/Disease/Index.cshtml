@@ -1,11 +1,6 @@
-@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContentAccessor
-@{
-    var session = httpContentAccessor.HttpContext.Session;
-}
 @model IEnumerable<EvergreenAPI.Models.Disease>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Diseases";
 }
 <style>
     .text-ellipsis {
@@ -145,6 +140,7 @@
             </button>
         </div>
     </div>
+
 </div>
 
 <script src="https://kit.fontawesome.com/bdb952e5fa.js" crossorigin="anonymous"></script>
@@ -262,3 +258,4 @@
     listNumber()
     changePage()
 </script>
+

@@ -75,15 +75,23 @@
                         {
                             <a class="collapse-item" asp-action="Index" asp-controller="ExpertConfirmation">Expert Confirm</a>
                         }
-                        <a class="collapse-item" asp-action="Logout" asp-controller="Authentication">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column pt-3">
+        <div id="content-wrapper" class="d-flex flex-column">
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+                    <a asp-action="Logout" asp-controller="Authentication">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
+                        Logout
+                    </a>
+                </ul>
 
+            </nav>
             <!-- Main Content -->
             <div id="content">
                 <main class="px-5">

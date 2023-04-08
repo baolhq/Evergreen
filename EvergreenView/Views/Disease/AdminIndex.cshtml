@@ -141,13 +141,13 @@
                     <th hidden>
                         @Html.DisplayNameFor(model => model.ThumbnailId)
                     </th>
-                    <th></th>
+                    <th>Details</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                        <tr class="element_table">
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>

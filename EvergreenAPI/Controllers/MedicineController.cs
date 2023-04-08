@@ -5,6 +5,7 @@ using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -133,6 +134,27 @@ namespace EvergreenAPI.Controllers
             var list = _medicineRepository.Search(search);
 
             return Ok(list);
+        }
+
+        [HttpGet("GetMedicineName")]
+        public ActionResult GetMedicineName()
+        {
+            Dictionary<string, int> amount = new Dictionary<string, int>();
+            var listMedicineName = _medicineRepository.getMedicinesName();
+            var categoryName = listMedicineName.Select(c => c.MedicineCategory.Name).Distinct();
+            foreach(var item in categoryName)
+            {
+                amount.Add(item, 0);
+            }
+            foreach(var item in listMedicineName.Select(l=>l.MedicineCategory))
+            {
+                if (amount.ContainsKey(item.Name))
+                {
+                    amount[item.Name]++;
+                }
+            }
+
+            return Ok(amount);
         }
     }
 }

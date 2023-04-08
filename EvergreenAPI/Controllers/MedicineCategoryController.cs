@@ -126,8 +126,8 @@ namespace EvergreenAPI.Controllers
             return Ok("Delete Success");
         }
 
-        [HttpGet("GetMedicineCategoryName")]
-        public ActionResult GetMedicineCategoryName()
+       [HttpGet("GetMedicineCategoryName")]
+       public ActionResult GetMedicineCategoryName()
         {
             var listCategoriesName = _medicineCategoryRepository.GetMedicineCategoryName();
             return Ok(new

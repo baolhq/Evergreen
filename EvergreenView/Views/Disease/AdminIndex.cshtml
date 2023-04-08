@@ -125,11 +125,6 @@
                         @Html.DisplayNameFor(model => model.Identification)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Affect)
-                    </th>
-
-
-                    <th>
                         @Html.DisplayNameFor(model => model.DiseaseCategory)
                     </th>
                     <th>
@@ -147,18 +142,15 @@
                 <tbody>
                 @foreach (var item in Model)
                 {
-                        <tr class="element_table">
+
+                    <tr class="element_table">
+
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Identification)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Affect)
-                        </td>
-
-
                         <td>
                             @Html.DisplayFor(modelItem => item.DiseaseCategory.Name)
                         </td>

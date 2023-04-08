@@ -42,9 +42,10 @@
         </div>
         <div class="card-footer">
             <div class="justify-content-between">
+                <a asp-action="AdminIndex" class="btn btn-success px-5"> <i class="fa-solid fa-hand-back-point-left"></i> </a>
                 <a asp-action="Delete" asp-route-id="@Model.MedicineId" class="btn btn-danger px-5"> <i class="far fa-trash-alt"></i> </a>
                 <a asp-action="Edit" asp-route-id="@Model.MedicineId" class="btn btn-warning px-5"> <i class="fas fa-edit"></i> </a>
-                <a asp-action="AdminIndex" class="btn btn-success px-5"> Back To List </a>
+                
             </div>
         </div>
     </div>

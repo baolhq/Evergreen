@@ -58,7 +58,7 @@ namespace EvergreenView.Controllers
                 await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
-                    TempData["error"] = "Cannot Log-In! Your account has been blocked!";
+                    TempData["error"] = "Cannot Log-In!";
                     return RedirectToAction("Login", "Authentication");
                 }
 

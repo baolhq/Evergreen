@@ -1,6 +1,7 @@
 ﻿using EvergreenAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NToastNotify;
 using System.Collections.Generic;
 using System.Data;
@@ -8,12 +9,14 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace EvergreenView.Controllers
 {
     public class AdminController : Controller
     {
-        private string MedicineCategoryApiUrl = "";
+        private string DiseaseApiUrl = "";
+        private string MedicineApiUrl = "";
         private readonly HttpClient client = null;
 
         public AdminController()
@@ -21,7 +24,9 @@ namespace EvergreenView.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            MedicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory/GetMedicineCategoryName";
+            DiseaseApiUrl = "https://localhost:44334/api/Disease/GetDiseaseName";
+            MedicineApiUrl = "https://localhost:44334/api/Medicine/GetMedicineName";
+
         }
 
         public async Task<IActionResult> Index()
@@ -31,20 +36,48 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-
             token = token.Replace("\"", string.Empty);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            HttpResponseMessage response = await client.GetAsync(MedicineCategoryApiUrl);
+            //Medi Chart
+            HttpResponseMessage response = await client.GetAsync(MedicineApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
+            var dictionaryObject = JsonSerializer.Deserialize<Dictionary<string,int>>(strData, options);
+            var keys = new List<string>();
+            var values = new List<int>();
+            foreach (var item in dictionaryObject)
+            {
+                keys.Add(item.Key);
+                values.Add(item.Value);
+            }
+            var jsonLabel = JsonSerializer.Serialize(keys);
+            var jsonData = JsonSerializer.Serialize(values);
+            HttpContext.Session.SetString("labels", jsonLabel);
+            HttpContext.Session.SetString("datas", jsonData);
 
-            var medicineCategoriesName = JsonSerializer.Deserialize<JsonElement>(strData, options);
-            var listCategoriesName = medicineCategoriesName.GetProperty("listCategoriesName");
-            HttpContext.Session.SetString("medicineCategoriesName", listCategoriesName.ToString());
+            //Disease Chart
+            HttpResponseMessage response1 = await client.GetAsync(MedicineApiUrl);
+            string strData1 = await response1.Content.ReadAsStringAsync();
+            var options1 = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var dictionaryObject1 = JsonSerializer.Deserialize<Dictionary<string, int>>(strData1, options1);
+            var keysDisease = new List<string>();
+            var valuesDisease = new List<int>();
+            foreach (var item1 in dictionaryObject1)
+            {
+                keysDisease.Add(item1.Key);
+                valuesDisease.Add(item1.Value);
+            }
+            var jsonLabelDisease = JsonSerializer.Serialize(keysDisease);
+            var jsonDataDisease = JsonSerializer.Serialize(valuesDisease);
+            HttpContext.Session.SetString("labelDisease", jsonLabelDisease);
+            HttpContext.Session.SetString("dataDisease", jsonDataDisease);
+
             return View();
         }
     }

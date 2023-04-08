@@ -64,6 +64,9 @@
                 <div class="collapse navbar-collapse" id="ftco-nav">
                     <ul class="navbar-nav ml-auto align-items-center">
                         <li class="nav-item">
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/AboutUs" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Blogs" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
                         </li>
                         <li class="nav-item">

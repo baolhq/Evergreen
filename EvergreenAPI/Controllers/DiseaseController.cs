@@ -24,13 +24,6 @@ namespace EvergreenAPI.Controllers
             _mapper = mapper;
         }
 
-
-
-
-
-
-
-
         [HttpGet]
         [AllowAnonymous]
         public IActionResult GetDiseases()
@@ -42,15 +35,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(diseases);
         }
-
-
-
-
-
-
-
-
-
 
         [HttpGet("{DiseaseId}")]
         [AllowAnonymous]
@@ -66,15 +50,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(disease);
         }
-
-
-
-
-
-
-
-
-
 
         [HttpPost]
         public IActionResult CreateDisease([FromBody] DiseaseDTO diseaseCreate)
@@ -106,13 +81,6 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
-
-
-
-
-
-
-
         [HttpPut("{DiseaseId}")]
         public IActionResult UpdateDisease(int DiseaseId, [FromBody] DiseaseDTO updatedDisease)
         {
@@ -139,13 +107,6 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
-
-
-
-
-
-
-
         [HttpDelete("{DiseaseId}")]
         public IActionResult DeleteDisease(int DiseaseId)
         {
@@ -165,9 +126,6 @@ namespace EvergreenAPI.Controllers
             return Ok("Delete Success");
         }
 
-
-
-
         [HttpGet("Search")]
         public ActionResult<List<Disease>> Search(string search)
         {
@@ -176,7 +134,25 @@ namespace EvergreenAPI.Controllers
             return Ok(list);
         }
 
+        [HttpGet("GetDiseaseName")]
+        public ActionResult GetMedicineName()
+        {
+            Dictionary<string, int> amount = new Dictionary<string, int>();
+            var listDiseaseName = _diseaseRepository.getDiseasesName();
+            var categoryName = listDiseaseName.Select(c => c.DiseaseCategory.Name).Distinct();
+            foreach (var item in categoryName)
+            {
+                amount.Add(item, 0);
+            }
+            foreach (var item in listDiseaseName.Select(l => l.DiseaseCategory))
+            {
+                if (amount.ContainsKey(item.Name))
+                {
+                    amount[item.Name]++;
+                }
+            }
 
-
+            return Ok(amount);
+        }
     }
 }

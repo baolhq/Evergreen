@@ -1,5 +1,6 @@
 ﻿using EvergreenAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,6 +82,13 @@ namespace EvergreenAPI.Repositories
                 throw new Exception(e.Message);
             }
             return d;
+        }
+
+
+        public List<Medicine> getMedicinesName()
+        {
+            var listMedicine = _context.Medicines.Include(s => s.MedicineCategory).ToList();
+            return listMedicine;
         }
     }
 }

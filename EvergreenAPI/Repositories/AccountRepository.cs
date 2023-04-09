@@ -39,7 +39,7 @@ namespace EvergreenAPI.Repositories
         }
         public Account GetAccount(AccountDTO account)
         {
-            return _context.Accounts.Where(x => x.Password == account.Password && x.Email == account.Email).FirstOrDefault();
+            return _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email);
         }
 
         public Account Login(LoginDTO account)

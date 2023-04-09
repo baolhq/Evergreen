@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
@@ -99,7 +100,8 @@ namespace EvergreenAPI.Controllers
                 uniqueFilePath = newFullPath;
             }
 
-            var split = uniqueFilePath.Split('\\');
+            var separatorChar = Path.DirectorySeparatorChar;
+            var split = uniqueFilePath.Split(separatorChar);
             uniqueFilePath = split[^2] + "/" + split[^1];
 
             await using var stream = System.IO.File.Create(uniqueFilePath);
@@ -146,7 +148,8 @@ namespace EvergreenAPI.Controllers
                     System.IO.File.Delete(oldFile);
             }
 
-            var split = uniqueFilePath.Split('\\');
+            var separatorChar = Path.DirectorySeparatorChar;
+            var split = uniqueFilePath.Split(separatorChar);
             uniqueFilePath = split[^2] + "/" + split[^1];
 
             await using var stream = System.IO.File.Create(uniqueFilePath);
@@ -176,7 +179,7 @@ namespace EvergreenAPI.Controllers
                 return NotFound();
 
             var thumbnailToDelete = _thumbnailRepository.GetThumbnail(thumbnailId);
-            var uploadPath = @"F:\SP23\Evergreen\EvergreenAPI";
+            var uploadPath = AppDomain.CurrentDomain.BaseDirectory;
             var thumbnailUrl = Path.Combine(uploadPath, thumbnailToDelete.Url);
             if (System.IO.File.Exists(thumbnailUrl))
                 System.IO.File.Delete(thumbnailUrl);

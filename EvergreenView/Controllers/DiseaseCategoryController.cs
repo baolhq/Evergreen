@@ -22,7 +22,9 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
+
             _diseaseCategoryApiUrl = configuration["BaseUrl"] + "/api/DiseaseCategory";
+
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -34,7 +36,7 @@ namespace EvergreenView.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (Session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin" && Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -53,7 +55,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            if (Session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin" && Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -67,7 +69,7 @@ namespace EvergreenView.Controllers
 
         public ActionResult Create()
         {
-            if (Session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin" && Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index");
             }
@@ -80,7 +82,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(DiseaseCategory diseaseCategory)
         {
-            if (Session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin" && Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -103,7 +105,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            if (Session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin" && Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -124,7 +126,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, DiseaseCategory diseaseCategory)
         {
-            if (Session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin" && Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -163,7 +165,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            if (Session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin" && Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -179,7 +181,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (Session.GetString("r") != "Admin")
+            if (Session.GetString("r") != "Admin" && Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index", "Home");
             }

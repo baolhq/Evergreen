@@ -1,4 +1,4 @@
-﻿using EvergreenAPI.DTO;
+using EvergreenAPI.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Net.Http;
@@ -25,7 +25,9 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
+
             _authApiUrl = configuration["BaseUrl"] + "/api/auth";
+
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -71,7 +73,7 @@ namespace EvergreenView.Controllers
                 HttpContext.Session.SetString("i", body.AccountId.ToString());
                 HttpContext.Session.SetString("a", body.AvatarUrl);
 
-                return RedirectToAction("Index", HttpContext.Session.GetString("r") == "Admin" ? "Admin" : "Home");
+                return RedirectToAction("Index", HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("r") == "Professor" ? "Admin" : "Home");
             }
 
             TempData["error"] = "Your Email or Password is wrong!";

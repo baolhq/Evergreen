@@ -17,7 +17,9 @@ namespace EvergreenView.Controllers
 
         public ExpertConfirmationController(IConfiguration configuration)
         {
+
             _detectionHistoryApiUrl = configuration["BaseUrl"] + "/api/DetectionHistory";
+
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);

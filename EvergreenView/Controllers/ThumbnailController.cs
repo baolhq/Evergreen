@@ -20,12 +20,14 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
+
             _thumbnailApiUrl = configuration["BaseUrl"] + "/api/Thumbnail";
+
         }
 
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
                 return RedirectToAction("Index", "Home");
 
             var response = await _client.GetAsync(_thumbnailApiUrl);
@@ -46,7 +48,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Update(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
                 return RedirectToAction("Index");
 
             var thumbnail = await GetThumbnailAsync(id);
@@ -58,7 +60,7 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Delete(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
                 return RedirectToAction("Index");
 
             var thumbnail = await GetThumbnailAsync(id);
@@ -70,7 +72,7 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(Thumbnail thumbnail)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
                 return RedirectToAction("Index");
 
             var token = HttpContext.Session.GetString("t");
@@ -86,7 +88,7 @@ namespace EvergreenView.Controllers
 
         private async Task<Thumbnail> GetThumbnailAsync(int id)
         {
-            if (HttpContext.Session.GetString("r") != "Admin")
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
                 return null;
 
             HttpResponseMessage response = await _client.GetAsync(_thumbnailApiUrl + "/" + id);

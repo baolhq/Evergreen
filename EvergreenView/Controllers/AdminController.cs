@@ -26,13 +26,15 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
+
             _medicineApiUrl = configuration["BaseUrl"] + "/api/Medicine";
+
         }
 
         public async Task<IActionResult> Index()
         {
             var token = HttpContext.Session.GetString("t");
-            if (HttpContext.Session.GetString("r") != "Admin" || string.IsNullOrEmpty(token))
+            if (HttpContext.Session.GetString("r") != "Admin" && HttpContext.Session.GetString("r") != "Professor")
             {
                 return RedirectToAction("Index", "Home");
             }

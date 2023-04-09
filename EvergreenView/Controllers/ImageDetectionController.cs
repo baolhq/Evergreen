@@ -24,7 +24,9 @@ namespace EvergreenView.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
 
+
             _detectionApiUrl = configuration["BaseUrl"] + "/api/DetectionHistory";
+
             _httpContextAccessor = httpContextAccessor;
         }
 

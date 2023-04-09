@@ -27,8 +27,10 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
+
             _configuration = configuration;
             _userApiUrl = _configuration["BaseUrl"] + "/api/User";
+
         }
 
         public async Task<ActionResult> AdminDetails(int id)

@@ -73,7 +73,13 @@
                         }
                         else if(session.GetString("r") == "Professor")
                         {
-                            <a class="collapse-item" asp-action="Index" asp-controller="ExpertConfirmation">Expert Confirm</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Blogs">Blog</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Disease">Disease</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="DiseaseCategory">Disease Category</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Medicine">Medicine</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="MedicineCategory">Medicine Category</a>
+                            <a class="collapse-item" asp-action="AdminIndex" asp-controller="Treatment">Treatment</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Thumbnail">Thumbnail</a>
                         }
                     </div>
                 </div>

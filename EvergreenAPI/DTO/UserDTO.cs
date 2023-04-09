@@ -50,8 +50,8 @@ namespace EvergreenAPI.DTO
 
         public string Professions { get; set; }
         public string PhoneNumber { get; set; }
-        public bool Status { get; set; } = true;
-        
-       
+        public bool IsBlocked { get; set; } = false;
+
+
     }
 }

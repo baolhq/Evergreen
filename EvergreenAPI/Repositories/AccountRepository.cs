@@ -44,7 +44,8 @@ namespace EvergreenAPI.Repositories
 
         public Account Login(LoginDTO account)
         {
-            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && !account.IsBlocked);
+            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && !x.IsBlocked);
+
             if (user == null)
             {
                 return null;
@@ -65,7 +66,7 @@ namespace EvergreenAPI.Repositories
                 .Where(x => x.Password == account.Password && x.Email == account.Email)
                 .FirstOrDefault();
 
-            if (validUser != null && validUser.Status)
+            if (validUser != null)
             {
                 
                 validUser.Token = GenerateToken(validUser.Email, validUser.Role);

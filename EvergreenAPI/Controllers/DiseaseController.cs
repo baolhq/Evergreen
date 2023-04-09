@@ -12,6 +12,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class DiseaseController : ControllerBase
     {
         private readonly IDiseaseRepository _diseaseRepository;
@@ -35,7 +36,6 @@ namespace EvergreenAPI.Controllers
             return Ok(diseases);
         }
 
-
         [HttpGet("{DiseaseId}")]
         [AllowAnonymous]
         public IActionResult GetDisease(int DiseaseId)
@@ -50,7 +50,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(disease);
         }
-
 
         [HttpPost]
         public IActionResult CreateDisease([FromBody] DiseaseDTO diseaseCreate)
@@ -82,7 +81,6 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
-
         [HttpPut("{DiseaseId}")]
         public IActionResult UpdateDisease(int DiseaseId, [FromBody] DiseaseDTO updatedDisease)
         {
@@ -109,7 +107,6 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
-
         [HttpDelete("{DiseaseId}")]
         public IActionResult DeleteDisease(int DiseaseId)
         {
@@ -126,17 +123,36 @@ namespace EvergreenAPI.Controllers
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);
             }
-
             return Ok("Delete Success");
         }
-
 
         [HttpGet("Search")]
         public ActionResult<List<Disease>> Search(string search)
         {
             var list = _diseaseRepository.Search(search);
-
+            
             return Ok(list);
+        }
+
+        [HttpGet("GetDiseaseName")]
+        public ActionResult GetMedicineName()
+        {
+            Dictionary<string, int> amount = new Dictionary<string, int>();
+            var listDiseaseName = _diseaseRepository.getDiseasesName();
+            var categoryName = listDiseaseName.Select(c => c.DiseaseCategory.Name).Distinct();
+            foreach (var item in categoryName)
+            {
+                amount.Add(item, 0);
+            }
+            foreach (var item in listDiseaseName.Select(l => l.DiseaseCategory))
+            {
+                if (amount.ContainsKey(item.Name))
+                {
+                    amount[item.Name]++;
+                }
+            }
+
+            return Ok(amount);
         }
     }
 }

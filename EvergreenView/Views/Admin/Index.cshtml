@@ -1,17 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor HttpContentAccessor
+@using System.Text.Json
+@inject IHttpContextAccessor httpContentAccessor
 
 @{
     ViewData["Title"] = "Admin dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var session = HttpContentAccessor.HttpContext?.Session;
-    var medicineCategoriesName = session.GetString("medicineCategoriesName");
+    var session = httpContentAccessor.HttpContext.Session;
+    var jsonData = session.GetString("datas");
+    var data = JsonSerializer.Deserialize<List<int>>(jsonData).ToArray();
+    string concatenatedInt = string.Join(", ", data);
+    var jsonDataDisease = session.GetString("dataDisease");
+    var dataDiseases = JsonSerializer.Deserialize<List<int>>(jsonDataDisease).ToArray();
+    string concatenatedDiseaseInt = string.Join(", ", dataDiseases);
 }
 
 <div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-dark">Dashboard</h1>
-    </div>
     <div class="row">
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
@@ -28,38 +31,65 @@
             </div>
         </div>
 
-
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Disease Chart</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-pie mx-auto">
+                        <canvas id="myDiseaseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        let result = "@medicineCategoriesName";
-        let newresult = result.replaceAll(/&quot;/g, '"')
-        let newresult2 = newresult.replaceAll('[','')
-        let newresult3 = newresult2.replaceAll(']','')
-        let newresult4 = newresult3.replaceAll(/["]/g, '')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>    
+            //Medicine Pie Chart
+            const ctxPie = document.getElementById('myMediChart').getContext('2d');
+            new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                labels: ['Fertilizer', 'Pesticide', 'Healthy Leaf', 'Fungicide'],
+                    datasets: [{
+                        label: 'Total medicine of this kind:',
+                        data: [@concatenatedInt],
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)',
+                            'rgb(102,204,0)'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+            });
 
-        const newArr = newresult4.split(",")
-        const ctxPie = document.getElementById('myMediChart').getContext('2d');
-        new Chart(ctxPie, {
-            type: 'pie',
-            data: {
-                labels : newArr,
-                datasets: [{
-                    label: 'Total medicine of this kind:',
-                    data: [3, 0, 1],
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)',
-                        'rgb(75, 192, 192)'
-                    ],
-                    hoverOffset: 4
-                }]
-            },
-        });
-
-    </script>
+            //Disease Pie Chart
+            const ctxPieDisease = document.getElementById('myDiseaseChart').getContext('2d');
+            new Chart(ctxPieDisease, {
+                type: 'pie',
+                data: {
+                labels: ['By Viruses', 'By Pests', 'By Weather Leaf', 'Healthy Leaf'],
+                    datasets: [{
+                        label: 'Total disease of this kind:',
+                        data: [@concatenatedDiseaseInt],
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)',
+                            'rgb(102,204,0)'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+            });
+            
+</script>
 }

@@ -36,16 +36,16 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                                 </div>
                                 <form method="post">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                    <div class="form-group py-2 d-flex align-items-center">
+                                    <div class="form-group d-flex align-items-center">
                                         <input asp-for="Email" class="form-control rounded-pill" type="email" placeholder="Email Address" />
                                     </div>
                                     <span asp-validation-for="Email" class="text-danger">@ViewData["error"]</span>
-                                    <div class="form-group py-2 d-flex align-items-center show_hide">
+                                    <div class="form-group d-flex align-items-center show_hide">
                                         <input asp-for="Password" class="form-control rounded-pill" type="password" placeholder="Password"/>
                                         <i class="fa-solid fa-eye"></i>
                                     </div>
                                     <span asp-validation-for="Password" class="text-danger">@ViewData["error"]</span>
-                                    <div class="form-group py-2 mt-3">
+                                    <div class="form-groupmt-3">
                                         <input type="submit" value="Login" class="btn btn-danger btn-block p-3" />
                                     </div>
                                 </form>

@@ -10,6 +10,9 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Reflection.Metadata;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace EvergreenView.Controllers
 {
@@ -26,8 +29,10 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
+
             _blogApiUrl = "https://evergreen-api.onrender.com/api/Blog";
             _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+
         }
 
         public async Task<IActionResult> Index()

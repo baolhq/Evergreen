@@ -30,16 +30,15 @@
                     </section>
                 </article>
             </div>
-        </div>
-        <div class="card-footer">
-            <div class="justify-content-between">
-                <a asp-action="Delete" asp-route-id="@Model.BlogId" class="btn btn-danger px-5">
-                    <i class="far fa-trash-alt"></i>
-                </a>
-                <a asp-action="Edit" asp-route-id="@Model.BlogId" class="btn btn-warning px-5">
-                    <i class="fas fa-edit"></i>
-                </a>
+
+            <div class="card-footer">
+                <div class="justify-content-between">
                 <a asp-action="AdminIndex" class="btn btn-success px-5"> Back To List</a>
+                <a asp-action="Delete" asp-route-id="@Model.BlogId" class="btn btn-danger px-5"> <i class="far fa-trash-alt"></i> </a>
+                <a asp-action="Edit" asp-route-id="@Model.BlogId" class="btn btn-warning px-5"> <i class="fas fa-edit"></i> </a>
+                    
+                </div>
+
             </div>
         </div>
     </div>

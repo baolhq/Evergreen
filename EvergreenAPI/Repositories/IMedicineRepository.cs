@@ -15,5 +15,6 @@ namespace EvergreenAPI.Repositories
         bool DeleteMedicine(Medicine medicine);
         bool Save();
         List<Medicine> Search(string search);
+        List<Medicine> getMedicinesName();
     }
 }

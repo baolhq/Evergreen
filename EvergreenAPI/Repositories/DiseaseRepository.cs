@@ -98,5 +98,11 @@ namespace EvergreenAPI.Repositories
             }
             return d;
         }
+
+        public List<Disease> getDiseasesName()
+        {
+            var listDisease = _context.Diseases.Include(s => s.DiseaseCategory).ToList();
+            return listDisease;
+        }
     }
 }

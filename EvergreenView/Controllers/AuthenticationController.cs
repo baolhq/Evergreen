@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
@@ -19,12 +20,12 @@ namespace EvergreenView.Controllers
         private readonly HttpClient _client;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthenticationController(IHttpContextAccessor httpContextAccessor)
+        public AuthenticationController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _authApiUrl = "https://evergreen-api.onrender.com/api/auth";
+            _authApiUrl = configuration["BaseUrl"] + "/api/auth";
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -90,7 +91,6 @@ namespace EvergreenView.Controllers
         {
             if (!string.IsNullOrWhiteSpace(Session.GetString("t")))
             {
-
                 return RedirectToAction("Index", "Home");
             }
 

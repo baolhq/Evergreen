@@ -1,4 +1,6 @@
-﻿@model EvergreenAPI.Models.Thumbnail
+﻿@inject IConfiguration Configuration
+@using Microsoft.Extensions.Configuration
+@model EvergreenAPI.Models.Thumbnail
 @{
     ViewData["Title"] = "Update thumbnail";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -122,6 +124,7 @@
 <input type="hidden" value="@ViewData["t"]" id="t" />
 <input type="hidden" value="@Model.ThumbnailId" id="thumbnail-id" />
 <input type="hidden" value="@Model.Url" id="old-url" />
+<input type="hidden" id="baseUrl" value="@Configuration["BaseUrl"]"/>
 
 @section Scripts {
     <script>
@@ -147,7 +150,8 @@
 
         $("#submit-btn").on("click", async (e) => {
             e.preventDefault();
-            let apiUrl = "https://evergreen-api.onrender.com/api/Thumbnail"
+            let baseUrl = $("#baseUrl").val()
+            let apiUrl = `${baseUrl}/api/Thumbnail`
 
             // Disabling submit button, avoid spammer
             $("#submit-btn").attr("disabled", true);

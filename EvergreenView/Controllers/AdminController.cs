@@ -9,23 +9,24 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace EvergreenView.Controllers
 {
     public class AdminController : Controller
     {
-        private string _diseaseApiUrl;
         private readonly string _medicineApiUrl;
         private readonly HttpClient _client;
 
-        public AdminController()
+        public AdminController(IConfiguration configuration)
         {
+            var baseUrl = configuration["BaseUrl"];
+
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _diseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease/GetDiseaseName";
-            _medicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine/GetMedicineName";
+            _medicineApiUrl = configuration["BaseUrl"] + "/api/Medicine";
         }
 
         public async Task<IActionResult> Index()
@@ -39,7 +40,7 @@ namespace EvergreenView.Controllers
             token = token.Replace("\"", string.Empty);
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             //Medi Chart
-            HttpResponseMessage response = await _client.GetAsync(_medicineApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_medicineApiUrl + "/GetMedicineName");
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {

@@ -12,34 +12,32 @@ using System;
 using System.Reflection.Metadata;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 
 namespace EvergreenView.Controllers
 {
-
     public class BlogsController : Controller
     {
-        
         private readonly string _blogApiUrl;
         private readonly string _thumbnailApiUrl;
         private readonly HttpClient _client;
 
-        public BlogsController()
+        public BlogsController(IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
 
-            _blogApiUrl = "https://evergreen-api.onrender.com/api/Blog";
-            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
-
+            _blogApiUrl = configuration["BaseUrl"] + "/api/Blog";
+            _thumbnailApiUrl = configuration["BaseUrl"] + "/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()
         {
-            HttpResponseMessage response = await _client.GetAsync(_blogApiUrl);
+            var response = await _client.GetAsync(_blogApiUrl);
 
-            string strData = await response.Content.ReadAsStringAsync();
+            var strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -49,14 +47,13 @@ namespace EvergreenView.Controllers
         }
 
 
-
         public async Task<ActionResult> Details(int id)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
-            
+
             var blog = await GetBlogById(id);
             if (blog == null)
                 return NotFound();
@@ -68,12 +65,13 @@ namespace EvergreenView.Controllers
             var blog = await GetBlogById(id);
             if (blog == null)
                 return NotFound();
-             var view = await UpdateViewBlogById(id);
-           if(view == true)
+            var view = await UpdateViewBlogById(id);
+            if (view == true)
             {
                 return View(blog);
             }
-           return View(blog);
+
+            return View(blog);
         }
 
         public async Task<ActionResult> Create()
@@ -82,7 +80,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
-            
+
             HttpResponseMessage response = await _client.GetAsync(_thumbnailApiUrl);
             string strData1 = await response.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
@@ -90,12 +88,11 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            
+
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData1, options1);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
             return View();
         }
-
 
 
         [HttpPost]
@@ -110,14 +107,13 @@ namespace EvergreenView.Controllers
 
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            
+
             p.LastModifiedDate = DateTime.Now;
             string data = JsonSerializer.Serialize(p);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = _client.PostAsync(_blogApiUrl, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("AdminIndex");
             }
@@ -131,12 +127,8 @@ namespace EvergreenView.Controllers
 
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData1, options1);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
-            return View(); 
-
+            return View();
         }
-
-        
-
 
 
         public async Task<ActionResult> Edit(int id)
@@ -163,7 +155,6 @@ namespace EvergreenView.Controllers
         }
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, Blog blog)
@@ -177,22 +168,20 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-
-
             blog.LastModifiedDate = DateTime.Now;
             var blogId = await GetBlogById(id);
-			var data = JsonSerializer.Serialize(blog);
+            var data = JsonSerializer.Serialize(blog);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-			HttpResponseMessage response = await _client.PutAsync(_blogApiUrl + "/" + id, content);
+            HttpResponseMessage response = await _client.PutAsync(_blogApiUrl + "/" + id, content);
 
 
-			if (response.IsSuccessStatusCode)
-			{
-				TempData["message"] = "Update Successfully";
-				return RedirectToAction("AdminIndex");
-			}
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["message"] = "Update Successfully";
+                return RedirectToAction("AdminIndex");
+            }
 
-			response = await _client.GetAsync(_thumbnailApiUrl);
+            response = await _client.GetAsync(_thumbnailApiUrl);
             string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -204,7 +193,7 @@ namespace EvergreenView.Controllers
 
 
             return View(blogId);
-		}
+        }
 
         public async Task<ActionResult> Delete(int id)
         {
@@ -212,13 +201,13 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
             var blog = await GetBlogById(id);
             if (blog == null)
                 return NotFound();
             await SetViewData();
             return View(blog);
         }
-
 
 
         [HttpPost, ActionName("Delete")]
@@ -229,6 +218,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -240,9 +230,9 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Delete Successfully";
                 return RedirectToAction("AdminIndex");
             }
+
             return View(blog);
         }
-
 
 
         private async Task<bool> UpdateViewBlogById(int blogid)
@@ -250,7 +240,7 @@ namespace EvergreenView.Controllers
             var blog = await GetBlogById(blogid);
             var data = JsonSerializer.Serialize(blog);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await _client.PutAsync(_blogApiUrl + "/UpdateViewBlog/" + blogid, content) ;
+            HttpResponseMessage response = await _client.PutAsync(_blogApiUrl + "/UpdateViewBlog/" + blogid, content);
             if (!response.IsSuccessStatusCode)
                 return false;
 
@@ -263,10 +253,6 @@ namespace EvergreenView.Controllers
             };
             return true;
         }
-        
-
-
-
 
 
         private async Task<Blog> GetBlogById(int id)
@@ -275,18 +261,15 @@ namespace EvergreenView.Controllers
             if (!response.IsSuccessStatusCode)
                 return null;
 
-            
+
             string strData = await response.Content.ReadAsStringAsync();
-            
+
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
             return JsonSerializer.Deserialize<Blog>(strData, options);
         }
-
-
-
 
 
         public async Task<IEnumerable<Thumbnail>> GetImages()
@@ -304,13 +287,9 @@ namespace EvergreenView.Controllers
 
         public async Task SetViewData()
         {
-
             var listImage = await GetImages();
             ViewData["Thumbnails"] = new SelectList(listImage, "ThumbnailId", "AltText");
         }
-
-
-
 
 
         public async Task<IActionResult> AdminIndex(string searchString)
@@ -336,13 +315,12 @@ namespace EvergreenView.Controllers
             }
 
 
-            
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            
+
 
             List<Blog> listBlogs = JsonSerializer.Deserialize<List<Blog>>(strData, options);
             return View(listBlogs);

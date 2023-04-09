@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using EvergreenAPI.DTO;
+﻿using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,21 +10,18 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EvergreenAPI.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
-        private readonly IMapper _mapper;
         private readonly IConfiguration _config;
 
 
-        public UserRepository(AppDbContext context, IMapper mapper, IConfiguration config)
+        public UserRepository(AppDbContext context, IConfiguration config)
         {
             _context = context;
-            _mapper = mapper;
             _config = config;
         }
 
@@ -50,9 +46,9 @@ namespace EvergreenAPI.Repositories
             return true;
         }
 
-        public Account GetUser(int Id)
+        public Account GetUser(int id)
         {
-            var user = _context.Accounts.FirstOrDefault(u => u.AccountId == Id);
+            var user = _context.Accounts.FirstOrDefault(u => u.AccountId == id);
             if (user == null) return null;
 
             return user;
@@ -108,7 +104,7 @@ namespace EvergreenAPI.Repositories
             return true;
         }
 
-        public bool UpdateUser(AccountUpdateDTO userDTO, int id)
+        public bool UpdateUser(AccountDTO userDto, int id)
         {
             var user = _context.Accounts.SingleOrDefault(f => f.AccountId == id);
             if (user == null)
@@ -116,12 +112,12 @@ namespace EvergreenAPI.Repositories
                 return false;
             }
 
-            user.Username = userDTO.Username;
-            user.FullName = userDTO.FullName;
-            user.Bio = userDTO.Bio;
-            user.Professions = userDTO.Professions;
-            user.PhoneNumber = userDTO.PhoneNumber;
-            user.AvatarUrl = userDTO.AvatarUrl;
+            user.Username = userDto.Username;
+            user.FullName = userDto.FullName;
+            user.Bio = userDto.Bio;
+            user.Professions = userDto.Professions;
+            user.PhoneNumber = userDto.PhoneNumber;
+            user.AvatarUrl = userDto.AvatarUrl;
             _context.Update(user);
             try
             {
@@ -137,12 +133,10 @@ namespace EvergreenAPI.Repositories
 
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac
-                    .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            using var hmac = new HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac
+                .ComputeHash(Encoding.UTF8.GetBytes(password));
         }
 
         private string GenerateToken(string email, string role)
@@ -175,7 +169,7 @@ namespace EvergreenAPI.Repositories
 
         public List<Account> Search(string search)
         {
-            List<Account> d = new List<Account>();
+            var d = new List<Account>();
             try
             {
                 d = _context.Accounts.Where(d => d.Username.Contains(search.ToLower()) || d.Email.Contains(search.ToLower()) || d.FullName.Contains(search.ToLower())).ToList();

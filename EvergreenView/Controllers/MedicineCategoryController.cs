@@ -7,22 +7,21 @@ using System.Text.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
-    
     public class MedicineCategoryController : Controller
     {
-        
         private readonly string _medicineCategoryApiUrl;
         private readonly HttpClient _client;
 
-        public MedicineCategoryController()
+        public MedicineCategoryController(IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _medicineCategoryApiUrl = "https://evergreen-api.onrender.com/api/MedicineCategory";
+            _medicineCategoryApiUrl = configuration["BaseUrl"] + "/api/MedicineCategory";
         }
 
         public async Task<IActionResult> Index()
@@ -33,7 +32,8 @@ namespace EvergreenView.Controllers
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<MedicineCategory> medicineCategories = JsonSerializer.Deserialize<List<MedicineCategory>>(strData, options);
+            List<MedicineCategory> medicineCategories =
+                JsonSerializer.Deserialize<List<MedicineCategory>>(strData, options);
             return View(medicineCategories);
         }
 
@@ -43,6 +43,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var medicine = await GetMedicineCategoryById(id);
             if (medicine == null)
                 return NotFound();
@@ -55,6 +56,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             return View();
         }
 
@@ -78,6 +80,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("Index");
             }
+
             return View();
         }
 
@@ -87,6 +90,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             HttpResponseMessage response = await _client.GetAsync(_medicineCategoryApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -120,6 +124,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Update Successfully";
                 return RedirectToAction("Index");
             }
+
             return View(mediCat);
         }
 
@@ -143,6 +148,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var medicine = await GetMedicineCategoryById(id);
             if (medicine == null)
                 return NotFound();
@@ -168,6 +174,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Delete Successfully";
                 return RedirectToAction("Index");
             }
+
             return View(medicine);
         }
     }

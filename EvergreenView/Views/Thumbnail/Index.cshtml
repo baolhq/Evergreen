@@ -1,4 +1,6 @@
-﻿@model IEnumerable<EvergreenAPI.Models.Thumbnail>
+﻿@inject IConfiguration Configuration
+@using Microsoft.Extensions.Configuration
+@model IEnumerable<EvergreenAPI.Models.Thumbnail>
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -84,7 +86,7 @@
 <div id="grid-container">
     @foreach (var item in Model)
     {
-        var apiUrl = item.Url.StartsWith("http") ? "" : "https://evergreen-api.onrender.com/";
+        var apiUrl = item.Url.StartsWith("http") ? "" : Configuration["BaseUrl"];
         var src = apiUrl + item.Url;
         <figure>
             <!--suppress HtmlDeprecatedAttribute -->

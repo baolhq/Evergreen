@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EvergreenAPI.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
@@ -14,9 +15,9 @@ namespace EvergreenView.Controllers
         private readonly string _detectionHistoryApiUrl;
         private readonly HttpClient _client;
 
-        public ExpertConfirmationController()
+        public ExpertConfirmationController(IConfiguration configuration)
         {
-            _detectionHistoryApiUrl = "https://evergreen-api.onrender.com/api/DetectionHistory";
+            _detectionHistoryApiUrl = configuration["BaseUrl"] + "/api/DetectionHistory";
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);

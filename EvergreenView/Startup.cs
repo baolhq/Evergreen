@@ -45,6 +45,7 @@ namespace EvergreenView
 
             services.AddHttpContextAccessor();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton(Configuration);
 
             services.AddControllersWithViews();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));

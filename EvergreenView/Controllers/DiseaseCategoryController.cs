@@ -7,33 +7,29 @@ using System.Threading.Tasks;
 using EvergreenAPI.Models;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
-    
     public class DiseaseCategoryController : Controller
     {
         private readonly string _diseaseCategoryApiUrl;
         private readonly HttpClient _client;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public DiseaseCategoryController(IHttpContextAccessor httpContextAccessor)
+        public DiseaseCategoryController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _diseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
+            _diseaseCategoryApiUrl = configuration["BaseUrl"] + "/api/DiseaseCategory";
             _httpContextAccessor = httpContextAccessor;
         }
 
         private ISession Session
         {
-            get
-            {
-                return _httpContextAccessor.HttpContext?.Session;
-            }
+            get { return _httpContextAccessor.HttpContext?.Session; }
         }
-
 
 
         public async Task<IActionResult> Index()
@@ -42,17 +38,17 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             HttpResponseMessage response = await _client.GetAsync(_diseaseCategoryApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<DiseaseCategory> diseaseCategories = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
+            List<DiseaseCategory> diseaseCategories =
+                JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
             return View(diseaseCategories);
         }
-
-
 
 
         public async Task<ActionResult> Details(int id)
@@ -61,13 +57,12 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var member = await GetDiseaseCategoryById(id);
             if (member == null)
                 return NotFound();
             return View(member);
         }
-
-
 
 
         public ActionResult Create()
@@ -76,12 +71,9 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
             return View();
         }
-
-
-
-
 
 
         [HttpPost]
@@ -104,12 +96,9 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("Index");
             }
+
             return View();
         }
-
-
-
-
 
 
         public async Task<ActionResult> Edit(int id)
@@ -118,6 +107,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             HttpResponseMessage response = await _client.GetAsync(_diseaseCategoryApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -130,12 +120,9 @@ namespace EvergreenView.Controllers
         }
 
 
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> Edit(int id, DiseaseCategory diseaseCategory)
+        public async Task<IActionResult> Edit(int id, DiseaseCategory diseaseCategory)
         {
             if (Session.GetString("r") != "Admin")
             {
@@ -146,7 +133,7 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-            var diseaseCat =  await GetDiseaseCategoryById(id);
+            var diseaseCat = await GetDiseaseCategoryById(id);
             string data = JsonSerializer.Serialize(diseaseCategory);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = _client.PutAsync(_diseaseCategoryApiUrl + "/" + id, content).Result;
@@ -155,6 +142,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Update Successfully";
                 return RedirectToAction("Index");
             }
+
             return View(diseaseCat);
         }
 
@@ -173,21 +161,18 @@ namespace EvergreenView.Controllers
         }
 
 
-
-
         public async Task<ActionResult> Delete(int id)
         {
             if (Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var member = await GetDiseaseCategoryById(id);
             if (member == null)
                 return NotFound();
             return View(member);
         }
-
-
 
 
         [HttpPost, ActionName("Delete")]
@@ -209,6 +194,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Delete Successfully";
                 return RedirectToAction("Index");
             }
+
             return View(disease);
         }
     }

@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
@@ -17,22 +18,19 @@ namespace EvergreenView.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public ImageDetectionController(IHttpContextAccessor httpContextAccessor)
+        public ImageDetectionController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
 
-            _detectionApiUrl = "https://evergreen-api.onrender.com/api/DetectionHistory";
+            _detectionApiUrl = configuration["BaseUrl"] + "/api/DetectionHistory";
             _httpContextAccessor = httpContextAccessor;
         }
 
         private ISession Session
         {
-            get
-            {
-                return _httpContextAccessor.HttpContext?.Session;
-            }
+            get { return _httpContextAccessor.HttpContext?.Session; }
         }
 
         public async Task<IActionResult> Index()

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
@@ -17,14 +18,14 @@ namespace EvergreenView.Controllers
         private readonly string _treatmentApiUrl;
         private readonly HttpClient _client;
 
-        public TreatmentController()
+        public TreatmentController(IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
 
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _treatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
-            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+            _treatmentApiUrl = configuration["BaseUrl"] + "/api/Treatment";
+            _thumbnailApiUrl = configuration["BaseUrl"] + "/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()
@@ -148,18 +149,18 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-			var treatmentId = await GetTreatmentById(id);
-			var data = JsonSerializer.Serialize(treatment);
+            var treatmentId = await GetTreatmentById(id);
+            var data = JsonSerializer.Serialize(treatment);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = _client.PutAsync(_treatmentApiUrl + "/" + id, content).Result;
 
-			if (response.IsSuccessStatusCode)
-			{
-				TempData["message"] = "Update Successfully";
-				return RedirectToAction("AdminIndex");
-			}
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["message"] = "Update Successfully";
+                return RedirectToAction("AdminIndex");
+            }
 
-			response = await _client.GetAsync(_thumbnailApiUrl);
+            response = await _client.GetAsync(_thumbnailApiUrl);
             string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
@@ -171,7 +172,7 @@ namespace EvergreenView.Controllers
 
 
             return View(treatmentId);
-		}
+        }
 
 
         public async Task<ActionResult> Delete(int id)
@@ -231,7 +232,6 @@ namespace EvergreenView.Controllers
             var listImage = await GetImages();
             ViewData["Thumbnails"] = new SelectList(listImage, "ThumbnailId", "AltText");
         }
-
 
 
         public async Task<IEnumerable<Thumbnail>> GetImages()

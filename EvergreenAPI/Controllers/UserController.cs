@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 
 namespace EvergreenAPI.Controllers
 {
@@ -19,12 +21,15 @@ namespace EvergreenAPI.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
+        private readonly IHostingEnvironment _environment;
 
-        public UserController(IUserRepository userRepository, IMapper mapper, AppDbContext context)
+        public UserController(IUserRepository userRepository, IMapper mapper, AppDbContext context,
+            IHostingEnvironment environment)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _context = context;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -58,7 +63,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(account);
         }
-
 
 
         [HttpPut("ManageBlocked")]
@@ -112,7 +116,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] AccountUpdateDTO updatedUser)
+        public IActionResult UpdateUser(int id, [FromBody] AccountDTO updatedUser)
         {
             var user = _userRepository.GetUser(id);
             if (user == null)
@@ -133,6 +137,62 @@ namespace EvergreenAPI.Controllers
             return NoContent();
         }
 
+        [HttpPost("changeAvatar/{accountId}")]
+        public async Task<IActionResult> ChangeAvatar(int accountId, [FromForm] IFormFile postedFile)
+        {
+            // var postedFile = Request.Form.Files.FirstOrDefault();
+            if (postedFile == null) return BadRequest();
+
+            var account = _context.Accounts.FirstOrDefault(a => a.AccountId == accountId);
+            if (account == null) return NotFound();
+
+            string[] permittedExtensions = { ".jpg", ".png", ".jpeg" };
+            var ext = Path.GetExtension(postedFile.FileName).ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+                return BadRequest("We only accept JPEG and PNG file");
+
+            string path = Path.Combine(_environment.ContentRootPath, "Uploads");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            var fileName = Path.GetFileName(postedFile.FileName);
+            var uniqueFilePath = Path.Combine(path, fileName);
+            var uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
+            // Check if file name exist, use Windows style rename
+            if (System.IO.File.Exists(uniqueFilePath))
+            {
+                var count = 1;
+
+                var extension = Path.GetExtension(uniqueFilePath);
+                var newFullPath = uniqueFilePath;
+
+                while (System.IO.File.Exists(Path.Combine(path, newFullPath)))
+                {
+                    var tempFileName = $"{uniqueFileName} ({count++})";
+                    newFullPath = Path.Combine(path, tempFileName + extension);
+                }
+
+                uniqueFilePath = newFullPath;
+                uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
+            }
+
+            await using var stream = System.IO.File.Create(uniqueFilePath);
+            await postedFile.CopyToAsync(stream);
+            stream.Close();
+
+            // Save image location to database
+            _context.Images.Add(new Image { AltText = uniqueFileName, Url = uniqueFilePath });
+
+            // Update account avatar url
+            account.AvatarUrl = $@"https://localhost:5001/Uploads/{uniqueFileName}{ext}";
+
+            await _context.SaveChangesAsync();
+
+            var responseMessage = $"{fileName} uploaded successfully";
+            return Ok(responseMessage);
+        }
 
         [HttpDelete("{email}")]
         public IActionResult DeleteUser(int id)

@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 using EvergreenAPI.Models;
 using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
+using System.Linq;
 using EvergreenAPI.DTO;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
@@ -17,13 +20,15 @@ namespace EvergreenView.Controllers
     {
         private readonly HttpClient _client;
         private readonly string _userApiUrl;
+        private readonly IConfiguration _configuration;
 
-        public UserController()
+        public UserController(IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _userApiUrl = "https://evergreen-api.onrender.com/api/User";
+            _configuration = configuration;
+            _userApiUrl = _configuration["BaseUrl"] + "/api/User";
         }
 
         public async Task<ActionResult> AdminDetails(int id)
@@ -133,13 +138,13 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public async Task<ActionResult> AdminEdit(int id, Account user)
         {
             if (HttpContext.Session.GetString("r") == null || HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -159,9 +164,9 @@ namespace EvergreenView.Controllers
             var response = await _client.PutAsync(_userApiUrl + "/" + userEdit.AccountId, content);
             if (!response.IsSuccessStatusCode)
             {
-
                 return View(user);
             }
+
             TempData["message"] = "Update Successfully";
             return RedirectToAction("Details", "User", new { Id = user.AccountId });
         }
@@ -183,7 +188,7 @@ namespace EvergreenView.Controllers
 
             var temp = JObject.Parse(strData);
 
-            var user = new Account()
+            var user = new AccountDTO()
             {
                 AccountId = id,
                 Email = (string)temp["email"],
@@ -201,8 +206,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        public async Task<ActionResult> Edit(int id, Account user)
+        public async Task<ActionResult> Edit(int id, AccountDTO user)
         {
             if (HttpContext.Session.GetString("r") != "User")
                 return RedirectToAction("Index", "Home");
@@ -210,23 +214,41 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var userEdit = new AccountUpdateDTO()
+            HttpResponseMessage response;
+
+            var postedFile = Request.Form.Files.FirstOrDefault();
+            if (postedFile != null)
+            {
+                var form = new MultipartFormDataContent();
+                var fileStreamContent = new StreamContent(postedFile.OpenReadStream());
+                fileStreamContent.Headers.ContentType =
+                    new System.Net.Http.Headers.MediaTypeHeaderValue(postedFile.ContentType);
+                form.Add(fileStreamContent, "postedFile", postedFile.FileName);
+                response = await _client.PostAsync($@"{_userApiUrl}/changeAvatar/{id}", form);
+
+                if (!response.IsSuccessStatusCode) return View(user);
+
+                var src = _configuration["BaseUrl"] + "/" + postedFile.FileName;
+                HttpContext.Session.SetString("a", src);
+            }
+
+            var userEdit = new AccountDTO()
             {
                 AccountId = id,
                 Username = user.Username,
                 Email = user.Email,
                 FullName = user.FullName,
                 Bio = user.Bio,
-                PhoneNumber = user.PhoneNumber,
-                AvatarUrl = user.AvatarUrl,
+                PhoneNumber = user.PhoneNumber
             };
             var userToEdit = JsonSerializer.Serialize(userEdit);
             var content = new StringContent(userToEdit, Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync(_userApiUrl + "/" + id, content);
+            response = await _client.PutAsync(_userApiUrl + "/" + id, content);
             if (!response.IsSuccessStatusCode)
             {
                 return View(user);
             }
+
             TempData["message"] = "Update Successfully";
             return RedirectToAction("Details", "User", new { Id = id });
         }
@@ -245,6 +267,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var token = HttpContext.Session.GetString("t");
 
             if (string.IsNullOrEmpty(token))
@@ -292,6 +315,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -313,6 +337,7 @@ namespace EvergreenView.Controllers
             {
                 return View(account);
             }
+
             TempData["message"] = "Create Successfully";
             return RedirectToAction("AdminIndex");
         }
@@ -365,8 +390,6 @@ namespace EvergreenView.Controllers
 
             TempData["message"] = "Manage Status Successfully";
             return View(listUsers);
-
         }
-
     }
 }

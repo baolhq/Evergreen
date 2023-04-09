@@ -58,9 +58,9 @@ namespace EvergreenAPI.Controllers
             if (medicineCreate == null)
                 return BadRequest(ModelState);
 
-            var medicine = _medicineRepository.GetMedicines()
-                .Where(c => c.Name.Trim().ToUpper() == medicineCreate.Name.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var medicine = _medicineRepository
+                .GetMedicines()
+                .FirstOrDefault(c => c.Name.Trim().ToUpper() == medicineCreate.Name.TrimEnd().ToUpper());
 
             if (medicine != null)
             {
@@ -82,16 +82,16 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
-        [HttpPut("{MedicineId}")]
-        public IActionResult UpdateMedicine(int MedicineId, [FromBody] MedicineDTO updatedMedicine)
+        [HttpPut("{medicineId}")]
+        public IActionResult UpdateMedicine(int medicineId, [FromBody] MedicineDTO updatedMedicine)
         {
             if (updatedMedicine == null)
                 return BadRequest(ModelState);
 
-            if (MedicineId != updatedMedicine.MedicineId)
+            if (medicineId != updatedMedicine.MedicineId)
                 return BadRequest(ModelState);
 
-            if (!_medicineRepository.MedicineExist(MedicineId))
+            if (!_medicineRepository.MedicineExist(medicineId))
                 return NotFound();
 
             if (!ModelState.IsValid)

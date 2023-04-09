@@ -6,6 +6,7 @@ using EvergreenAPI.Models;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
@@ -14,12 +15,12 @@ namespace EvergreenView.Controllers
         private readonly HttpClient _client;
         private readonly string _thumbnailApiUrl;
 
-        public ThumbnailController()
+        public ThumbnailController(IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
+            _thumbnailApiUrl = configuration["BaseUrl"] + "/api/Thumbnail";
         }
 
         public async Task<IActionResult> Index()

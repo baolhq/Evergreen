@@ -33,6 +33,9 @@ namespace EvergreenAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //Auto mapper DTO
+
+            services.AddSingleton(Configuration);
+            
             services.AddScoped<IDiseaseCategoryRepository, DiseaseCategoryRepository>();
             services.AddScoped<IDiseaseRepository, DiseaseRepository>();
             services.AddScoped<IMedicineCategoryRepository, MedicineCategoryRepository>();
@@ -47,8 +50,8 @@ namespace EvergreenAPI
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IDetectionHistoryRepository, DetectionHistoryRepository>();
 
-            services.AddDbContext<AppDbContext>(opitons =>
-                opitons.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddCors(p =>
                 p.AddPolicy("custom", builder => { builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader(); }));

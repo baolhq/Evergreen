@@ -15,7 +15,7 @@ namespace EvergreenAPI.Repositories
 
         bool DeleteUser(int id);
 
-        bool UpdateUser(AccountUpdateDTO user, int id);
+        bool UpdateUser(AccountDTO user, int id);
 
         ICollection<Account> GetUsers();
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);

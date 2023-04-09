@@ -1,4 +1,4 @@
-﻿@model EvergreenAPI.Models.Account
+﻿@model EvergreenAPI.DTO.AccountDTO
 
 @{
     ViewData["Title"] = "Update profile";
@@ -108,14 +108,14 @@
 }
 
 <div class="container emp-profile ftco-animate outer">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-4">
                 <div class="profile-img">
                     <img src="@Model.AvatarUrl" alt="Avatar"/>
                     <div class="file btn btn-block">
                         Change Photo
-                        <input type="file" name="file"/>
+                        <input type="file" name="file" asp-for="AvatarImg"/>
                     </div>
                 </div>
             </div>

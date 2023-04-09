@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 
@@ -26,9 +27,10 @@ namespace EvergreenAPI.Controllers
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
         private readonly IHostingEnvironment _environment;
+        private readonly IConfiguration _configuration;
 
         public DetectionHistoryController(IDetectionHistoryRepository detectionHistoryRepository, IMapper mapper,
-            AppDbContext context, IHostingEnvironment environment)
+            AppDbContext context, IHostingEnvironment environment, IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -39,6 +41,8 @@ namespace EvergreenAPI.Controllers
             _mapper = mapper;
             _context = context;
             _environment = environment;
+
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -112,7 +116,7 @@ namespace EvergreenAPI.Controllers
 
         private async Task<Disease> RetrieveAccuraciesFromApi(DetectionHistory history, string filepath)
         {
-            const string apiBaseUrl = "http://127.0.0.1:8000/predict";
+            var apiBaseUrl = _configuration["PythonApiUrl"] + "/predict";
             var detectingDiseases = _context.Diseases.Where(
                 d => d.Name == "Early Blight"
                      || d.Name == "Septoria"

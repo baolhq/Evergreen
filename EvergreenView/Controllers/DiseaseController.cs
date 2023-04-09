@@ -8,12 +8,12 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace EvergreenView.Controllers
 {
     public class DiseaseController : Controller
     {
-
         private readonly string _diseaseApiUrl;
         private readonly string _diseaseCategoryApiUrl;
         private readonly string _thumbnailApiUrl;
@@ -21,21 +21,20 @@ namespace EvergreenView.Controllers
         private readonly string _treatmentApiUrl;
         private readonly HttpClient _client;
 
-        public DiseaseController()
+        public DiseaseController(IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _diseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease";
-            _diseaseCategoryApiUrl = "https://evergreen-api.onrender.com/api/DiseaseCategory";
-            _thumbnailApiUrl = "https://evergreen-api.onrender.com/api/Thumbnail";
-            _medicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine";
-            _treatmentApiUrl = "https://evergreen-api.onrender.com/api/Treatment";
+            _diseaseApiUrl = configuration["BaseUrl"] + "/api/Disease";
+            _diseaseCategoryApiUrl = configuration["BaseUrl"] + "/api/DiseaseCategory";
+            _thumbnailApiUrl = configuration["BaseUrl"] + "/api/Thumbnail";
+            _medicineApiUrl = configuration["BaseUrl"] + "/api/Medicine";
+            _treatmentApiUrl = configuration["BaseUrl"] + "/api/Treatment";
         }
 
         public async Task<IActionResult> Index()
         {
-
             HttpResponseMessage response = await _client.GetAsync(_diseaseApiUrl);
 
             string strData = await response.Content.ReadAsStringAsync();
@@ -50,7 +49,6 @@ namespace EvergreenView.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-
             var disease = await GetDiseaseById(id);
             if (disease == null)
                 return NotFound();
@@ -63,6 +61,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
             var responseDiseaseCategory = await _client.GetAsync(_diseaseCategoryApiUrl);
             var strData = await responseDiseaseCategory.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -129,6 +128,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("AdminIndex");
             }
+
             HttpResponseMessage responseDiseaseCategory = await _client.GetAsync(_diseaseCategoryApiUrl);
             string strData = await responseDiseaseCategory.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -136,7 +136,8 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
+            List<DiseaseCategory> listDiseaseCategory =
+                JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
             HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
@@ -150,7 +151,6 @@ namespace EvergreenView.Controllers
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
 
-
             HttpResponseMessage responseMedicine = await _client.GetAsync(_medicineApiUrl);
             string strData2 = await responseMedicine.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
@@ -160,7 +160,6 @@ namespace EvergreenView.Controllers
 
             List<Medicine> listMedicine = JsonSerializer.Deserialize<List<Medicine>>(strData2, options2);
             ViewData["Medicines"] = new SelectList(listMedicine, "MedicineId", "Name");
-
 
 
             HttpResponseMessage responseTreatment = await _client.GetAsync(_treatmentApiUrl);
@@ -177,22 +176,13 @@ namespace EvergreenView.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
         public async Task<ActionResult> Edit(int id)
         {
             if (HttpContext.Session.GetString("r") != "Admin")
             {
                 return RedirectToAction("Index");
             }
+
             HttpResponseMessage response = await _client.GetAsync(_diseaseApiUrl + "/" + id);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -208,7 +198,8 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData1, options1);
+            List<DiseaseCategory> listDiseaseCategory =
+                JsonSerializer.Deserialize<List<DiseaseCategory>>(strData1, options1);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
             HttpResponseMessage responseImage = await _client.GetAsync(_thumbnailApiUrl);
@@ -260,32 +251,32 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-			var diseaseId = await GetDiseaseById(id);
-			var data = JsonSerializer.Serialize(disease);
+            var diseaseId = await GetDiseaseById(id);
+            var data = JsonSerializer.Serialize(disease);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-			HttpResponseMessage response = _client.PutAsync(_diseaseApiUrl + "/" + id, content).Result;
+            HttpResponseMessage response = _client.PutAsync(_diseaseApiUrl + "/" + id, content).Result;
 
-			if (response.IsSuccessStatusCode)
-			{
-				TempData["message"] = "Update Successfully";
-				return RedirectToAction("AdminIndex");
-			}
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["message"] = "Update Successfully";
+                return RedirectToAction("AdminIndex");
+            }
 
-			response = await _client.GetAsync(_diseaseCategoryApiUrl);
+            response = await _client.GetAsync(_diseaseCategoryApiUrl);
             string strData1 = await response.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
-            List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData1, options1);
+            List<DiseaseCategory> listDiseaseCategory =
+                JsonSerializer.Deserialize<List<DiseaseCategory>>(strData1, options1);
             ViewData["DiseaseCategories"] = new SelectList(listDiseaseCategory, "DiseaseCategoryId", "Name");
 
             response = await _client.GetAsync(_thumbnailApiUrl);
             string strData2 = await response.Content.ReadAsStringAsync();
             var options2 = new JsonSerializerOptions
             {
-
                 PropertyNameCaseInsensitive = true
             };
 
@@ -293,20 +284,15 @@ namespace EvergreenView.Controllers
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
 
-
-
             response = await _client.GetAsync(_medicineApiUrl);
             string strData3 = await response.Content.ReadAsStringAsync();
             var options3 = new JsonSerializerOptions
             {
-
                 PropertyNameCaseInsensitive = true
             };
 
             List<Medicine> listMedicine = JsonSerializer.Deserialize<List<Medicine>>(strData3, options3);
             ViewData["Medicines"] = new SelectList(listMedicine, "MedicineId", "Name");
-
-
 
 
             response = await _client.GetAsync(_treatmentApiUrl);
@@ -321,13 +307,7 @@ namespace EvergreenView.Controllers
 
 
             return View(diseaseId);
-
-		}
-
-
-
-
-
+        }
 
 
         private async Task<Disease> GetDiseaseById(int id)
@@ -350,6 +330,7 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
             var disease = await GetDiseaseById(id);
             if (disease == null)
                 return NotFound();
@@ -376,8 +357,8 @@ namespace EvergreenView.Controllers
             {
                 TempData["message"] = "Delete Successfully";
                 return RedirectToAction("AdminIndex");
-
             }
+
             return View(disease);
         }
 
@@ -390,7 +371,8 @@ namespace EvergreenView.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            List<DiseaseCategory> listDiseaseCategory = JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
+            List<DiseaseCategory> listDiseaseCategory =
+                JsonSerializer.Deserialize<List<DiseaseCategory>>(strData, options);
             return listDiseaseCategory;
         }
 
@@ -409,9 +391,6 @@ namespace EvergreenView.Controllers
         }
 
 
-
-
-
         public async Task<IEnumerable<Treatment>> GetTreatment()
         {
             HttpResponseMessage response = await _client.GetAsync(_treatmentApiUrl);
@@ -424,7 +403,6 @@ namespace EvergreenView.Controllers
             List<Treatment> listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData, options);
             return listTreatment;
         }
-
 
 
         public async Task<IEnumerable<Thumbnail>> GetImages()
@@ -441,11 +419,8 @@ namespace EvergreenView.Controllers
         }
 
 
-
-
         public async Task SetViewData()
         {
-
             var listTreatment = await GetTreatment();
             ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
             var listMedicine = await GetMedicine();
@@ -455,10 +430,6 @@ namespace EvergreenView.Controllers
             var listImage = await GetImages();
             ViewData["Thumbnails"] = new SelectList(listImage, "ThumbnailId", "AltText");
         }
-
-
-
-
 
 
         public async Task<IActionResult> AdminIndex(string searchString)
@@ -492,9 +463,6 @@ namespace EvergreenView.Controllers
 
             return View(diseases);
         }
-
-
-
 
 
         public async Task<IActionResult> AdminDetails(int id)

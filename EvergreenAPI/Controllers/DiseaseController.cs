@@ -12,7 +12,6 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
     public class DiseaseController : ControllerBase
     {
         private readonly IDiseaseRepository _diseaseRepository;
@@ -23,13 +22,6 @@ namespace EvergreenAPI.Controllers
             _diseaseRepository = diseaseRepository;
             _mapper = mapper;
         }
-
-
-
-
-
-
-
 
         [HttpGet]
         [AllowAnonymous]
@@ -42,14 +34,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(diseases);
         }
-
-
-
-
-
-
-
-
 
 
         [HttpGet("{DiseaseId}")]
@@ -66,14 +50,6 @@ namespace EvergreenAPI.Controllers
 
             return Ok(disease);
         }
-
-
-
-
-
-
-
-
 
 
         [HttpPost]
@@ -107,12 +83,6 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-
-
-
-
-
         [HttpPut("{DiseaseId}")]
         public IActionResult UpdateDisease(int DiseaseId, [FromBody] DiseaseDTO updatedDisease)
         {
@@ -140,12 +110,6 @@ namespace EvergreenAPI.Controllers
         }
 
 
-
-
-
-
-
-
         [HttpDelete("{DiseaseId}")]
         public IActionResult DeleteDisease(int DiseaseId)
         {
@@ -162,21 +126,17 @@ namespace EvergreenAPI.Controllers
                 ModelState.AddModelError("", "Something was wrong when delete");
                 return StatusCode(500, ModelState);
             }
+
             return Ok("Delete Success");
         }
-
-
 
 
         [HttpGet("Search")]
         public ActionResult<List<Disease>> Search(string search)
         {
             var list = _diseaseRepository.Search(search);
-            
+
             return Ok(list);
         }
-
-
-
     }
 }

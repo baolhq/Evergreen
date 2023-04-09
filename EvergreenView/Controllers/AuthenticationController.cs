@@ -24,7 +24,7 @@ namespace EvergreenView.Controllers
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            _authApiUrl = "https://localhost:44334/api/auth";
+            _authApiUrl = "https://evergreen-api.onrender.com/api/auth";
             _httpContextAccessor = httpContextAccessor;
         }
 

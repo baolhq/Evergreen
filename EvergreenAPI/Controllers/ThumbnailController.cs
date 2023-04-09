@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -74,26 +73,26 @@ namespace EvergreenAPI.Controllers
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return BadRequest("We only accept JPEG and PNG file");
 
-            string path = Path.Combine(_environment.ContentRootPath, "Uploads");
+            var path = Path.Combine(_environment.ContentRootPath, "Uploads");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            string fileName = Path.GetFileName(postedFile.FileName);
-            string uniqueFilePath = Path.Combine(path, fileName);
-            string uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
+            var fileName = Path.GetFileName(postedFile.FileName);
+            var uniqueFilePath = Path.Combine(path, fileName);
+            var uniqueFileName = Path.GetFileNameWithoutExtension(uniqueFilePath);
             // Check if file name exist, use Windows style rename
             if (System.IO.File.Exists(uniqueFilePath))
             {
-                int count = 1;
+                var count = 1;
 
-                string extension = Path.GetExtension(uniqueFilePath);
-                string newFullPath = uniqueFilePath;
+                var extension = Path.GetExtension(uniqueFilePath);
+                var newFullPath = uniqueFilePath;
 
                 while (System.IO.File.Exists(Path.Combine(path, newFullPath)))
                 {
-                    string tempFileName = $"{uniqueFileName} ({count++})";
+                    var tempFileName = $"{uniqueFileName} ({count++})";
                     newFullPath = Path.Combine(path, tempFileName + extension);
                 }
 
@@ -133,7 +132,7 @@ namespace EvergreenAPI.Controllers
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return BadRequest("We only accept JPEG and PNG file");
 
-            string path = Path.Combine(_environment.ContentRootPath, "Uploads");
+            var path = Path.Combine(_environment.ContentRootPath, "Uploads");
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
@@ -166,7 +165,7 @@ namespace EvergreenAPI.Controllers
 
             await _context.SaveChangesAsync();
 
-            string responseMessage = $"{fileName} updated successfully";
+            var responseMessage = $"{fileName} updated successfully";
             return Ok(responseMessage);
         }
 

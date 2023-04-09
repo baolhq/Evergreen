@@ -36,7 +36,7 @@ namespace EvergreenAPI.Repositories
             {
                 return false;
             }
-            user.Status = false;
+            user.IsBlocked = false;
             _context.Remove(user);
             try
             {

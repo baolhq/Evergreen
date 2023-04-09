@@ -15,18 +15,17 @@ namespace EvergreenView.Controllers
 {
     public class AdminController : Controller
     {
-        private string DiseaseApiUrl = "";
-        private string MedicineApiUrl = "";
-        private readonly HttpClient client = null;
+        private string _diseaseApiUrl;
+        private readonly string _medicineApiUrl;
+        private readonly HttpClient _client;
 
         public AdminController()
         {
-            client = new HttpClient();
+            _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-            DiseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease/GetDiseaseName";
-            MedicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine/GetMedicineName";
-
+            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            _diseaseApiUrl = "https://evergreen-api.onrender.com/api/Disease/GetDiseaseName";
+            _medicineApiUrl = "https://evergreen-api.onrender.com/api/Medicine/GetMedicineName";
         }
 
         public async Task<IActionResult> Index()
@@ -36,16 +35,17 @@ namespace EvergreenView.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             token = token.Replace("\"", string.Empty);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             //Medi Chart
-            HttpResponseMessage response = await client.GetAsync(MedicineApiUrl);
+            HttpResponseMessage response = await _client.GetAsync(_medicineApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            var dictionaryObject = JsonSerializer.Deserialize<Dictionary<string,int>>(strData, options);
+            var dictionaryObject = JsonSerializer.Deserialize<Dictionary<string, int>>(strData, options);
             var keys = new List<string>();
             var values = new List<int>();
             foreach (var item in dictionaryObject)
@@ -53,13 +53,14 @@ namespace EvergreenView.Controllers
                 keys.Add(item.Key);
                 values.Add(item.Value);
             }
+
             var jsonLabel = JsonSerializer.Serialize(keys);
             var jsonData = JsonSerializer.Serialize(values);
             HttpContext.Session.SetString("labels", jsonLabel);
             HttpContext.Session.SetString("datas", jsonData);
 
             //Disease Chart
-            HttpResponseMessage response1 = await client.GetAsync(MedicineApiUrl);
+            HttpResponseMessage response1 = await _client.GetAsync(_medicineApiUrl);
             string strData1 = await response1.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {
@@ -73,6 +74,7 @@ namespace EvergreenView.Controllers
                 keysDisease.Add(item1.Key);
                 valuesDisease.Add(item1.Value);
             }
+
             var jsonLabelDisease = JsonSerializer.Serialize(keysDisease);
             var jsonDataDisease = JsonSerializer.Serialize(valuesDisease);
             HttpContext.Session.SetString("labelDisease", jsonLabelDisease);

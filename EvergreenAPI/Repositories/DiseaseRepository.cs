@@ -38,8 +38,7 @@ namespace EvergreenAPI.Repositories
                 .Include(d => d.DiseaseCategory)
                 .Include(d => d.Medicine)
                 .Include(d => d.Treatment)
-                .Include(d => d.Thumbnail)
-                .Where(s => s.DiseaseId == id).FirstOrDefault(); ;
+                .Include(d => d.Thumbnail).FirstOrDefault(s => s.DiseaseId == id); ;
         }
 
         public ICollection<Disease> GetDiseases()

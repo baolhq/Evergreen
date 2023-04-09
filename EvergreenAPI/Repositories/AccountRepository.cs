@@ -2,21 +2,14 @@
 using EvergreenAPI.Models;
 using EvergreenAPI.Services;
 using EvergreenAPI.Services.EmailService;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MimeKit;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using static EvergreenAPI.Services.EmailService.EmailService;
@@ -39,12 +32,13 @@ namespace EvergreenAPI.Repositories
         }
         public Account GetAccount(AccountDTO account)
         {
-            return _context.Accounts.Where(x => x.Password == account.Password && x.Email == account.Email).FirstOrDefault();
+            return _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email);
         }
 
         public Account Login(LoginDTO account)
         {
-            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && !account.IsBlocked);
+            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && !x.IsBlocked);
+
             if (user == null)
             {
                 return null;
@@ -62,10 +56,9 @@ namespace EvergreenAPI.Repositories
 
 
             var validUser = _context.Accounts
-                .Where(x => x.Password == account.Password && x.Email == account.Email)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email);
 
-            if (validUser != null && validUser.Status)
+            if (validUser != null)
             {
                 
                 validUser.Token = GenerateToken(validUser.Email, validUser.Role);

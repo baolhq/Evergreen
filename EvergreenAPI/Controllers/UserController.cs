@@ -71,7 +71,7 @@ namespace EvergreenAPI.Controllers
             if (account == null) return NotFound($"Account {blockedDto.AccountId} cannot be found");
 
 
-            account.Status = blockedDto.IsBlocked;
+            account.IsBlocked = blockedDto.IsBlocked;
 
             await _context.SaveChangesAsync();
 

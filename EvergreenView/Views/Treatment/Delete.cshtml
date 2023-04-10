@@ -4,7 +4,8 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Delete treatment";
 }
-
+<link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 <div class="container">
     <div class="card card-outline-secondary text-dark">
         <div class="card-header">
@@ -41,3 +42,19 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+@if (TempData["error"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: '@TempData["error"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+}

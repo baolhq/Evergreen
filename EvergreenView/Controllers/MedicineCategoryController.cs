@@ -82,7 +82,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("Index");
             }
-
+            TempData["error"] = "Can not Create";
             return View();
         }
 
@@ -126,7 +126,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Update Successfully";
                 return RedirectToAction("Index");
             }
-
+            TempData["error"] = "Can not Update";
             return View(mediCat);
         }
 
@@ -176,7 +176,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Delete Successfully";
                 return RedirectToAction("Index");
             }
-
+            TempData["error"] = "Can not Delete";
             return View(medicine);
         }
     }

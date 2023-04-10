@@ -175,7 +175,7 @@ namespace EvergreenView.Controllers
 
             List<Treatment> listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData3, options3);
             ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
-
+            TempData["error"] = "Can not Create";
             return View();
         }
 
@@ -309,7 +309,7 @@ namespace EvergreenView.Controllers
             List<Treatment> listTreatment = JsonSerializer.Deserialize<List<Treatment>>(strData4, options4);
             ViewData["Treatments"] = new SelectList(listTreatment, "TreatmentId", "TreatmentName");
 
-
+            TempData["error"] = "Can not Update";
             return View(diseaseId);
         }
 
@@ -362,7 +362,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Delete Successfully";
                 return RedirectToAction("AdminIndex");
             }
-
+            TempData["error"] = "Can not Delete";
             return View(disease);
         }
 

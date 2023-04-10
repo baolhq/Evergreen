@@ -4,6 +4,8 @@
     ViewData["Title"] = "Edit user profile";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 
 <h1>Update</h1>
 <h4>Profile</h4>
@@ -49,4 +51,19 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+@if (TempData["error"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: '@TempData["error"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
 }

@@ -5,6 +5,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
+<link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 
 @section Styles {
     <style>
@@ -188,6 +190,9 @@
     </form>
 </div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -200,5 +205,20 @@
             $("#imgAvatar").prop("src", URL.createObjectURL(files[0]))
           }
         })
+    </script>
+}
+
+@if (TempData["error"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: '@TempData["error"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
     </script>
 }

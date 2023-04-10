@@ -126,6 +126,8 @@ namespace EvergreenView.Controllers
 
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData1, options1);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
+
+            TempData["error"] = "Can not Create";
             return View();
         }
 
@@ -190,7 +192,7 @@ namespace EvergreenView.Controllers
             List<Thumbnail> listImages = JsonSerializer.Deserialize<List<Thumbnail>>(strData2, options2);
             ViewData["Thumbnails"] = new SelectList(listImages, "ThumbnailId", "AltText");
 
-
+            TempData["error"] = "Can not Update";
             return View(blogId);
         }
 
@@ -230,6 +232,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("AdminIndex");
             }
 
+            TempData["error"] = "Can not Delete";
             return View(blog);
         }
 

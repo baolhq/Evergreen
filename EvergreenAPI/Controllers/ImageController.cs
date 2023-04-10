@@ -27,7 +27,7 @@ namespace EvergreenAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetImages()
         {
-            var images = _mapper.Map<List<ImageDTO>>(_imageRepository.GetImages());
+            var images = _mapper.Map<List<ImageDto>>(_imageRepository.GetImages());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,14 +35,14 @@ namespace EvergreenAPI.Controllers
             return Ok(images);
         }
 
-        [HttpGet("{ImageId}")]
+        [HttpGet("{imageId}")]
         [AllowAnonymous]
-        public IActionResult GetImage(int ImageId)
+        public IActionResult GetImage(int imageId)
         {
-            if (!_imageRepository.ImageExist(ImageId))
-                return NotFound($"ImageId '{ImageId}' is not exists!!");
+            if (!_imageRepository.ImageExist(imageId))
+                return NotFound($"ImageId '{imageId}' is not exists!!");
 
-            var image = _mapper.Map<ImageDTO>(_imageRepository.GetImage(ImageId));
+            var image = _mapper.Map<ImageDto>(_imageRepository.GetImage(imageId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -51,14 +51,14 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateImage([FromBody] ImageDTO imageCreate)
+        public IActionResult CreateImage([FromBody] ImageDto imageCreate)
         {
             if (imageCreate == null)
                 return BadRequest(ModelState);
 
-            var image = _imageRepository.GetImages()
-                .Where(c => c.AltText.Trim().ToUpper() == imageCreate.AltText.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var image = _imageRepository
+                .GetImages()
+                .FirstOrDefault(c => c.AltText.Trim().ToUpper() == imageCreate.AltText.TrimEnd().ToUpper());
 
             if (image != null)
             {
@@ -80,16 +80,16 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
-        [HttpPut("{ImageId}")]
-        public IActionResult UpdateImage(int ImageId, [FromBody] ImageDTO updatedImage)
+        [HttpPut("{imageId}")]
+        public IActionResult UpdateImage(int imageId, [FromBody] ImageDto updatedImage)
         {
             if (updatedImage == null)
                 return BadRequest(ModelState);
 
-            if (ImageId != updatedImage.ImageId)
+            if (imageId != updatedImage.ImageId)
                 return BadRequest(ModelState);
 
-            if (!_imageRepository.ImageExist(ImageId))
+            if (!_imageRepository.ImageExist(imageId))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -106,13 +106,13 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
-        [HttpDelete("{ImageId}")]
-        public IActionResult DeleteImage(int ImageId)
+        [HttpDelete("{imageId}")]
+        public IActionResult DeleteImage(int imageId)
         {
-            if (!_imageRepository.ImageExist(ImageId))
+            if (!_imageRepository.ImageExist(imageId))
                 return NotFound();
 
-            var imageToDelete = _imageRepository.GetImage(ImageId);
+            var imageToDelete = _imageRepository.GetImage(imageId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -2,10 +2,8 @@
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -51,7 +49,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPut("ManageRole")]
-        public async Task<IActionResult> SetRole(RoleDTO roleDto)
+        public async Task<IActionResult> SetRole(RoleDto roleDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -66,7 +64,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPut("ManageBlocked")]
-        public async Task<IActionResult> SetBlocked(BlockedDTO blockedDto)
+        public async Task<IActionResult> SetBlocked(BlockedDto blockedDto)
 
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -85,7 +83,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserDTO user)
+        public IActionResult CreateUser([FromBody] UserDto user)
 
         {
             if (user == null)
@@ -104,7 +102,7 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userMap = _mapper.Map<UserDTO>(user);
+            var userMap = _mapper.Map<UserDto>(user);
 
             if (_userRepository.CreateUser(userMap))
             {
@@ -116,11 +114,11 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] AccountDTO updatedUser)
+        public IActionResult UpdateUser(int id, [FromBody] AccountDto updatedUser)
         {
             var user = _userRepository.GetUser(id);
             if (user == null)
-                return BadRequest(ModelState);
+                return NotFound(ModelState);
 
             if (user.AccountId != updatedUser.AccountId)
                 return BadRequest(ModelState);
@@ -189,9 +187,7 @@ namespace EvergreenAPI.Controllers
             account.AvatarUrl = $@"https://localhost:5001/Uploads/{uniqueFileName}{ext}";
 
             await _context.SaveChangesAsync();
-
-            var responseMessage = $"{fileName} uploaded successfully";
-            return Ok(responseMessage);
+            return Ok(account.AvatarUrl);
         }
 
         [HttpDelete("{email}")]

@@ -60,7 +60,7 @@ namespace EvergreenAPI.Repositories
             return users;
         }
 
-        public bool CreateUser(UserDTO user)
+        public bool CreateUser(UserDto user)
         {
             if (_context.Accounts.Any(u => u.Email == user.Email))
             {
@@ -104,7 +104,7 @@ namespace EvergreenAPI.Repositories
             return true;
         }
 
-        public bool UpdateUser(AccountDTO userDto, int id)
+        public bool UpdateUser(AccountDto userDto, int id)
         {
             var user = _context.Accounts.SingleOrDefault(f => f.AccountId == id);
             if (user == null)
@@ -117,7 +117,6 @@ namespace EvergreenAPI.Repositories
             user.Bio = userDto.Bio;
             user.Professions = userDto.Professions;
             user.PhoneNumber = userDto.PhoneNumber;
-            user.AvatarUrl = userDto.AvatarUrl;
             _context.Update(user);
             try
             {

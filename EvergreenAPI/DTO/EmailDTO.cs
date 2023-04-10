@@ -1,6 +1,6 @@
 ﻿namespace EvergreenAPI.DTO
 {
-    public class EmailDTO
+    public class EmailDto
     {
         public string Mail { get; set; }
         public string DisplayName { get; set; }

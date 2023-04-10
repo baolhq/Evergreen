@@ -3,7 +3,6 @@ using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +27,7 @@ namespace EvergreenAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetMedicineCategories()
         {
-            var medicineCategories = _mapper.Map<List<MedicineCategoryDTO>>(_medicineCategoryRepository.GetMedicineCategories());
+            var medicineCategories = _mapper.Map<List<MedicineCategoryDto>>(_medicineCategoryRepository.GetMedicineCategories());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -36,14 +35,14 @@ namespace EvergreenAPI.Controllers
             return Ok(medicineCategories);
         }
 
-        [HttpGet("{MedicineCategoryId}")]
+        [HttpGet("{medicineCategoryId}")]
         [AllowAnonymous]
-        public IActionResult GetMedicineCategory(int MedicineCategoryId)
+        public IActionResult GetMedicineCategory(int medicineCategoryId)
         {
-            if (!_medicineCategoryRepository.MedicineCategoryExist(MedicineCategoryId))
-                return NotFound($"Medicine Category '{MedicineCategoryId}' is not exists!!");
+            if (!_medicineCategoryRepository.MedicineCategoryExist(medicineCategoryId))
+                return NotFound($"Medicine Category '{medicineCategoryId}' is not exists!!");
 
-            var medicineCategory = _mapper.Map<MedicineCategoryDTO>(_medicineCategoryRepository.GetMedicineCategory(MedicineCategoryId));
+            var medicineCategory = _mapper.Map<MedicineCategoryDto>(_medicineCategoryRepository.GetMedicineCategory(medicineCategoryId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -52,14 +51,14 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateMedicineCategory([FromBody] MedicineCategoryDTO medicineCateCreate)
+        public IActionResult CreateMedicineCategory([FromBody] MedicineCategoryDto medicineCateCreate)
         {
             if (medicineCateCreate == null)
                 return BadRequest(ModelState);
 
-            var medicineCate = _medicineCategoryRepository.GetMedicineCategories()
-                .Where(c => c.Name.Trim().ToUpper() == medicineCateCreate.Name.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var medicineCate = _medicineCategoryRepository
+                .GetMedicineCategories()
+                .FirstOrDefault(c => c.Name.Trim().ToUpper() == medicineCateCreate.Name.TrimEnd().ToUpper());
 
             if (medicineCate != null)
             {
@@ -81,16 +80,16 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
-        [HttpPut("{MedicineCategoryId}")]
-        public IActionResult UpdateMedicineCategory(int MedicineCategoryId, [FromBody] MedicineCategoryDTO updatedMedicineCate)
+        [HttpPut("{medicineCategoryId}")]
+        public IActionResult UpdateMedicineCategory(int medicineCategoryId, [FromBody] MedicineCategoryDto updatedMedicineCate)
         {
             if (updatedMedicineCate == null)
                 return BadRequest(ModelState);
 
-            if (MedicineCategoryId != updatedMedicineCate.MedicineCategoryId)
+            if (medicineCategoryId != updatedMedicineCate.MedicineCategoryId)
                 return BadRequest(ModelState);
 
-            if (!_medicineCategoryRepository.MedicineCategoryExist(MedicineCategoryId))
+            if (!_medicineCategoryRepository.MedicineCategoryExist(medicineCategoryId))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -107,13 +106,13 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
-        [HttpDelete("{MedicineCategoryId}")]
-        public IActionResult DeleteMedicineCategory(int MedicineCategoryId)
+        [HttpDelete("{medicineCategoryId}")]
+        public IActionResult DeleteMedicineCategory(int medicineCategoryId)
         {
-            if (!_medicineCategoryRepository.MedicineCategoryExist(MedicineCategoryId))
+            if (!_medicineCategoryRepository.MedicineCategoryExist(medicineCategoryId))
                 return NotFound();
 
-            var medicineCateToDelete = _medicineCategoryRepository.GetMedicineCategory(MedicineCategoryId);
+            var medicineCateToDelete = _medicineCategoryRepository.GetMedicineCategory(medicineCategoryId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

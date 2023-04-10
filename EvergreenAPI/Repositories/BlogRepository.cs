@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EvergreenAPI.Repositories
 {
@@ -16,15 +15,15 @@ namespace EvergreenAPI.Repositories
             _context = context;
         } 
 
-        public bool CreateBlog(Blog Blog)
+        public bool CreateBlog(Blog blog)
         {
-            _context.Add(Blog);
+            _context.Add(blog);
             return Save();
         }
 
-        public bool DeleteBlog(Blog Blog)
+        public bool DeleteBlog(Blog blog)
         {
-            _context.Remove(Blog);
+            _context.Remove(blog);
             return Save();
         }
 
@@ -35,7 +34,7 @@ namespace EvergreenAPI.Repositories
 
         public Blog GetBlog(int id)
         {
-            return _context.Blogs.Include(d => d.Thumbnail).Where(s => s.BlogId == id).FirstOrDefault(); ;
+            return _context.Blogs.Include(d => d.Thumbnail).FirstOrDefault(s => s.BlogId == id); ;
         }
 
         public ICollection<Thumbnail> GetThumbnails()
@@ -55,18 +54,18 @@ namespace EvergreenAPI.Repositories
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateBlog(Blog Blog)
+        public bool UpdateBlog(Blog blog)
         {
-            _context.Update(Blog);
+            _context.Update(blog);
             return Save();
         }
 
 
 
 
-        public bool UpdateViewBlog(int BlogId)
+        public bool UpdateViewBlog(int blogId)
         {
-            var blog = _context.Blogs.SingleOrDefault(b => b.BlogId == BlogId);
+            var blog = _context.Blogs.SingleOrDefault(b => b.BlogId == blogId);
             blog.ViewCount++;
             _context.Update(blog);
             return Save();

@@ -122,7 +122,7 @@ namespace EvergreenAPI.Controllers
                      || d.Name == "Septoria"
                      || d.Name == "Yellow Curl" ||
                      d.Name == "Healthy Leaf").ToList();
-            List<PredictionDTO> data;
+            List<PredictionDto> data;
 
             using (var multipartFormContent = new MultipartFormDataContent())
             {
@@ -156,7 +156,7 @@ namespace EvergreenAPI.Controllers
                 }
 
                 var result = response.Content.ReadAsStringAsync().Result;
-                data = JsonConvert.DeserializeObject<List<PredictionDTO>>(result);
+                data = JsonConvert.DeserializeObject<List<PredictionDto>>(result);
             }
 
             var detectedDisease = new Disease();
@@ -212,14 +212,14 @@ namespace EvergreenAPI.Controllers
                 _mapper.Map<List<DetectionHistory>>(_detectionHistoryRepository.GetDetectionHistories(accountId));
 
 
-            var result = new List<ExtractDetectionHistoriesDTO>();
+            var result = new List<ExtractDetectionHistoriesDto>();
             foreach (var detection in detectionHistories)
             {
                 var accuracies = GetDetectionAccuracies(detection.DetectionHistoryId).Include(x => x.Disease);
                 var highestAcc = accuracies.Max(x => x.Accuracy);
                 var detectedDisease = accuracies.First(x => x.Accuracy == highestAcc);
 
-                result.Add(new ExtractDetectionHistoriesDTO
+                result.Add(new ExtractDetectionHistoriesDto
                 {
                     DetectionHistoryId = detection.DetectionHistoryId,
                     ImageName = detection.ImageName,
@@ -242,14 +242,14 @@ namespace EvergreenAPI.Controllers
             var detectionHistories =
                 _mapper.Map<List<DetectionHistory>>(_detectionHistoryRepository.GetAll());
 
-            var result = new List<ExtractDetectionHistoriesDTO>();
+            var result = new List<ExtractDetectionHistoriesDto>();
             foreach (var detection in detectionHistories)
             {
                 var accuracies = GetDetectionAccuracies(detection.DetectionHistoryId).Include(x => x.Disease);
                 var highestAcc = accuracies.Max(x => x.Accuracy);
                 var detectedDisease = accuracies.First(x => x.Accuracy == highestAcc);
 
-                result.Add(new ExtractDetectionHistoriesDTO
+                result.Add(new ExtractDetectionHistoriesDto
                 {
                     DetectionHistoryId = detection.DetectionHistoryId,
                     ImageName = detection.ImageName,

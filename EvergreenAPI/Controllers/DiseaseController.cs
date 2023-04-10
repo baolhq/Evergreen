@@ -3,7 +3,6 @@ using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,14 +35,14 @@ namespace EvergreenAPI.Controllers
             return Ok(diseases);
         }
 
-        [HttpGet("{DiseaseId}")]
+        [HttpGet("{diseaseId}")]
         [AllowAnonymous]
-        public IActionResult GetDisease(int DiseaseId)
+        public IActionResult GetDisease(int diseaseId)
         {
-            if (!_diseaseRepository.DiseaseExist(DiseaseId))
-                return NotFound($"Disease '{DiseaseId}' is not exists!!");
+            if (!_diseaseRepository.DiseaseExist(diseaseId))
+                return NotFound($"Disease '{diseaseId}' is not exists!!");
 
-            var disease = _mapper.Map<Disease>(_diseaseRepository.GetDisease(DiseaseId));
+            var disease = _mapper.Map<Disease>(_diseaseRepository.GetDisease(diseaseId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -52,14 +51,14 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateDisease([FromBody] DiseaseDTO diseaseCreate)
+        public IActionResult CreateDisease([FromBody] DiseaseDto diseaseCreate)
         {
             if (diseaseCreate == null)
                 return BadRequest(ModelState);
 
-            var disease = _diseaseRepository.GetDiseases()
-                .Where(c => c.Name.Trim().ToUpper() == diseaseCreate.Name.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var disease = _diseaseRepository
+                .GetDiseases()
+                .FirstOrDefault(c => c.Name.Trim().ToUpper() == diseaseCreate.Name.TrimEnd().ToUpper());
 
             if (disease != null)
             {
@@ -81,16 +80,16 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
-        [HttpPut("{DiseaseId}")]
-        public IActionResult UpdateDisease(int DiseaseId, [FromBody] DiseaseDTO updatedDisease)
+        [HttpPut("{diseaseId}")]
+        public IActionResult UpdateDisease(int diseaseId, [FromBody] DiseaseDto updatedDisease)
         {
             if (updatedDisease == null)
                 return BadRequest(ModelState);
 
-            if (DiseaseId != updatedDisease.DiseaseId)
+            if (diseaseId != updatedDisease.DiseaseId)
                 return BadRequest(ModelState);
 
-            if (!_diseaseRepository.DiseaseExist(DiseaseId))
+            if (!_diseaseRepository.DiseaseExist(diseaseId))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -107,13 +106,13 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
-        [HttpDelete("{DiseaseId}")]
-        public IActionResult DeleteDisease(int DiseaseId)
+        [HttpDelete("{diseaseId}")]
+        public IActionResult DeleteDisease(int diseaseId)
         {
-            if (!_diseaseRepository.DiseaseExist(DiseaseId))
+            if (!_diseaseRepository.DiseaseExist(diseaseId))
                 return NotFound();
 
-            var diseaseToDelete = _diseaseRepository.GetDisease(DiseaseId);
+            var diseaseToDelete = _diseaseRepository.GetDisease(diseaseId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -138,7 +137,7 @@ namespace EvergreenAPI.Controllers
         public ActionResult GetMedicineName()
         {
             Dictionary<string, int> amount = new Dictionary<string, int>();
-            var listDiseaseName = _diseaseRepository.getDiseasesName();
+            var listDiseaseName = _diseaseRepository.GetDiseasesName();
             var categoryName = listDiseaseName.Select(c => c.DiseaseCategory.Name).Distinct();
             foreach (var item in categoryName)
             {

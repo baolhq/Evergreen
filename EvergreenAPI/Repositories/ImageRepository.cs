@@ -32,7 +32,7 @@ namespace EvergreenAPI.Repositories
 
         public Image GetImage(int id)
         {
-            return _context.Images.Where(s => s.ImageId == id).FirstOrDefault(); ;
+            return _context.Images.FirstOrDefault(s => s.ImageId == id); ;
         }
 
         public ICollection<Image> GetImages()

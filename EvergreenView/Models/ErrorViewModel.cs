@@ -1,5 +1,3 @@
-using System;
-
 namespace EvergreenView.Models
 {
     public class ErrorViewModel

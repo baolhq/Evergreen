@@ -47,7 +47,7 @@ namespace EvergreenView.Controllers
             {
                 PropertyNameCaseInsensitive = true
             };
-            var history = JsonSerializer.Deserialize<List<ExtractDetectionHistoriesDTO>>(strData, options);
+            var history = JsonSerializer.Deserialize<List<ExtractDetectionHistoriesDto>>(strData, options);
             var result = JsonSerializer.Serialize(history);
             ViewBag.history = result;
 

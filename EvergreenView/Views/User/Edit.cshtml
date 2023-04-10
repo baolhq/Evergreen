@@ -1,4 +1,4 @@
-﻿@model EvergreenAPI.DTO.AccountDTO
+﻿@model EvergreenAPI.DTO.AccountDto
 
 @{
     ViewData["Title"] = "Update profile";
@@ -112,10 +112,10 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="profile-img">
-                    <img src="@Model.AvatarUrl" alt="Avatar"/>
+                    <img src="@Model.AvatarUrl" id="imgAvatar" alt="Avatar"/>
                     <div class="file btn btn-block">
                         Change Photo
-                        <input type="file" name="file" asp-for="AvatarImg"/>
+                        <input type="file" name="file" id="imgInput" asp-for="AvatarImg"/>
                     </div>
                 </div>
             </div>
@@ -192,4 +192,13 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $("#imgInput").change(() => {
+          let files = $("#imgInput").get(0).files
+          if (files.length) {
+            $("#imgAvatar").prop("src", URL.createObjectURL(files[0]))
+          }
+        })
+    </script>
 }

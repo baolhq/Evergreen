@@ -39,7 +39,7 @@ namespace EvergreenView.Controllers
             if (!response.IsSuccessStatusCode)
                 return RedirectToAction("Index", "Home");
 
-            var histories = JsonSerializer.Deserialize<List<ExtractDetectionHistoriesDTO>>(strData);
+            var histories = JsonSerializer.Deserialize<List<ExtractDetectionHistoriesDto>>(strData);
 
             return View(histories);
         }

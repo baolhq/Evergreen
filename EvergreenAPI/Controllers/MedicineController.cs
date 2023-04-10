@@ -3,9 +3,7 @@ using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NToastNotify;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,14 +35,14 @@ namespace EvergreenAPI.Controllers
             return Ok(medicines);
         }
 
-        [HttpGet("{MedicineId}")]
+        [HttpGet("{medicineId}")]
         [AllowAnonymous]
-        public IActionResult GetMedicine(int MedicineId)
+        public IActionResult GetMedicine(int medicineId)
         {
-            if (!_medicineRepository.MedicineExist(MedicineId))
-                return NotFound($"Medicine Category '{MedicineId}' is not exists!!");
+            if (!_medicineRepository.MedicineExist(medicineId))
+                return NotFound($"Medicine Category '{medicineId}' is not exists!!");
 
-            var medicines = _mapper.Map<Medicine>(_medicineRepository.GetMedicine(MedicineId));
+            var medicines = _mapper.Map<Medicine>(_medicineRepository.GetMedicine(medicineId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -53,7 +51,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateMedicine([FromBody] MedicineDTO medicineCreate)
+        public IActionResult CreateMedicine([FromBody] MedicineDto medicineCreate)
         {
             if (medicineCreate == null)
                 return BadRequest(ModelState);
@@ -83,7 +81,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPut("{medicineId}")]
-        public IActionResult UpdateMedicine(int medicineId, [FromBody] MedicineDTO updatedMedicine)
+        public IActionResult UpdateMedicine(int medicineId, [FromBody] MedicineDto updatedMedicine)
         {
             if (updatedMedicine == null)
                 return BadRequest(ModelState);
@@ -108,13 +106,13 @@ namespace EvergreenAPI.Controllers
             return Ok("Updated Success");
         }
 
-        [HttpDelete("{MedicineId}")]
-        public IActionResult DeleteMedicine(int MedicineId)
+        [HttpDelete("{medicineId}")]
+        public IActionResult DeleteMedicine(int medicineId)
         {
-            if (!_medicineRepository.MedicineExist(MedicineId))
+            if (!_medicineRepository.MedicineExist(medicineId))
                 return NotFound();
 
-            var medicineToDelete = _medicineRepository.GetMedicine(MedicineId);
+            var medicineToDelete = _medicineRepository.GetMedicine(medicineId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -140,7 +138,7 @@ namespace EvergreenAPI.Controllers
         public ActionResult GetMedicineName()
         {
             Dictionary<string, int> amount = new Dictionary<string, int>();
-            var listMedicineName = _medicineRepository.getMedicinesName();
+            var listMedicineName = _medicineRepository.GetMedicinesName();
             var categoryName = listMedicineName.Select(c => c.MedicineCategory.Name).Distinct();
             foreach(var item in categoryName)
             {

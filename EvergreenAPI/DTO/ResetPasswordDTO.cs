@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
 
 namespace EvergreenAPI.DTO
 {
-    public class ResetPasswordDTO
+    public class ResetPasswordDto
     {
         public string Token { get; set; }
 

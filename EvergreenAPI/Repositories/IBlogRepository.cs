@@ -1,9 +1,5 @@
-﻿using EvergreenAPI.DTO;
-using EvergreenAPI.Models;
-using System;
+﻿using EvergreenAPI.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EvergreenAPI.Repositories
 {
@@ -18,7 +14,7 @@ namespace EvergreenAPI.Repositories
         bool UpdateBlog(Blog b);
         bool Save();
         List<Blog> Search(string search);
-        bool UpdateViewBlog(int BlogId);
+        bool UpdateViewBlog(int blogId);
         int GetViewBlog(int blogId);
 
     }

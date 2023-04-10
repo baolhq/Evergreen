@@ -9,9 +9,6 @@ using EvergreenAPI.Models;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Reflection.Metadata;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 

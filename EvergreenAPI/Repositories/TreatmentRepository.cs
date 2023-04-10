@@ -57,7 +57,7 @@ namespace EvergreenAPI.Repositories
         public Treatment GetTreatment(int id)
         {
             
-            return _context.Treatments.Include(d => d.Thumbnail).Where(s => s.TreatmentId == id).FirstOrDefault();
+            return _context.Treatments.Include(d => d.Thumbnail).FirstOrDefault(s => s.TreatmentId == id);
         }
 
 

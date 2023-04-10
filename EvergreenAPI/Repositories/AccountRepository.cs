@@ -1,6 +1,5 @@
 ﻿using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
-using EvergreenAPI.Services;
 using EvergreenAPI.Services.EmailService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,23 +18,17 @@ namespace EvergreenAPI.Repositories
     public class AccountRepository : IAccountRepository
     {
         private readonly AppDbContext _context;
-        private readonly ITokenService _tokenService;
         private readonly IConfiguration _config;
         private readonly IEmailService _emailService;
 
-        public AccountRepository(ITokenService tokenService, IConfiguration config, AppDbContext context, IEmailService emailService)
+        public AccountRepository(IConfiguration config, AppDbContext context, IEmailService emailService)
         {
             _context = context;
-            _tokenService = tokenService;
             _config = config;
             _emailService = emailService;
         }
-        public Account GetAccount(AccountDTO account)
-        {
-            return _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email);
-        }
 
-        public Account Login(LoginDTO account)
+        public Account Login(LoginDto account)
         {
             var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && !x.IsBlocked);
 
@@ -76,7 +69,7 @@ namespace EvergreenAPI.Repositories
 
 
 
-        public async Task<bool> Register(AccountDTO accountDto)
+        public async Task<bool> Register(Account accountDto)
         {
             string userRole = "User";
             var found = _context.Accounts.Any(a => a.Email == accountDto.Email);
@@ -85,8 +78,8 @@ namespace EvergreenAPI.Repositories
                 return false;
             }
             var password = accountDto.Password;
-            var confirmpassword = accountDto.ConfirmPassword;
-            if (password != confirmpassword)
+            var confirmPassword = accountDto.ConfirmPassword;
+            if (password != confirmPassword)
             {
                 return false;
             }
@@ -113,7 +106,7 @@ namespace EvergreenAPI.Repositories
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Role = "User",
-                Token = GenerateToken(accountDto.Email.ToString(), userRole.ToString()),
+                Token = GenerateToken(accountDto.Email, userRole),
                 Chat = "AI: Hello, how can I help you today?",
             };
 
@@ -125,13 +118,15 @@ namespace EvergreenAPI.Repositories
                 #region Send Verification Mail To User
                 try
                 {
-                    var mailContent1 = new MailContent();
-                    mailContent1.To = account.Email; //temp email
-                    mailContent1.Subject = "Welcome To Evergreen!";
-                    mailContent1.Body = account.Token.ToString();
+                    var mailContent1 = new MailContent
+                    {
+                        To = account.Email, //temp email
+                        Subject = "Welcome To Evergreen!",
+                        Body = account.Token
+                    };
                     await _emailService.SendMail(mailContent1);
                 }
-                catch (System.ArgumentNullException)
+                catch (ArgumentNullException)
                 {
                     return false;
                 }
@@ -141,7 +136,7 @@ namespace EvergreenAPI.Repositories
                 }
                 #endregion
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -194,13 +189,15 @@ namespace EvergreenAPI.Repositories
                 #region Send Verification Mail To User
                 try
                 {
-                    var mailContent1 = new MailContent();
-                    mailContent1.To = user.Email; //temp email
-                    mailContent1.Subject = "Reset Password!";
-                    mailContent1.Body = user.PasswordResetToken.ToString();
+                    var mailContent1 = new MailContent
+                    {
+                        To = user.Email, //temp email
+                        Subject = "Reset Password!",
+                        Body = user.PasswordResetToken
+                    };
                     await _emailService.SendMail(mailContent1);
                 }
-                catch (System.ArgumentNullException)
+                catch (ArgumentNullException)
                 {
                     return null;
                 }
@@ -210,7 +207,7 @@ namespace EvergreenAPI.Repositories
                 }
                 #endregion
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -221,7 +218,7 @@ namespace EvergreenAPI.Repositories
         }
 
 
-        public async Task<bool> ResetPassword(ResetPasswordDTO request)
+        public async Task<bool> ResetPassword(ResetPasswordDto request)
         {
             var user = await _context.Accounts.FirstOrDefaultAsync(x => x.PasswordResetToken == request.Token);
 
@@ -230,8 +227,8 @@ namespace EvergreenAPI.Repositories
                 return false;
             }
             var password = request.Password;
-            var confirmpassword = request.ConfirmPassword;
-            if (password != confirmpassword)
+            var confirmPassword = request.ConfirmPassword;
+            if (password != confirmPassword)
             {
                 return false;
             }
@@ -257,24 +254,19 @@ namespace EvergreenAPI.Repositories
 
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac
-                    .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            using var hmac = new HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac
+                .ComputeHash(Encoding.UTF8.GetBytes(password));
         }
 
 
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-
-                var computedHash = hmac
-                    .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
+            using var hmac = new HMACSHA512(passwordSalt);
+            var computedHash = hmac
+                .ComputeHash(Encoding.UTF8.GetBytes(password));
+            return computedHash.SequenceEqual(passwordHash);
         }
 
         private string GenerateToken(string email, string role)
@@ -298,8 +290,8 @@ namespace EvergreenAPI.Repositories
                     SecurityAlgorithms.HmacSha256)
             };
 
-            var stoken = tokenHandler.CreateToken(tokenDescriptor);
-            var token = tokenHandler.WriteToken(stoken);
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.WriteToken(securityToken);
 
             return token;
         }

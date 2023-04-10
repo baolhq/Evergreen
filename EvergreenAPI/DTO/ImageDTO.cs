@@ -2,7 +2,7 @@
 
 namespace EvergreenAPI.DTO
 {
-    public class ImageDTO
+    public class ImageDto
     {
         public int ImageId { get; set; }
         [Required]

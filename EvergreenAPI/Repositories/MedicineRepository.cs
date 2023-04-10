@@ -1,6 +1,5 @@
 ﻿using EvergreenAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace EvergreenAPI.Repositories
         public Medicine GetMedicine(int id)
         {
 
-            return _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Thumbnail).Where(s => s.MedicineId == id).FirstOrDefault();
+            return _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Thumbnail).FirstOrDefault(s => s.MedicineId == id);
 
             
         }
@@ -85,7 +84,7 @@ namespace EvergreenAPI.Repositories
         }
 
 
-        public List<Medicine> getMedicinesName()
+        public List<Medicine> GetMedicinesName()
         {
             var listMedicine = _context.Medicines.Include(s => s.MedicineCategory).ToList();
             return listMedicine;

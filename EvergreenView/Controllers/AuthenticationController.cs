@@ -49,7 +49,7 @@ namespace EvergreenView.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginDTO account)
+        public async Task<IActionResult> Login(LoginDto account)
         {
             if (ModelState.IsValid)
             {
@@ -101,7 +101,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(AccountDTO account)
+        public async Task<IActionResult> Register(Account account)
         {
             if (ModelState.IsValid)
             {
@@ -128,7 +128,7 @@ namespace EvergreenView.Controllers
         [HttpGet]
         public ActionResult VerifyAccount(string email)
         {
-            var verifyAccountDto = new VerifyAccountDTO()
+            var verifyAccountDto = new VerifyAccountDto()
             {
                 Email = email
             };
@@ -136,7 +136,7 @@ namespace EvergreenView.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> VerifyAccount(VerifyAccountDTO verifyAccountDto)
+        public async Task<ActionResult> VerifyAccount(VerifyAccountDto verifyAccountDto)
         {
             var token = verifyAccountDto.Token;
             if (ModelState.IsValid)
@@ -198,7 +198,7 @@ namespace EvergreenView.Controllers
         [HttpGet]
         public ActionResult ResetPassword(string tokenResetPassword)
         {
-            var resetPasswordDto = new ResetPasswordDTO()
+            var resetPasswordDto = new ResetPasswordDto()
             {
                 Token = tokenResetPassword
             };
@@ -207,7 +207,7 @@ namespace EvergreenView.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> ResetPassword(ResetPasswordDTO resetPasswordDto)
+        public async Task<ActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
             if (ModelState.IsValid)
             {

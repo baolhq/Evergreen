@@ -32,7 +32,7 @@ namespace EvergreenAPI.Repositories
 
         public DiseaseCategory GetDiseaseCategory(int id)
         {
-            return _context.DiseaseCategories.Where(s => s.DiseaseCategoryId == id).FirstOrDefault();
+            return _context.DiseaseCategories.FirstOrDefault(s => s.DiseaseCategoryId == id);
         }
 
         public ICollection<DiseaseCategory> GetDiseaseCategories()

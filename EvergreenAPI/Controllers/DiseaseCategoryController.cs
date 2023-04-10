@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +28,7 @@ namespace EvergreenAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetDiseaseCategories()
         {
-            var diseaseCategories = _mapper.Map<List<DiseaseCategoryDTO>>(_diseaseCategoryRepository.GetDiseaseCategories());
+            var diseaseCategories = _mapper.Map<List<DiseaseCategoryDto>>(_diseaseCategoryRepository.GetDiseaseCategories());
 
             if (!ModelState.IsValid) 
                 return BadRequest(ModelState);
@@ -36,14 +36,14 @@ namespace EvergreenAPI.Controllers
             return Ok(diseaseCategories);
         }
 
-        [HttpGet("{DiseaseCategoryID}")]
+        [HttpGet("{diseaseCategoryId}")]
         [AllowAnonymous]
-        public IActionResult GetDiseaseCategory(int DiseaseCategoryID)
+        public IActionResult GetDiseaseCategory(int diseaseCategoryId)
         {
-            if (!_diseaseCategoryRepository.DiseaseCategoryExist(DiseaseCategoryID)) 
-                return NotFound($"Disease Category '{DiseaseCategoryID}' is not exists!!");
+            if (!_diseaseCategoryRepository.DiseaseCategoryExist(diseaseCategoryId)) 
+                return NotFound($"Disease Category '{diseaseCategoryId}' is not exists!!");
 
-            var diseaseCategory = _mapper.Map<DiseaseCategoryDTO>(_diseaseCategoryRepository.GetDiseaseCategory(DiseaseCategoryID));
+            var diseaseCategory = _mapper.Map<DiseaseCategoryDto>(_diseaseCategoryRepository.GetDiseaseCategory(diseaseCategoryId));
 
             if (!ModelState.IsValid) 
                 return BadRequest(ModelState);
@@ -52,14 +52,14 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateDiseaseCategory([FromBody] DiseaseCategoryDTO diseaseCateCreate)
+        public IActionResult CreateDiseaseCategory([FromBody] DiseaseCategoryDto diseaseCateCreate)
         {
             if (diseaseCateCreate == null)
                 return BadRequest(ModelState);
 
-            var diseaseCate = _diseaseCategoryRepository.GetDiseaseCategories()
-                .Where(c => c.Name.Trim().ToUpper() == diseaseCateCreate.Name.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var diseaseCate = _diseaseCategoryRepository
+                .GetDiseaseCategories()
+                .FirstOrDefault(c => string.Equals(c.Name.Trim(), diseaseCateCreate.Name.TrimEnd(), StringComparison.CurrentCultureIgnoreCase));
 
             if (diseaseCate != null)
             {
@@ -81,16 +81,16 @@ namespace EvergreenAPI.Controllers
             return Ok("Create Success");
         }
 
-        [HttpPut("{DiseaseCategoryID}")]
-        public IActionResult UpdateDiseaseCategory(int DiseaseCategoryID, [FromBody] DiseaseCategoryDTO updatedDiseaseCategory)
+        [HttpPut("{diseaseCategoryId}")]
+        public IActionResult UpdateDiseaseCategory(int diseaseCategoryId, [FromBody] DiseaseCategoryDto updatedDiseaseCategory)
         {
             if (updatedDiseaseCategory == null) 
                 return BadRequest(ModelState);
 
-            if (DiseaseCategoryID != updatedDiseaseCategory.DiseaseCategoryId) 
+            if (diseaseCategoryId != updatedDiseaseCategory.DiseaseCategoryId) 
                 return BadRequest(ModelState);
 
-            if (!_diseaseCategoryRepository.DiseaseCategoryExist(DiseaseCategoryID)) 
+            if (!_diseaseCategoryRepository.DiseaseCategoryExist(diseaseCategoryId)) 
                 return NotFound();
 
             if (!ModelState.IsValid) 
@@ -109,13 +109,13 @@ namespace EvergreenAPI.Controllers
 
 
 
-        [HttpDelete("{DiseaseCategoryID}")]
-        public IActionResult DeleteDiseaseCategory(int DiseaseCategoryID)
+        [HttpDelete("{diseaseCategoryId}")]
+        public IActionResult DeleteDiseaseCategory(int diseaseCategoryId)
         {
-            if (!_diseaseCategoryRepository.DiseaseCategoryExist(DiseaseCategoryID)) 
+            if (!_diseaseCategoryRepository.DiseaseCategoryExist(diseaseCategoryId)) 
                 return NotFound();
 
-            var diseaseCateToDelete = _diseaseCategoryRepository.GetDiseaseCategory(DiseaseCategoryID);
+            var diseaseCateToDelete = _diseaseCategoryRepository.GetDiseaseCategory(diseaseCategoryId);
 
             if (!ModelState.IsValid) 
                 return BadRequest(ModelState);

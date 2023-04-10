@@ -1,9 +1,7 @@
 ﻿using EvergreenAPI.DTO;
 using MailKit.Security;
-using MimeKit.Text;
 using MimeKit;
 using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
@@ -13,18 +11,18 @@ namespace EvergreenAPI.Services.EmailService
 {
     public class EmailService : IEmailService
     {
-        private readonly EmailDTO _emailDTO;
-        private readonly ILogger<EmailService> logger;
+        private readonly EmailDto _emailDto;
+        private readonly ILogger<EmailService> _logger;
 
 
 
         // mailSetting được Inject qua dịch vụ hệ thống
         // Có inject Logger để xuất log
-        public EmailService (IOptions<EmailDTO> emailDTO, ILogger<EmailService> _logger)
+        public EmailService (IOptions<EmailDto> emailDto, ILogger<EmailService> logger)
         {
-           _emailDTO = emailDTO.Value;
-            logger = _logger;
-            logger.LogInformation("Create SendMailService");
+           _emailDto = emailDto.Value;
+            this._logger = logger;
+            this._logger.LogInformation("Create SendMailService");
         }
 
 
@@ -40,23 +38,25 @@ namespace EvergreenAPI.Services.EmailService
         public async Task SendMail(MailContent mailContent)
         {
             var email = new MimeMessage();
-            email.Sender = new MailboxAddress(_emailDTO.DisplayName, _emailDTO.Mail);
-            email.From.Add(new MailboxAddress(_emailDTO.DisplayName, _emailDTO.Mail));
+            email.Sender = new MailboxAddress(_emailDto.DisplayName, _emailDto.Mail);
+            email.From.Add(new MailboxAddress(_emailDto.DisplayName, _emailDto.Mail));
             email.To.Add(MailboxAddress.Parse(mailContent.To));
             email.Subject = mailContent.Subject;
 
 
-            var builder = new BodyBuilder();
-            builder.HtmlBody = mailContent.Body;
+            var builder = new BodyBuilder
+            {
+                HtmlBody = mailContent.Body
+            };
             email.Body = builder.ToMessageBody();
 
             // dùng SmtpClient của MailKit
-            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            using var smtp = new SmtpClient();
 
             try
             {
-                smtp.Connect(_emailDTO.Host, _emailDTO.Port, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_emailDTO.Mail, _emailDTO.Password);
+                smtp.Connect(_emailDto.Host, _emailDto.Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_emailDto.Mail, _emailDto.Password);
                 await smtp.SendAsync(email);
             }
             catch (Exception ex)
@@ -66,13 +66,13 @@ namespace EvergreenAPI.Services.EmailService
                 var emailsavefile = string.Format(@"mailssave/{0}.eml", Guid.NewGuid());
                 await email.WriteToAsync(emailsavefile);
 
-                logger.LogInformation("Lỗi gửi mail, lưu tại - " + emailsavefile);
-                logger.LogError(ex.Message);
+                _logger.LogInformation("Lỗi gửi mail, lưu tại - " + emailsavefile);
+                _logger.LogError(ex.Message);
             }
 
             smtp.Disconnect(true);
 
-            logger.LogInformation("send mail to " + mailContent.To);
+            _logger.LogInformation("send mail to " + mailContent.To);
         }
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {

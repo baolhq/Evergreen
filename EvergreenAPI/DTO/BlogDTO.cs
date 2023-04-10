@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EvergreenAPI.DTO
 {
-    public class BlogDTO
+    public class BlogDto
     {
         public int BlogId { get; set; }
         

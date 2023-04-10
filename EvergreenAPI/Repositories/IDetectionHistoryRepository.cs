@@ -1,9 +1,5 @@
-﻿using EvergreenAPI.DTO;
-using EvergreenAPI.Models;
-using System;
+﻿using EvergreenAPI.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EvergreenAPI.Repositories
 {

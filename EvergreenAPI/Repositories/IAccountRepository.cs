@@ -6,12 +6,11 @@ namespace EvergreenAPI.Repositories
 {
     public interface IAccountRepository
     {
-        Account GetAccount(AccountDTO account);
-        Account Login(LoginDTO account);
-        Task<bool> Register(AccountDTO account);
+        Account Login(LoginDto account);
+        Task<bool> Register(Account account);
         Task<Account> Verify(string token);
         Task<Account> ForgotPassword(string email);
-        Task<bool> ResetPassword(ResetPasswordDTO request);
+        Task<bool> ResetPassword(ResetPasswordDto request);
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
     }
 }

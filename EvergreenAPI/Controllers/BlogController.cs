@@ -59,7 +59,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateBlog([FromBody] BlogDTO blogCreate)
+        public IActionResult CreateBlog([FromBody] BlogDto blogCreate)
         {
             if (blogCreate == null)
                 return BadRequest(ModelState);
@@ -91,7 +91,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPut("{blogId}")]
-        public IActionResult UpdateBlog(int blogId, [FromBody] BlogDTO updatedBlog)
+        public IActionResult UpdateBlog(int blogId, [FromBody] BlogDto updatedBlog)
         {
             if (updatedBlog == null)
                 return BadRequest(ModelState);

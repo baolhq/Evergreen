@@ -3,7 +3,6 @@ using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +50,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTreatment([FromBody] TreatmentDTO treatmentCreate)
+        public IActionResult CreateTreatment([FromBody] TreatmentDto treatmentCreate)
         {
             if (treatmentCreate == null)
                 return BadRequest(ModelState);
@@ -82,7 +81,7 @@ namespace EvergreenAPI.Controllers
 
 
         [HttpPut("{treatmentId}")]
-        public IActionResult UpdateTreatment(int treatmentId, [FromBody] TreatmentDTO updatedTreatment)
+        public IActionResult UpdateTreatment(int treatmentId, [FromBody] TreatmentDto updatedTreatment)
         {
             if (updatedTreatment == null)
                 return BadRequest(ModelState);

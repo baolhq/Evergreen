@@ -37,7 +37,7 @@ namespace EvergreenAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetThumbnails()
         {
-            var thumbnails = _mapper.Map<List<ThumbnailDTO>>(_thumbnailRepository.GetThumbnails());
+            var thumbnails = _mapper.Map<List<ThumbnailDto>>(_thumbnailRepository.GetThumbnails());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -52,7 +52,7 @@ namespace EvergreenAPI.Controllers
             if (!_thumbnailRepository.ThumbnailExist(thumbnailId))
                 return NotFound($"ThumbnailId '{thumbnailId}' is not exists!!");
 
-            var thumbnail = _mapper.Map<ThumbnailDTO>(_thumbnailRepository.GetThumbnail(thumbnailId));
+            var thumbnail = _mapper.Map<ThumbnailDto>(_thumbnailRepository.GetThumbnail(thumbnailId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

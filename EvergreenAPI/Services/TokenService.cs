@@ -3,7 +3,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System;
-using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 
 namespace EvergreenAPI.Services

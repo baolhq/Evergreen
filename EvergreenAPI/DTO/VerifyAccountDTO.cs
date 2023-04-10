@@ -2,7 +2,7 @@
 
 namespace EvergreenAPI.DTO
 {
-    public class VerifyAccountDTO
+    public class VerifyAccountDto
     {
         [MaxLength(255)]
         [Required(ErrorMessage = "Cannot be blank")]

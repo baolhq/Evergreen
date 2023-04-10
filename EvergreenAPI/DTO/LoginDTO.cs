@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EvergreenAPI.DTO
 {
-    public class LoginDTO
+    public class LoginDto
     {
         [MaxLength(255)]
         [Required(ErrorMessage = "Cannot be blank")]

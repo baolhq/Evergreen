@@ -2,6 +2,7 @@
 using EvergreenAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using EvergreenAPI.Models;
 
 namespace EvergreenAPI.Controllers
 {
@@ -18,7 +19,7 @@ namespace EvergreenAPI.Controllers
 
         [Route("login")]
         [HttpPost]
-        public IActionResult Login([FromBody] LoginDTO account)
+        public IActionResult Login([FromBody] LoginDto account)
         {
             var acc = _accountRepository.Login(account);
 
@@ -36,7 +37,7 @@ namespace EvergreenAPI.Controllers
 
         [Route("register")]
         [HttpPost]
-        public async Task <IActionResult> Register([FromBody] AccountDTO account)
+        public async Task <IActionResult> Register([FromBody] Account account)
         {
             if (account == null) return BadRequest();
 
@@ -87,7 +88,7 @@ namespace EvergreenAPI.Controllers
 
         [Route("reset-password")]
         [HttpPost]
-        public async Task <IActionResult> ResetPassword(ResetPasswordDTO request)
+        public async Task <IActionResult> ResetPassword(ResetPasswordDto request)
         {
             if (request == null) return BadRequest();
 

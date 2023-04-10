@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EvergreenAPI.DTO
+﻿namespace EvergreenAPI.DTO
 {
-    public class MedicineCategoryDTO
+    public class MedicineCategoryDto
     {
         public int MedicineCategoryId { get; set; }
         

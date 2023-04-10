@@ -95,7 +95,7 @@ namespace EvergreenAPI
 
             services.AddOptions();
             var mailsettings = Configuration.GetSection("MailSettings");
-            services.Configure<EmailDTO>(mailsettings);
+            services.Configure<EmailDto>(mailsettings);
 
             #endregion
         }

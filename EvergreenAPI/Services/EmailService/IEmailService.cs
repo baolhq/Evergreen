@@ -1,5 +1,4 @@
-﻿using EvergreenAPI.DTO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using static EvergreenAPI.Services.EmailService.EmailService;
 
 namespace EvergreenAPI.Services.EmailService

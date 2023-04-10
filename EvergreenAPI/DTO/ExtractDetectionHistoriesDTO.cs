@@ -1,6 +1,6 @@
 ﻿namespace EvergreenAPI.DTO
 {
-    public class ExtractDetectionHistoriesDTO
+    public class ExtractDetectionHistoriesDto
     {
         public int DetectionHistoryId { get; set; }
         public string ImageName { get; set; }

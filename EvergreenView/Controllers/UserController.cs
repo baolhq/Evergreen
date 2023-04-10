@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using EvergreenAPI.Models;
 using Newtonsoft.Json.Linq;
 using System;
-using System.IO;
 using System.Linq;
 using EvergreenAPI.DTO;
 using Microsoft.Extensions.Configuration;
@@ -190,7 +189,7 @@ namespace EvergreenView.Controllers
 
             var temp = JObject.Parse(strData);
 
-            var user = new AccountDTO()
+            var user = new AccountDto()
             {
                 AccountId = id,
                 Email = (string)temp["email"],
@@ -208,7 +207,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, AccountDTO user)
+        public async Task<ActionResult> Edit(int id, AccountDto user)
         {
             if (HttpContext.Session.GetString("r") != "User")
                 return RedirectToAction("Index", "Home");
@@ -224,17 +223,18 @@ namespace EvergreenView.Controllers
                 var form = new MultipartFormDataContent();
                 var fileStreamContent = new StreamContent(postedFile.OpenReadStream());
                 fileStreamContent.Headers.ContentType =
-                    new System.Net.Http.Headers.MediaTypeHeaderValue(postedFile.ContentType);
+                    new MediaTypeHeaderValue(postedFile.ContentType);
                 form.Add(fileStreamContent, "postedFile", postedFile.FileName);
                 response = await _client.PostAsync($@"{_userApiUrl}/changeAvatar/{id}", form);
 
                 if (!response.IsSuccessStatusCode) return View(user);
 
-                var src = _configuration["BaseUrl"] + "/" + postedFile.FileName;
+                var src = await response.Content.ReadAsStringAsync();
+                src = src.Replace("\"", "");
                 HttpContext.Session.SetString("a", src);
             }
 
-            var userEdit = new AccountDTO()
+            var userEdit = new AccountDto()
             {
                 AccountId = id,
                 Username = user.Username,
@@ -321,7 +321,7 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var formUser = new UserDTO()
+            var formUser = new UserDto()
             {
                 Email = account.Email,
                 FullName = account.FullName,

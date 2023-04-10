@@ -1,11 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using System.Text.Json
-@inject IHttpContextAccessor httpContentAccessor
+@inject IHttpContextAccessor HttpContentAccessor
 
 @{
     ViewData["Title"] = "Admin dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var session = httpContentAccessor.HttpContext.Session;
+    var session = HttpContentAccessor.HttpContext.Session;
     var jsonData = session.GetString("datas");
     var data = JsonSerializer.Deserialize<List<int>>(jsonData).ToArray();
     string concatenatedInt = string.Join(", ", data);

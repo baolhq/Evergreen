@@ -8,14 +8,14 @@ namespace EvergreenAPI.Helper
     {
         public Mapping()
         {
-            CreateMap<DiseaseCategory, DiseaseCategoryDTO>().ReverseMap();
-            CreateMap<Disease, DiseaseDTO>().ReverseMap();
-            CreateMap<MedicineCategory, MedicineCategoryDTO>().ReverseMap();
-            CreateMap<Medicine, MedicineDTO>().ReverseMap();
-            CreateMap<Treatment, TreatmentDTO>().ReverseMap();
-            CreateMap<Blog, BlogDTO>().ReverseMap();
-            CreateMap<Account, UserDTO>().ReverseMap();
-            CreateMap<Thumbnail, ThumbnailDTO>().ReverseMap();
+            CreateMap<DiseaseCategory, DiseaseCategoryDto>().ReverseMap();
+            CreateMap<Disease, DiseaseDto>().ReverseMap();
+            CreateMap<MedicineCategory, MedicineCategoryDto>().ReverseMap();
+            CreateMap<Medicine, MedicineDto>().ReverseMap();
+            CreateMap<Treatment, TreatmentDto>().ReverseMap();
+            CreateMap<Blog, BlogDto>().ReverseMap();
+            CreateMap<Account, UserDto>().ReverseMap();
+            CreateMap<Thumbnail, ThumbnailDto>().ReverseMap();
             
 
         }

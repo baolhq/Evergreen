@@ -137,6 +137,7 @@ namespace EvergreenView.Controllers
             return View(user);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AdminEdit(int id, Account user)
@@ -165,6 +166,7 @@ namespace EvergreenView.Controllers
             var response = await _client.PutAsync(_userApiUrl + "/" + userEdit.AccountId, content);
             if (!response.IsSuccessStatusCode)
             {
+                TempData["error"] = "Can not Update";
                 return View(user);
             }
 
@@ -248,6 +250,7 @@ namespace EvergreenView.Controllers
             response = await _client.PutAsync(_userApiUrl + "/" + id, content);
             if (!response.IsSuccessStatusCode)
             {
+                TempData["error"] = "Can not Update";
                 return View(user);
             }
 
@@ -337,6 +340,7 @@ namespace EvergreenView.Controllers
             var response = await _client.PostAsync(_userApiUrl, content);
             if (!response.IsSuccessStatusCode)
             {
+                TempData["error"] = "Can not Create";
                 return View(account);
             }
 

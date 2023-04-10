@@ -98,7 +98,7 @@ namespace EvergreenView.Controllers
                 TempData["message"] = "Create Successfully";
                 return RedirectToAction("Index");
             }
-
+            TempData["error"] = "Can not Create";
             return View();
         }
 
@@ -145,6 +145,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index");
             }
 
+            TempData["error"] = "Can not Update";
             return View(diseaseCat);
         }
 
@@ -197,6 +198,7 @@ namespace EvergreenView.Controllers
                 return RedirectToAction("Index");
             }
 
+            TempData["error"] = "Can not Delete";
             return View(disease);
         }
     }

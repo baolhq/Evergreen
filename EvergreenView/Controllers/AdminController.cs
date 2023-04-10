@@ -28,7 +28,6 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Accept.Add(contentType);
 
             _medicineApiUrl = configuration["BaseUrl"] + "/api/Medicine";
-
         }
 
         public async Task<IActionResult> Index()
@@ -63,7 +62,7 @@ namespace EvergreenView.Controllers
             HttpContext.Session.SetString("datas", jsonData);
 
             //Disease Chart
-            HttpResponseMessage response1 = await _client.GetAsync(_medicineApiUrl);
+            HttpResponseMessage response1 = await _client.GetAsync(_medicineApiUrl + "/GetMedicineName");
             string strData1 = await response1.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {

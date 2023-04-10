@@ -86,7 +86,7 @@
 <div id="grid-container">
     @foreach (var item in Model)
     {
-        var apiUrl = item.Url.StartsWith("http") ? "" : Configuration["BaseUrl"];
+        var apiUrl = item.Url.StartsWith("http") ? "" : $"{Configuration["BaseUrl"]}/";
         var src = apiUrl + item.Url;
         <figure>
             <!--suppress HtmlDeprecatedAttribute -->

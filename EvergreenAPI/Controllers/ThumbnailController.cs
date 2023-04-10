@@ -16,7 +16,7 @@ namespace EvergreenAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Professor")]
     public class ThumbnailController : ControllerBase
     {
         private readonly IThumbnailRepository _thumbnailRepository;

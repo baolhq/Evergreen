@@ -13,6 +13,7 @@ namespace EvergreenView.Controllers
     public class AdminController : Controller
     {
         private readonly string _medicineApiUrl;
+        private readonly string _diseaseApiUrl;
         private readonly HttpClient _client;
 
         public AdminController(IConfiguration configuration)
@@ -24,6 +25,7 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Accept.Add(contentType);
 
             _medicineApiUrl = configuration["BaseUrl"] + "/api/Medicine";
+            _diseaseApiUrl = configuration["BaseUrl"] + "/api/Disease";
         }
 
         public async Task<IActionResult> Index()
@@ -58,7 +60,7 @@ namespace EvergreenView.Controllers
             HttpContext.Session.SetString("datas", jsonData);
 
             //Disease Chart
-            HttpResponseMessage response1 = await _client.GetAsync(_medicineApiUrl + "/GetMedicineName");
+            HttpResponseMessage response1 = await _client.GetAsync(_diseaseApiUrl + "/GetDiseaseName");
             string strData1 = await response1.Content.ReadAsStringAsync();
             var options1 = new JsonSerializerOptions
             {

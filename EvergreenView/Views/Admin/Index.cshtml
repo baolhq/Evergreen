@@ -7,8 +7,11 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var session = HttpContentAccessor.HttpContext.Session;
     var jsonData = session.GetString("datas");
+    var jsonLabel = session.GetString("labels");
     var data = JsonSerializer.Deserialize<List<int>>(jsonData).ToArray();
+    var label = JsonSerializer.Deserialize<List<string>>(jsonLabel);
     string concatenatedInt = string.Join(", ", data);
+    string concatenatedString = string.Join(", ", label);
     var jsonDataDisease = session.GetString("dataDisease");
     var dataDiseases = JsonSerializer.Deserialize<List<int>>(jsonDataDisease).ToArray();
     string concatenatedDiseaseInt = string.Join(", ", dataDiseases);

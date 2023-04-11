@@ -19,15 +19,15 @@ namespace EvergreenView.Controllers
         private readonly string _authApiUrl;
         private readonly HttpClient _client;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
 
         public AuthenticationController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-
-            _authApiUrl = configuration["BaseUrl"] + "/api/auth";
-
+            _configuration = configuration;
+            _authApiUrl = _configuration["BaseUrl"] + "/api/auth";
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -71,9 +71,12 @@ namespace EvergreenView.Controllers
                 HttpContext.Session.SetString("r", body.Role);
                 HttpContext.Session.SetString("t", body.Token);
                 HttpContext.Session.SetString("i", body.AccountId.ToString());
-                HttpContext.Session.SetString("a", body.AvatarUrl);
+                HttpContext.Session.SetString("a", _configuration["BaseUrl"] + "/" + body.AvatarUrl);
 
-                return RedirectToAction("Index", HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("r") == "Professor" ? "Admin" : "Home");
+                return RedirectToAction("Index",
+                    HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("r") == "Professor"
+                        ? "Admin"
+                        : "Home");
             }
 
             TempData["error"] = "Your Email or Password is wrong!";

@@ -83,7 +83,7 @@ namespace EvergreenAPI.Repositories
             {
                 return false;
             }
-            if (password.Length < 6)
+            if (password.Length < 7)
             {
                 return false;
             }

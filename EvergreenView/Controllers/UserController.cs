@@ -29,7 +29,6 @@ namespace EvergreenView.Controllers
 
             _configuration = configuration;
             _userApiUrl = _configuration["BaseUrl"] + "/api/User";
-
         }
 
         public async Task<ActionResult> AdminDetails(int id)
@@ -233,6 +232,7 @@ namespace EvergreenView.Controllers
 
                 var src = await response.Content.ReadAsStringAsync();
                 src = src.Replace("\"", "");
+                src = _configuration["BaseUrl"] + "/" + src;
                 HttpContext.Session.SetString("a", src);
             }
 

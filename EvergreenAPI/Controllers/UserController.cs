@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using EvergreenAPI.DTO;
 using EvergreenAPI.Models;
 using EvergreenAPI.Repositories;
@@ -184,7 +185,7 @@ namespace EvergreenAPI.Controllers
             _context.Images.Add(new Image { AltText = uniqueFileName, Url = uniqueFilePath });
 
             // Update account avatar url
-            account.AvatarUrl = $@"https://localhost:5001/Uploads/{uniqueFileName}{ext}";
+            account.AvatarUrl = $@"Uploads/{uniqueFileName}{ext}";
 
             await _context.SaveChangesAsync();
             return Ok(account.AvatarUrl);

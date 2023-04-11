@@ -1,8 +1,10 @@
-﻿@model EvergreenAPI.DTO.AccountDto
-
+﻿@using Microsoft.Extensions.Configuration
+@model EvergreenAPI.DTO.AccountDto
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Update profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var avatarUrl = Configuration["BaseUrl"] + "/" + Model.AvatarUrl;
 
 }
 <link href="
@@ -114,7 +116,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
         <div class="row">
             <div class="col-md-4">
                 <div class="profile-img">
-                    <img src="@Model.AvatarUrl" id="imgAvatar" alt="Avatar"/>
+                    <img src='@avatarUrl' id="imgAvatar" alt="Avatar"/>
                     <div class="file btn btn-block">
                         Change Photo
                         <input type="file" name="file" id="imgInput" asp-for="AvatarImg"/>

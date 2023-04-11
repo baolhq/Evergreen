@@ -127,7 +127,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                 <div class="profile-head">
                     <h5>
                         <input class="form-control" type="text" asp-for="Username"/>
+                        <span asp-validation-for="Username" class="text-danger">@ViewData["error"]</span>
                     </h5>
+                    
                     <h6>
                         @if (!string.IsNullOrEmpty(Model.Professions))
                         {
@@ -164,7 +166,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                             </div>
                             <div class="col-md-6">
                                 <input class="form-control mb-2" type="text" asp-for="FullName"/>
+                                <span asp-validation-for="FullName" class="text-danger">@ViewData["error"]</span>
                             </div>
+                            
                         </div>
                         <div class="row align-items-center">
                             <div class="col-md-6">
@@ -172,7 +176,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                             </div>
                             <div class="col-md-6">
                                 <input class="form-control" type="text" asp-for="PhoneNumber"/>
+                                <span asp-validation-for="PhoneNumber" class="text-danger">@ViewData["error"]</span>
                             </div>
+                            
                         </div>
                     </div>
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">

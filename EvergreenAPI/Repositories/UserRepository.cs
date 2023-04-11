@@ -124,7 +124,7 @@ namespace EvergreenAPI.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return false;
             }
 
             return true;

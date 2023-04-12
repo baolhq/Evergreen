@@ -21,7 +21,7 @@
 <link href="
 https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 
-<div class="container">
+<form method="post" class="container">
     <div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
@@ -83,7 +83,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
         </div>
     </div>
 
-</div>
+</form>
 <script src="https://kit.fontawesome.com/bdb952e5fa.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
 <script>
@@ -136,7 +136,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
     passwordConfirm.addEventListener("keyup", () => {
         let data = password.value;
         let conf = passwordConfirm.value;
-        console.log(`${data} - ${conf}`)
 
         if (data !== conf) {
             confirmErrorMessage.innerHTML = "Password does not match."

@@ -4,8 +4,16 @@
 @{
     ViewData["Title"] = "Update profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var avatarUrl = Configuration["BaseUrl"] + "/" + Model.AvatarUrl;
 
+    string avatarUrl;
+    if (Model.AvatarUrl.StartsWith("http"))
+    {
+        avatarUrl = Model.AvatarUrl;
+    }
+    else
+    {
+        avatarUrl = Configuration["BaseUrl"] + "/" + Model.AvatarUrl;
+    }
 }
 <link href="
 https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">

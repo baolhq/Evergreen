@@ -1,5 +1,5 @@
 ﻿@using Microsoft.Extensions.Configuration
-@model EvergreenAPI.DTO.AccountDto
+@model EvergreenAPI.Models.Account
 @inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Update profile";
@@ -127,7 +127,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                     <img src='@avatarUrl' id="imgAvatar" alt="Avatar"/>
                     <div class="file btn btn-block">
                         Change Photo
-                        <input type="file" name="file" id="imgInput" asp-for="AvatarImg"/>
+                        <input type="file" name="file" id="imgInput"/>
                     </div>
                 </div>
             </div>
@@ -137,7 +137,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                         <input class="form-control" type="text" asp-for="Username"/>
                         <span asp-validation-for="Username" class="text-danger">@ViewData["error"]</span>
                     </h5>
-                    
+
                     <h6>
                         @if (!string.IsNullOrEmpty(Model.Professions))
                         {
@@ -167,7 +167,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                 <div class="tab-content profile-tab" id="myTabContent">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                         <input type="hidden" asp-for="AccountId" readonly/>
-                        <input type="hidden" asp-for="Email" readonly/>
                         <div class="row align-items-center">
                             <div class="col-md-6">
                                 <label>Name</label>
@@ -176,7 +175,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                                 <input class="form-control mb-2" type="text" asp-for="FullName"/>
                                 <span asp-validation-for="FullName" class="text-danger">@ViewData["error"]</span>
                             </div>
-                            
+
                         </div>
                         <div class="row align-items-center">
                             <div class="col-md-6">
@@ -186,7 +185,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="s
                                 <input class="form-control" type="text" asp-for="PhoneNumber"/>
                                 <span asp-validation-for="PhoneNumber" class="text-danger">@ViewData["error"]</span>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">

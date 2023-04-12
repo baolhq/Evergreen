@@ -7,7 +7,7 @@ namespace EvergreenAPI.Repositories
     public interface IAccountRepository
     {
         Account Login(LoginDto account);
-        Task<bool> Register(Account account);
+        Task<bool> Register(Account accountDto);
         Task<Account> Verify(string token);
         Task<Account> ForgotPassword(string email);
         Task<bool> ResetPassword(ResetPasswordDto request);

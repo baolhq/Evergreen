@@ -106,22 +106,22 @@ namespace EvergreenView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(Account account)
         {
-            if (ModelState.IsValid)
-            {
-                if (account == null) return View();
+            if (account == null) return View();
 
-                string data = JsonSerializer.Serialize(account);
-                var content = new StringContent(data, Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync($"{_authApiUrl}/register", content);
-                if (!response.IsSuccessStatusCode)
-                {
-                    TempData["error"] = "Cannot Register! Email address already exists!";
-                }
-                else
-                {
-                    TempData["message"] = "Register success, Please visit your email to verify your account!!";
-                    return RedirectToAction("VerifyAccount", "Authentication", new { email = account.Email });
-                }
+            account.Token =
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QwMUBnbWFpbC5jb20iLCJyb2xlIjoiVXNlciIsIm5iZiI6MTY4MTI3NTY0NSwiZXhwIjoxNjgxMzYyMDQ1LCJpYXQiOjE2ODEyNzU2NDUsImlzcyI6ImJhb2xocS5naXRodWIuY29tIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTAwMSJ9.BsZTy_SJkJyt64JNZjTgY6igWfI4eJvIz20oukBrPvA";
+
+            string data = JsonSerializer.Serialize(account);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync($"{_authApiUrl}/register", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["error"] = "Cannot Register! Email address already exists!";
+            }
+            else
+            {
+                TempData["message"] = "Register success, Please visit your email to verify your account!!";
+                return RedirectToAction("VerifyAccount", "Authentication", new { email = account.Email });
             }
 
             return View("Register", account);

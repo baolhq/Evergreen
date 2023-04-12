@@ -30,60 +30,46 @@ namespace EvergreenAPI.Repositories
 
         public Account Login(LoginDto account)
         {
-            var user = _context.Accounts.FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email && !x.IsBlocked);
+            var user = _context.Accounts.FirstOrDefault(x =>
+                x.Password == account.Password && x.Email == account.Email && !x.IsBlocked);
 
-            if (user == null)
+            if (user?.VerifiedAt == null)
             {
                 return null;
             }
-
-            if (!VerifyPasswordHash(account.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                return null;
-            }
-
-            if (user.VerifiedAt == null)
-            {
-                return null;
-            }
-
 
             var validUser = _context.Accounts
                 .FirstOrDefault(x => x.Password == account.Password && x.Email == account.Email);
 
             if (validUser != null)
             {
-                
                 validUser.Token = GenerateToken(validUser.Email, validUser.Role);
                 _context.Accounts.Update(validUser);
                 _context.SaveChanges();
                 return validUser;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
-
-
-
 
 
         public async Task<bool> Register(Account accountDto)
         {
-            string userRole = "User";
+            var userRole = "User";
             var found = _context.Accounts.Any(a => a.Email == accountDto.Email);
             if (found)
             {
                 return false;
             }
+
             var password = accountDto.Password;
             var confirmPassword = accountDto.ConfirmPassword;
             if (password != confirmPassword)
             {
                 return false;
             }
-            if (password.Length < 6)
+
+            if (password.Length < 7)
             {
                 return false;
             }
@@ -112,10 +98,11 @@ namespace EvergreenAPI.Repositories
 
 
             #region Add Email Template
+
             try
             {
-
                 #region Send Verification Mail To User
+
                 try
                 {
                     var mailContent1 = new MailContent
@@ -134,6 +121,7 @@ namespace EvergreenAPI.Repositories
                 {
                     return false;
                 }
+
                 #endregion
             }
             catch (Exception)
@@ -149,7 +137,6 @@ namespace EvergreenAPI.Repositories
         }
 
 
-
         public async Task<Account> Verify(string token)
         {
             var user = await _context.Accounts.FirstOrDefaultAsync(x => x.Token == token);
@@ -157,15 +144,16 @@ namespace EvergreenAPI.Repositories
             {
                 return null;
             }
+
             if (user.VerifiedAt != null)
             {
                 return null;
             }
+
             user.VerifiedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
             return user;
-
         }
 
 
@@ -176,17 +164,17 @@ namespace EvergreenAPI.Repositories
             {
                 return null;
             }
-            
+
             user.PasswordResetToken = GenerateToken(email, "User");
             user.ResetTokenExpires = DateTime.Now.AddDays(1);
             await _context.SaveChangesAsync();
 
             #region Add Email Template
+
             try
             {
-
-
                 #region Send Verification Mail To User
+
                 try
                 {
                     var mailContent1 = new MailContent
@@ -205,16 +193,17 @@ namespace EvergreenAPI.Repositories
                 {
                     return null;
                 }
+
                 #endregion
             }
             catch (Exception)
             {
                 return null;
             }
+
             #endregion
 
             return user;
-
         }
 
 
@@ -226,6 +215,7 @@ namespace EvergreenAPI.Repositories
             {
                 return false;
             }
+
             var password = request.Password;
             var confirmPassword = request.ConfirmPassword;
             if (password != confirmPassword)
@@ -246,11 +236,7 @@ namespace EvergreenAPI.Repositories
             user.Password = password;
             await _context.SaveChangesAsync();
             return true;
-
         }
-
-
-
 
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -278,9 +264,9 @@ namespace EvergreenAPI.Repositories
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-            new Claim(ClaimTypes.Email, email),
-            new Claim(ClaimTypes.Role, role)
-        }),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, role)
+                }),
 
                 Expires = now.AddDays(Convert.ToInt32(1)),
                 Issuer = _config["Jwt:Issuer"],

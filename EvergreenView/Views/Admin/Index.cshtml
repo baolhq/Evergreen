@@ -17,9 +17,9 @@
     string concatenatedDiseaseInt = string.Join(", ", dataDiseases);
 }
 
-<div class="container-fluid">
+<div class="container">
     <div class="row">
-        <div class="col-xl-4 col-lg-5">
+        <div class="col-xl col-lg">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
@@ -27,14 +27,14 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-pie mx-auto">
+                    <div class="chart-pie justify-content-center">
                         <canvas id="myMediChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-4 col-lg-5">
+        <div class="col-xl col-lg">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
@@ -42,7 +42,7 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-pie mx-auto">
+                    <div class="chart-pie justify-content-center">
                         <canvas id="myDiseaseChart"></canvas>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
             new Chart(ctxPieDisease, {
                 type: 'pie',
                 data: {
-                labels: ['By Viruses', 'By Pests', 'By Weather Leaf', 'Healthy Leaf'],
+                labels: ['Viruses', 'Pests', 'Weather Leaf', 'Healthy Leaf'],
                     datasets: [{
                         label: 'Total disease of this kind:',
                         data: [@concatenatedDiseaseInt],

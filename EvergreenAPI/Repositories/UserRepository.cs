@@ -115,15 +115,14 @@ namespace EvergreenAPI.Repositories
                 return false;
             }
 
-            if (!string.IsNullOrEmpty(user.Username))
+            if (!string.IsNullOrEmpty(userDto.Username))
                 user.Username = userDto.Username;
-            else 
             
-            if (!string.IsNullOrEmpty(user.Bio))
+            if (!string.IsNullOrEmpty(userDto.Bio))
                 user.Bio = userDto.Bio;
-            if (!string.IsNullOrEmpty(user.Role))
+            if (!string.IsNullOrEmpty(userDto.Role))
                 user.Role = userDto.Role;
-            if (!string.IsNullOrEmpty(user.PhoneNumber))
+            if (!string.IsNullOrEmpty(userDto.PhoneNumber))
                 user.PhoneNumber = userDto.PhoneNumber;
             user.Professions = userDto.Professions;
             user.FullName = userDto.FullName;

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EvergreenView.Controllers
 {
-    public class NotFoundController : Controller
+    public class FAQsController : Controller
     {
         public IActionResult Index()
         {

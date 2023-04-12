@@ -65,6 +65,17 @@ namespace EvergreenView
                 app.UseHsts();
             }
 
+            // 404 Error Handling
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/NotFound";
+                    await next();
+                }
+            });
+
             app.UseHttpsRedirection();
 
             app.UseCors(MyAllowSpecificOrigins);

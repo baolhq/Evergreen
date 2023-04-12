@@ -46,7 +46,7 @@ namespace EvergreenAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(_mapper.Map<Account>(user));
+            return Ok(user);
         }
 
         [HttpPut("ManageRole")]
@@ -115,7 +115,7 @@ namespace EvergreenAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] AccountDto updatedUser)
+        public IActionResult UpdateUser(int id, [FromBody] Account updatedUser)
         {
             var user = _userRepository.GetUser(id);
             if (user == null)

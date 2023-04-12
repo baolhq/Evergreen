@@ -15,7 +15,6 @@ namespace EvergreenAPI.DTO
         [Column(TypeName = "nvarchar(255)")] public string FullName { get; set; }
 
         [MaxLength(255)]
-        [Required(ErrorMessage = "Cannot be blank")]
         [Display(Name = "Email")]
         [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}",
             ErrorMessage = "Invalid email, Please Re-Enter")]
@@ -35,5 +34,6 @@ namespace EvergreenAPI.DTO
 
         public IFormFile AvatarImg { get; set; }
         public string Bio { get; set; }
+        public string Role { get; set; }
     }
 }

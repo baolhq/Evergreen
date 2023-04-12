@@ -119,19 +119,13 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await _client.GetAsync($"{_userApiUrl}/({id})");
+            var response = await _client.GetAsync($"{_userApiUrl}/{id}");
             string strData = await response.Content.ReadAsStringAsync();
-
-            var temp = JObject.Parse(strData);
-
-
-            var user = new Account()
+            var options = new JsonSerializerOptions
             {
-                Email = (string)temp["email"],
-                Username = (string)temp["username"],
-                PhoneNumber = (string)temp["phoneNumber"],
-                Professions = (string)temp["professions"]
+                PropertyNameCaseInsensitive = true
             };
+            var user = JsonSerializer.Deserialize<Account>(strData, options);
 
             return View(user);
         }
@@ -149,20 +143,24 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var userEdit = new Account()
+
+            var response = await _client.GetAsync($"{_userApiUrl}/{id}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
             {
-                AccountId = id,
-                Email = user.Email,
-                Username = user.Username,
-                PhoneNumber = user.PhoneNumber,
-                Professions = user.Professions,
-                FullName = user.FullName,
-                Bio = user.Bio,
-                Role = "User"
+                PropertyNameCaseInsensitive = true
             };
+            var userEdit = JsonSerializer.Deserialize<Account>(strData, options);
+
+            if (userEdit == null) return View(user);
+
+            userEdit.Professions = user.Professions;
+            userEdit.FullName = user.FullName;
+            userEdit.Role = user.Role;
+
             var userToEdit = JsonSerializer.Serialize(userEdit);
             var content = new StringContent(userToEdit, Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync(_userApiUrl + "/" + userEdit.AccountId, content);
+            response = await _client.PutAsync(_userApiUrl + "/" + id, content);
             if (!response.IsSuccessStatusCode)
             {
                 TempData["error"] = "Can not Update";
@@ -170,7 +168,7 @@ namespace EvergreenView.Controllers
             }
 
             TempData["message"] = "Update Successfully";
-            return RedirectToAction("Details", "User", new { Id = user.AccountId });
+            return RedirectToAction("AdminDetails", "User", new { Id = user.AccountId });
         }
 
         public async Task<ActionResult> Edit(int id)
@@ -190,7 +188,7 @@ namespace EvergreenView.Controllers
 
             var temp = JObject.Parse(strData);
 
-            var user = new AccountDto()
+            var user = new Account()
             {
                 AccountId = id,
                 Email = (string)temp["email"],
@@ -208,7 +206,7 @@ namespace EvergreenView.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, AccountDto user)
+        public async Task<ActionResult> Edit(int id, Account user)
         {
             if (HttpContext.Session.GetString("r") != "User")
                 return RedirectToAction("Index", "Home");
@@ -236,15 +234,19 @@ namespace EvergreenView.Controllers
                 HttpContext.Session.SetString("a", src);
             }
 
-            var userEdit = new AccountDto()
+            response = await _client.GetAsync($"{_userApiUrl}/{id}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
             {
-                AccountId = id,
-                Username = user.Username,
-                Email = user.Email,
-                FullName = user.FullName,
-                Bio = user.Bio,
-                PhoneNumber = user.PhoneNumber
+                PropertyNameCaseInsensitive = true
             };
+            var userEdit = JsonSerializer.Deserialize<Account>(strData, options);
+
+            userEdit.Username = user.Username;
+            userEdit.FullName = user.FullName;
+            userEdit.Bio = user.Bio;
+            userEdit.PhoneNumber = user.PhoneNumber;
+
             var userToEdit = JsonSerializer.Serialize(userEdit);
             var content = new StringContent(userToEdit, Encoding.UTF8, "application/json");
             response = await _client.PutAsync(_userApiUrl + "/" + id, content);

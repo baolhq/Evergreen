@@ -32,6 +32,7 @@ namespace EvergreenAPI.Repositories
             {
                 return false;
             }
+
             user.IsBlocked = false;
             _context.Remove(user);
             try
@@ -66,12 +67,14 @@ namespace EvergreenAPI.Repositories
             {
                 return false;
             }
+
             var password = user.Password;
             var confirmPassword = user.ConfirmPassword;
             if (password != confirmPassword)
             {
                 return false;
             }
+
             if (password.Length < 6)
             {
                 return false;
@@ -104,7 +107,7 @@ namespace EvergreenAPI.Repositories
             return true;
         }
 
-        public bool UpdateUser(AccountDto userDto, int id)
+        public bool UpdateUser(Account userDto, int id)
         {
             var user = _context.Accounts.SingleOrDefault(f => f.AccountId == id);
             if (user == null)
@@ -112,11 +115,18 @@ namespace EvergreenAPI.Repositories
                 return false;
             }
 
-            user.Username = userDto.Username;
-            user.FullName = userDto.FullName;
-            user.Bio = userDto.Bio;
+            if (!string.IsNullOrEmpty(user.Username))
+                user.Username = userDto.Username;
+            else 
+            
+            if (!string.IsNullOrEmpty(user.Bio))
+                user.Bio = userDto.Bio;
+            if (!string.IsNullOrEmpty(user.Role))
+                user.Role = userDto.Role;
+            if (!string.IsNullOrEmpty(user.PhoneNumber))
+                user.PhoneNumber = userDto.PhoneNumber;
             user.Professions = userDto.Professions;
-            user.PhoneNumber = userDto.PhoneNumber;
+            user.FullName = userDto.FullName;
             _context.Update(user);
             try
             {
@@ -147,9 +157,9 @@ namespace EvergreenAPI.Repositories
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-            new Claim(ClaimTypes.Email, email),
-            new Claim(ClaimTypes.Role, role)
-        }),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, role)
+                }),
 
                 Expires = now.AddDays(Convert.ToInt32(1)),
                 Issuer = _config["Jwt:Issuer"],
@@ -171,12 +181,15 @@ namespace EvergreenAPI.Repositories
             var d = new List<Account>();
             try
             {
-                d = _context.Accounts.Where(d => d.Username.Contains(search.ToLower()) || d.Email.Contains(search.ToLower()) || d.FullName.Contains(search.ToLower())).ToList();
+                d = _context.Accounts.Where(d =>
+                    d.Username.Contains(search.ToLower()) || d.Email.Contains(search.ToLower()) ||
+                    d.FullName.Contains(search.ToLower())).ToList();
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
+
             return d;
         }
     }

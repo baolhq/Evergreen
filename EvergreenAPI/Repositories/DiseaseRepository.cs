@@ -43,11 +43,16 @@ namespace EvergreenAPI.Repositories
 
         public ICollection<Disease> GetDiseases()
         {
-            return _context.Diseases
+            var result = _context.Diseases
                 .Include(d => d.DiseaseCategory)
                 .Include(d => d.Medicine)
                 .Include(d => d.Treatment)
                 .Include(d => d.Thumbnail).ToList();
+
+            var healthy = result.Find(d => d.Name == "Healthy leaf");
+            result.Remove(healthy);
+            
+            return result;
         }
 
         public ICollection<Thumbnail> GetThumbnails()

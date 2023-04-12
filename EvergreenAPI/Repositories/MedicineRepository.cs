@@ -50,8 +50,11 @@ namespace EvergreenAPI.Repositories
         }
 
         public ICollection<Medicine> GetMedicines()
-        {
-            return _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Thumbnail).ToList();
+        {   
+            var result = _context.Medicines.Include(d => d.MedicineCategory).Include(d => d.Thumbnail).ToList();
+            var healthy = result.Find(d => d.Name == "Healthy leaf");
+            result.Remove(healthy);
+            return result;
         }
 
 

@@ -59,15 +59,14 @@
             new Chart(ctxPie, {
                 type: 'pie',
                 data: {
-                labels: ['Fertilizer', 'Pesticide', 'Healthy Leaf', 'Fungicide'],
+                labels: ['Fertilizer', 'Pesticide', 'Fungicide'],
                     datasets: [{
                         label: 'Total medicine of this kind:',
                         data: [@concatenatedInt],
                         backgroundColor: [
                             'rgb(255, 99, 132)',
                             'rgb(54, 162, 235)',
-                            'rgb(255, 205, 86)',
-                            'rgb(102,204,0)'
+                            'rgb(255, 205, 86)'
                         ],
                         hoverOffset: 4
                     }]
@@ -79,7 +78,7 @@
             new Chart(ctxPieDisease, {
                 type: 'pie',
                 data: {
-                labels: ['Viruses', 'Pests', 'Weather Leaf', 'Healthy Leaf'],
+                labels: ['Viruses', 'Pests', 'Weather Leaf'],
                     datasets: [{
                         label: 'Total disease of this kind:',
                         data: [@concatenatedDiseaseInt],

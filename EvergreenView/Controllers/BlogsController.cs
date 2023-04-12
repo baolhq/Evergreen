@@ -107,7 +107,7 @@ namespace EvergreenView.Controllers
             var token = HttpContext.Session.GetString("t");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            p.LastModifiedDate = DateTime.Now;
+            p.LastModifiedDate = DateTime.Now.AddHours(7);
             string data = JsonSerializer.Serialize(p);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = _client.PostAsync(_blogApiUrl, content).Result;
@@ -169,7 +169,7 @@ namespace EvergreenView.Controllers
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-            blog.LastModifiedDate = DateTime.Now;
+            blog.LastModifiedDate = DateTime.Now.AddHours(7);
             var blogId = await GetBlogById(id);
             var data = JsonSerializer.Serialize(blog);
             var content = new StringContent(data, Encoding.UTF8, "application/json");

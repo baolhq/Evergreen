@@ -5,6 +5,7 @@
     ViewData["Title"] = "Profile details";
     var avatarUrl = Configuration["BaseUrl"] + "/" + Model.AvatarUrl;
 }
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 
 @section Styles {
     <style>
@@ -187,3 +188,22 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+@if (TempData["message"] != null)
+{
+    <script>
+        window.onload = () => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: '@TempData["message"]',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+    TempData["message"] = null;
+
+}

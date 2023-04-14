@@ -118,10 +118,10 @@ namespace EvergreenAPI.Controllers
         {
             var apiBaseUrl = _configuration["PythonApiUrl"] + "/predict";
             var detectingDiseases = _context.Diseases.Where(
-                d => d.Name == "Early blight"
+                d => d.Name == "Early Blight"
                      || d.Name == "Septoria"
-                     || d.Name == "Yellow curl" ||
-                     d.Name == "Healthy leaf").ToList();
+                     || d.Name == "Yellow Curl" ||
+                     d.Name == "Healthy Leaf").ToList();
             List<PredictionDto> data;
 
             using (var multipartFormContent = new MultipartFormDataContent())

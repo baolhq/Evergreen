@@ -182,7 +182,7 @@ namespace EvergreenAPI.Repositories
             {
                 d = _context.Accounts.Where(d =>
                     d.Username.Contains(search.ToLower()) || d.Email.Contains(search.ToLower()) ||
-                    d.FullName.Contains(search.ToLower())).ToList();
+                    d.FullName.ToLower().Contains(search.ToLower())).ToList();
             }
             catch (Exception e)
             {

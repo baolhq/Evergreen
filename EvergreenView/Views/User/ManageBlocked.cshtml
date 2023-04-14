@@ -120,6 +120,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Email)
                     </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Role)
+                        </th>
                     <th>
                         @Html.DisplayNameFor(model => model.IsBlocked)
                     </th>
@@ -141,6 +144,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Role)
+                            </td>
                         <td class="isBlocked">
                             @if (item.Role == "Admin")
                             {

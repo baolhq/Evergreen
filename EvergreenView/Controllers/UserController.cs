@@ -371,7 +371,7 @@ namespace EvergreenView.Controllers
             };
             var listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
 
-            TempData["message"] = "Manage Role Successfully";
+            
             return View(listUsers);
         }
 
@@ -396,7 +396,7 @@ namespace EvergreenView.Controllers
             };
             List<Account> listUsers = JsonSerializer.Deserialize<List<Account>>(strData, options);
 
-            TempData["message"] = "Manage Status Successfully";
+            
             return View(listUsers);
         }
     }

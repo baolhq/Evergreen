@@ -113,7 +113,7 @@ namespace EvergreenAPI.Repositories
             List<Treatment> d = new List<Treatment>();
             try
             {
-                d = _context.Treatments.Where(d => string.IsNullOrEmpty(d.TreatmentName) || d.TreatmentName.Contains(search.ToLower())).ToList();
+                d = _context.Treatments.Where(d => d.TreatmentName.ToLower().Contains(search.ToLower())).ToList();
             }
             catch (Exception e)
             {

@@ -96,7 +96,7 @@ namespace EvergreenAPI.Repositories
             List<Disease> d = new List<Disease>();
             try
             {
-                d = _context.Diseases.Where(d => string.IsNullOrEmpty(d.Name) || d.Name.Contains(search.ToLower())).ToList();
+                d = _context.Diseases.Where(d => d.Name.ToLower().Contains(search.ToLower())).ToList();
             } catch(Exception e)
             {
                 throw new Exception(e.Message);

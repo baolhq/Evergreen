@@ -77,7 +77,7 @@ namespace EvergreenAPI.Repositories
             List<Medicine> d = new List<Medicine>();
             try
             {
-                d = _context.Medicines.Where(d => string.IsNullOrEmpty(d.Name) || d.Name.Contains(search.ToLower())).ToList();
+                d = _context.Medicines.Where(d => d.Name.ToLower().Contains(search.ToLower())).ToList();
             }
             catch (Exception e)
             {

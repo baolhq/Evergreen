@@ -106,7 +106,9 @@
             return false;
         }
         $(
-            `<li class="sent"><img src=${avatar} alt="User avatar" /><p>` +
+            `<li class="sent"><img src="`
+            + avatar
+            + `" alt="User avatar" /><p>` +
             message +
             "</p></li>"
         ).appendTo($(".messages ul"));

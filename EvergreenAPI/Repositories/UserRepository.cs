@@ -117,7 +117,7 @@ namespace EvergreenAPI.Repositories
 
             if (!string.IsNullOrEmpty(userDto.Username))
                 user.Username = userDto.Username;
-            
+
             if (!string.IsNullOrEmpty(userDto.Bio))
                 user.Bio = userDto.Bio;
             if (!string.IsNullOrEmpty(userDto.Role))
@@ -131,7 +131,7 @@ namespace EvergreenAPI.Repositories
             {
                 _context.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

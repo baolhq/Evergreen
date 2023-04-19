@@ -113,6 +113,9 @@
                         <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Medicine" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Medicine" asp-action="Index">Medicine</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Treatment" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Service" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Service" asp-action="Index">Service</a>
                     </li>
                     <li class="nav-item">

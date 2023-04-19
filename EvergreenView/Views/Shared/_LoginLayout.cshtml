@@ -80,10 +80,13 @@
                             <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Treatment" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Treatment" asp-action="Index">Treatment</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/ImageDetection" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="ImageDetection" asp-action="Index">Detect</a>
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Service" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Service" asp-action="Index">Service</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/Service" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="Service" asp-action="Index">Service</a>
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/FAQs" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="FAQs" asp-action="Index">FAQs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(HttpContextAccessor.HttpContext is {Request: {Path: {Value: "/ImageDetection" } } } ? "text-danger" : "text-dark")" asp-area="" asp-controller="ImageDetection" asp-action="Index">Detect</a>
                         </li>
 
                         @if (session.GetString("n") != null && session.GetString("r") != "Admin")

@@ -33,7 +33,7 @@ namespace EvergreenAPI.Repositories
         }
 
         public Disease GetDisease(int id)
-        {   
+        {
             return _context.Diseases
                 .Include(d => d.DiseaseCategory)
                 .Include(d => d.Medicine)
@@ -49,9 +49,9 @@ namespace EvergreenAPI.Repositories
                 .Include(d => d.Treatment)
                 .Include(d => d.Thumbnail).ToList();
 
-            var healthy = result.Find(d => d.Name == "Healthy leaf");
+            var healthy = result.Find(d => d.Name == "Healthy Leaf");
             result.Remove(healthy);
-            
+
             return result;
         }
 
@@ -97,7 +97,8 @@ namespace EvergreenAPI.Repositories
             try
             {
                 d = _context.Diseases.Where(d => d.Name.ToLower().Contains(search.ToLower())).ToList();
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }

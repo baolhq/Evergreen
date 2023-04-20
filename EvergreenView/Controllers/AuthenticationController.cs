@@ -71,7 +71,11 @@ namespace EvergreenView.Controllers
                 HttpContext.Session.SetString("r", body.Role);
                 HttpContext.Session.SetString("t", body.Token);
                 HttpContext.Session.SetString("i", body.AccountId.ToString());
-                HttpContext.Session.SetString("a", _configuration["BaseUrl"] + "/" + body.AvatarUrl);
+
+                if (body.AvatarUrl.StartsWith("http"))
+                    HttpContext.Session.SetString("a", body.AvatarUrl);
+                else
+                    HttpContext.Session.SetString("a", _configuration["BaseUrl"] + "/" + body.AvatarUrl);
 
                 return RedirectToAction("Index",
                     HttpContext.Session.GetString("r") == "Admin" || HttpContext.Session.GetString("r") == "Professor"

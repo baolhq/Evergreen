@@ -3,7 +3,10 @@
 @inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Profile details";
-    var avatarUrl = Configuration["BaseUrl"] + "/" + Model.AvatarUrl;
+    var avatarUrl = Model.AvatarUrl;
+    if (!Model.AvatarUrl.StartsWith("http")) {
+        avatarUrl = Configuration["BaseUrl"] + "/" + Model.AvatarUrl;
+    }
 }
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 
